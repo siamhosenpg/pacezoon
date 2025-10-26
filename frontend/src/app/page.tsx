@@ -1,8 +1,11 @@
 import Feed from "@/components/layouts/feed/Feed";
-import Nav from "@/components/layouts/navigation/Nav";
+import ProfileStatusBox from "@/components/layouts/navigation/leftnavigation/Profilestatusbox";
+import ShortcutActivity from "@/components/layouts/navigation/leftnavigation/ShortcutActivity";
+import Submeunssection from "@/components/layouts/navigation/leftnavigation/Submeunssection";
+import NewsShortBox from "@/components/layouts/navigation/rightnavigation/NewsShortBox";
+import SuggestAccounts from "@/components/layouts/navigation/rightnavigation/SuggestAccounts";
 import Storyitems from "@/components/layouts/storyitems/Storyitems";
 import UploadBox from "@/components/layouts/uploadbox/UploadBox";
-import Image from "next/image";
 
 export default function Home() {
   return (
@@ -10,7 +13,11 @@ export default function Home() {
       <div className="flex Pagearea  min-h-screen gap-6 xl:gap-6 2xl:gap-6 ">
         {/* Left Sidebar */}
         <nav className=" w-[40%] xl:w-[27%] hidden lg:block bg-background  sticky top-[90px]  h-[calc(100vh_-_90px)] rounded-t-lg  py-4 px-2 ">
-          amar nav left
+          <div className="w-full  overflow-y-hidden hover:overflow-y-scroll h-full  ScrollSystem px-2 ">
+            <ProfileStatusBox />
+            <Submeunssection />
+            <ShortcutActivity />
+          </div>
         </nav>
 
         {/* Main Content */}
@@ -22,7 +29,10 @@ export default function Home() {
 
         {/* Right Sidebar */}
         <nav className="w-[27%]  hidden xl:block  bg-background  sticky  top-[90px]  h-[calc(100vh_-_90px)] rounded-t-lg py-4 px-2 ">
-          right side nav
+          <div className="  overflow-y-hidden hover:overflow-y-scroll ScrollSystem w-full h-full px-2  ">
+            <SuggestAccounts />
+            <NewsShortBox />
+          </div>
         </nav>
       </div>
     </main>

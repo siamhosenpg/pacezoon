@@ -18,7 +18,7 @@ const UploadBox = ({}) => {
         </div>
         <form action="" className="w-full">
           <input
-            className="px-4 py-2 sm:py-3 text-sm bg-background-secondary text-loose rounded-full w-full outline-none"
+            className="px-4 py-2 font-semibold sm:py-3 text-sm bg-background-secondary text-loose rounded-full w-full outline-none"
             placeholder="What's on your mind?"
             type="text"
           />

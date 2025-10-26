@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --accent: #0cce7d;
+  --accent: #00a558;
   --background: #ffffff;
   --background-secondary: #f7f7f7;
   --backdround-tertiary: #eaeaea;
@@ -85,4 +85,42 @@ a {
     padding-left: 0%;
     padding-right: 0%;
   }
+}
+
+/* ============================
+   Firefox
+   ============================ */
+/* scrollbar-color: thumb track; */
+.ScrollSystem {
+  /* 'thin' বা 'auto' ব্যবহার করা যায় */
+  scrollbar-width: thin;
+  scrollbar-color: rgb(226, 226, 226) transparent;
+}
+
+/* ============================
+   WebKit (Chrome, Edge, Safari)
+   ============================ */
+/* scrollbar width */
+.ScrollSystem::-webkit-scrollbar {
+  width: 12px; /* vertical scrollbar width */
+  height: 12px; /* horizontal scrollbar height */
+  background: transparent; /* ensure no background behind scrollbar */
+}
+
+/* track (the background area) */
+.ScrollSystem::-webkit-scrollbar-track {
+  background: transparent; /* background-less track */
+}
+
+/* thumb (the draggable part) */
+.ScrollSystem::-webkit-scrollbar-thumb {
+  background: silver; /* silver thumb */
+  border-radius: 10px; /* rounded corners */
+  border: 3px solid transparent; /* space between thumb and track */
+  background-clip: padding-box; /* keeps the border transparent */
+}
+
+/* optional: hover effect for better affordance */
+.ScrollSystem::-webkit-scrollbar-thumb:hover {
+  background: #c0c0c0; /* slightly darker on hover */
 }
