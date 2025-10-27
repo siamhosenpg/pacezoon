@@ -1,8 +1,11 @@
 import React from "react";
 import { NavigationData } from "./navigationdata";
-
-import { FaCaretDown } from "react-icons/fa";
 import Searchboxnav from "../../ui/Searchboxnav";
+import Link from "next/link";
+// Icons
+import { FaCaretDown } from "react-icons/fa"; // Dropdown icon
+import { FaRegBell } from "react-icons/fa"; // Notification icon
+import { FaBell } from "react-icons/fa6"; // Notification icon filled
 
 const Nav = () => {
   return (
@@ -17,20 +20,24 @@ const Nav = () => {
             const Icon = item.icon;
             const ActiveIcon = item.activeIcon;
             return (
-              <li
+              <Link
+                href={item.href}
                 key={item.name}
                 className="flex gap-2 items-center px-4 py-2 hover:bg-background-secondary rounded cursor-pointer"
               >
                 <div className=" text-[22px] relative">
                   {Icon && <Icon />}
-                  <div className="bg-green-600 w-[11px] h-[11px] rounded-full border-background border-2 absolute top-0 right-0"></div>
+                  <div className="bg-green-600 hidden w-[11px] h-[11px] rounded-full border-background border-2 absolute top-0 right-0"></div>
                 </div>
                 <span className=" font-semibold">{item.name}</span>
-              </li>
+              </Link>
             );
           })}
         </ul>
-        <div className="w-3/12 flex items-center justify-end">
+        <div className="w-3/12 flex items-center justify-end gap-5  ">
+          <div className=" flex items-center text-lg">
+            <FaRegBell />
+          </div>
           <div className="flex items-center justify-end gap-2">
             <div className="image">
               <img

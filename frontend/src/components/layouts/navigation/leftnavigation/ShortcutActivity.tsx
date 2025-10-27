@@ -2,7 +2,7 @@ import React from "react";
 
 const ShortcutActivity = () => {
   return (
-    <div className="p-4 bg-background-secondary rounded-lg mt-3">
+    <div className="p-4 bg-background rounded-lg mt-3">
       <div className="flex justify-between items-center pb-3 border-b border-border">
         <div className="font-semibold text-primary">Shortcut Acticity</div>
         <span className="text-sm text-secondary">Show more</span>

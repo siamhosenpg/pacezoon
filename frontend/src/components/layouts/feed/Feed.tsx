@@ -1,4 +1,5 @@
-import Postbox from "@/components/ui/card/Postcard";
+import Postbox from "@/components/ui/postcard/Postcard";
+import PostcardLoading from "@/components/ui/postcard/PostcardLoading";
 import React from "react";
 
 const Feed = () => {
@@ -7,6 +8,7 @@ const Feed = () => {
       <Postbox />
       <Postbox />
       <Postbox />
+      <PostcardLoading />
     </div>
   );
 };

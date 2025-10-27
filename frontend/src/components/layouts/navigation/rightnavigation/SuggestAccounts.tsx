@@ -34,7 +34,7 @@ const userData = [
 ];
 const SuggestAccounts = () => {
   return (
-    <div className="Suggested  p-3  bg-background-secondary rounded-lg">
+    <div className="Suggested  p-3  bg-background rounded-lg">
       <div className="flex items-center text-primary p-3 justify-between border-b border-border">
         <b>Suggested</b>
         <button className="text-sm text-secondary">See all</button>

@@ -2,9 +2,11 @@
 
 :root {
   --accent: #00a558;
+  --text: #1b1b1b;
+  --text-secondary: #f4f4f4;
   --background: #ffffff;
   --background-secondary: #f7f7f7;
-  --backdround-tertiary: #eaeaea;
+  --backdround-tertiary: #dddddd;
   --background-gradient: linear-gradient(90deg, #0cce7d, #a80404);
   --foreground: #1b1b1b;
   --border: #e7e7e7;
@@ -12,6 +14,8 @@
 
 @theme inline {
   --color-accent: var(--accent);
+  --color-text: var(--text);
+  --color-text-secondary: var(--text-secondary);
   --color-background: var(--background);
   --color-background-secondary: var(--background-secondary);
   --color-background-tertiary: var(--backdround-tertiary);
@@ -30,12 +34,15 @@
 } */
 
 body {
-  background: var(--background);
+  background: var(--background-secondary);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
 }
-
+.smalltext {
+  font-size: 13px;
+  font-weight: 400;
+}
 * {
   box-sizing: border-box;
 }

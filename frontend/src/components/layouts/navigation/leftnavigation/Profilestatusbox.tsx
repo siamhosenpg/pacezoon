@@ -4,7 +4,7 @@ import { HiCheckBadge } from "react-icons/hi2";
 
 const ProfileStatusBox = () => {
   return (
-    <div className=" px-8 py-6 bg-background-secondary rounded-lg ">
+    <div className=" px-8 py-6 bg-background rounded-lg ">
       <div className="top flex gap-3 items-center ">
         <div className="shrink-0">
           <img

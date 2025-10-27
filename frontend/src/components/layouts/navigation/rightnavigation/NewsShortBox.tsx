@@ -23,7 +23,7 @@ const NewsData = [
 ];
 const NewsShortBox = () => {
   return (
-    <div className="News px-4 py-4 mt-3 bg-background-secondary rounded-lg">
+    <div className="News px-5 py-4 mt-3 bg-background rounded-lg">
       <div className="flex items-center justify-between border-b border-border pb-2">
         <div className="font-bold text-primary">News</div>
         <div className="text-sm text-secondary">Show more</div>

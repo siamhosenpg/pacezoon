@@ -48,7 +48,7 @@ const Leftnavigationlist = [
 
 const Submeunssection = () => {
   return (
-    <div className=" mt-3 p-3 bg-background-secondary rounded-lg">
+    <div className=" mt-3 p-3 bg-background rounded-lg">
       <div className=" text-primary flex gap-4 mt-1 mb-1 items-center px-5 py-2 hover:bg-background rounded-lg ">
         <div>Theme</div>
         <div className="ml-auto cursor-pointer"></div>
