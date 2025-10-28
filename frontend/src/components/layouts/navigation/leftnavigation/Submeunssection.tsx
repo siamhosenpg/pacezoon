@@ -5,22 +5,22 @@ import { FiMoon } from "react-icons/fi";
 
 const Leftnavigationlist = [
   {
-    name: "Follower",
-    links: "/follower",
+    name: "Creator Dashboard",
+    links: "/saved",
     image: "/icons/friends.png",
   },
   {
-    name: "Group",
+    name: "Saved Posts",
     links: "/group",
     image: "/icons/group.png",
   },
   {
-    name: "Events",
+    name: "Monetization",
     links: "/events",
     image: "/icons/event.png",
   },
   {
-    name: "Tuday News",
+    name: "Watch History ",
     links: "/news",
     image: "/icons/news.png",
   },
