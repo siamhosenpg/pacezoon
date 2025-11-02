@@ -10,6 +10,7 @@ import { MdOutlineLocationOn } from "react-icons/md"; // Icon for location
 import { FaRegComments } from "react-icons/fa"; // Icon for comments (not used here)
 import { RiShareForwardLine } from "react-icons/ri"; // Icon for share (not used here)
 import Link from "next/link";
+import PostCardButtons from "./PostCardButtons";
 
 const Postbox = ({}) => {
   // Accessing post data from PostContext
@@ -63,7 +64,7 @@ const Postbox = ({}) => {
       {/* Post media (image) */}
       <Link
         href="/post"
-        className="hidden media block w-full px-0 sm:px-6 h-auto overflow-hidden"
+        className=" media block w-full px-0 sm:px-6 h-auto overflow-hidden"
       >
         <img
           loading="lazy"
@@ -74,7 +75,7 @@ const Postbox = ({}) => {
       {/* Post media (video) */}
       <Link
         href="/post"
-        className="media block w-full px-0 sm:px-6 h-auto overflow-hidden"
+        className="media hidden w-full px-0 sm:px-6 h-auto overflow-hidden"
       >
         <video
           controls
@@ -108,37 +109,8 @@ const Postbox = ({}) => {
             </span>
           </div>
         </div>
-        <div className="px-4 sm:px-6 flex items-center justify-between mt-4 pb-3 ">
-          <div className="left flex items-center justify-start gap-10">
-            {/* Likes */}
-            <div className="flex gap-1 items-center cursor-pointer">
-              <span className=" block font-semibold text-primary">
-                <AiOutlineLike className="text-xl text-primary  " />
-              </span>
-              <div className="text-sm text-primary font-semibold">Peace</div>
-            </div>
-            {/* Comments */}
-            <div className="flex gap-1 items-center cursor-pointer">
-              <span className="font-semibold text-primary">
-                <FaRegComments className="text-xl" />
-              </span>
-              <div className="text-sm text-primary font-semibold">Comments</div>
-            </div>
-            {/* Shares */}
-            <div className="flex gap-1 items-center cursor-pointer">
-              <span className="font-semibold text-primary">
-                <RiShareForwardLine className="text-xl" />
-              </span>
-              {/* Shares count */}
-              <div className="text-sm text-primary font-semibold">Share</div>
-              {/* Typo: Should be "Share" */}
-            </div>
-          </div>
-          <button>
-            <MdBookmarkBorder className="text-xl text-secondary" />
-            {/* Bookmark button */}
-          </button>
-        </div>
+
+        <PostCardButtons />
       </div>
 
       <div className=" px-4 sm:px-6 hidden">

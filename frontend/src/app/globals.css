@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --accent: #00a558;
+  --accent: #00914d;
   --text: #1b1b1b;
-  --text-secondary: #f4f4f4;
+  --text-secondary: #3a3a3a;
+  --text-therdiary: #6e6e6e;
   --background: #ffffff;
   --background-secondary: #f7f7f7;
   --backdround-tertiary: #dddddd;
@@ -16,6 +17,7 @@
   --color-accent: var(--accent);
   --color-text: var(--text);
   --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-therdiary);
   --color-background: var(--background);
   --color-background-secondary: var(--background-secondary);
   --color-background-tertiary: var(--backdround-tertiary);

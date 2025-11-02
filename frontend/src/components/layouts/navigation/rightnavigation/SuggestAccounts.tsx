@@ -1,3 +1,4 @@
+import FollowButton from "@/components/ui/buttons/FollowButton";
 import React from "react";
 
 const userData = [
@@ -62,9 +63,7 @@ const SuggestAccounts = () => {
                     </span>
                   </div>
                 </div>
-                <button className="text-sm text-accent font-semibold border-accent border-[1px] py-1 px-3 rounded-md">
-                  Follow
-                </button>
+                <FollowButton />
               </div>
             );
           })}
