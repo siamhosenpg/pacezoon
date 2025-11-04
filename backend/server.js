@@ -1,12 +1,27 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-require("dotenv").config();
+// Import dependencies (ESM syntax)
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Import routes (must include .js extension)
+import postsRoute from "./src/routes/postsroute.js";
+import usersRoute from "./src/routes/usersroute.js";
+
+// Load environment variables
+dotenv.config();
+
+// Create __dirname equivalent (since not available in ESM)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Initialize Express app
 const app = express();
 const port = process.env.PORT || 4000;
-// env: MONGO_URI e.g. mongodb://localhost:27017/myapp
+
+// MongoDB URL
 const mongodburl =
   process.env.MONGODB_URI || "mongodb://localhost:27017/pacezoon";
 
@@ -22,24 +37,22 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("Connected to MongoDB");
+    console.log("✅ Connected to MongoDB");
   })
   .catch((err) => {
-    console.error("Error connecting to MongoDB:", err);
+    console.error("❌ Error connecting to MongoDB:", err);
   });
 
-// Sample route integration
-const postsRoute = require("./src/routes/postsroute"); // Home route
-
-// Use the router for the root path
-app.use("/posts", postsRoute); // Home route
+// Use routes
+app.use("/posts", postsRoute);
+app.use("/users", usersRoute);
 
 // 404 handler
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`🚀 Server is running on http://localhost:${port}`);
 });
