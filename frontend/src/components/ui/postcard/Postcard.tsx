@@ -14,8 +14,13 @@ import Link from "next/link";
 import PostCardButtons from "./PostCardButtons";
 import DialogueBox from "../dialogueBox/DialogueBox";
 import ThreeDotIconbutton from "../buttons/ThreeDotIconbutton";
+import { PostTypes } from "@/types/postType";
 
-const Postbox = ({}) => {
+interface PostboxProps {
+  post: PostTypes;
+}
+
+const Postbox: React.FC<PostboxProps> = ({ post }) => {
   // Accessing post data from PostContext
   // Accessing user data from UserContext
   // Accessing user data from UserContext
@@ -38,19 +43,20 @@ const Postbox = ({}) => {
           <div className="text">
             <div className="flex gap-2  items-center">
               <div className="font-semibold block text-primary whitespace-nowrap overflow-hidden text-ellipsis">
-                Siam Hossen
+                Siam Hossen {post.postid}
               </div>{" "}
               {/* Hardcoded user name */}
               <span className="text-sm flex items-center w-fit text-gray-600">
                 <MdOutlineLocationOn className="text-tertiary" />
                 <span className="max-w-[130px] text-secondary text-[12px] sm:text-[13px] sm:max-w-fit text-ellipsis whitespace-nowrap overflow-hidden">
-                  Dhaka, Bangladesh
+                  {post.content.location}
                 </span>{" "}
                 {/* Post location */}
               </span>
             </div>
             <span className="text-[12px] sm:text-[13px] text-tertiary flex gap-2 items-center">
-              Just now . <MdOutlinePublic /> {/* Public visibility icon */}
+              <span>{post.updatedAt}</span> <MdOutlinePublic />{" "}
+              {/* Public visibility icon */}
             </span>
           </div>
         </div>
@@ -58,11 +64,9 @@ const Postbox = ({}) => {
       </div>
 
       {/* Post text content */}
-      <div className="posttext text-sm font-medium text-secondary mt-4 px-4 sm:px-6">
-        This is a sample post description. It can be of any length and may
-        include various details about the post. So we ar proud to share it with
-        you all.
-      </div>
+      <p className="posttext text-sm font-medium text-secondary mt-4 px-4 sm:px-6">
+        {post.content.caption}
+      </p>
 
       {/* Post media (image) */}
       <Link

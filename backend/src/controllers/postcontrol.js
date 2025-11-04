@@ -1,23 +1,33 @@
 import mongoose from "mongoose";
 import postSchema from "../models/postmodel.js";
 
+import UserSchema from "../models/usermodel.js";
+
+const User = mongoose.model("User", UserSchema);
 const Post = mongoose.model("Post", postSchema);
 
-// 🟢 Get all posts
+// 🟢 Get all posts with user info
 export const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find()
+      .populate("userid", "fname lname profileImage") // userid কে populate করছো, শুধু name এবং profileImage আনবে
+      .exec();
+
     res.json(posts);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// 🟢 Get single post by ID
+// 🟢 Get single post by postid with user info
 export const getPostById = async (req, res) => {
   try {
-    const post = await Post.findOne({ postid: req.params.postid });
+    const post = await Post.findOne({ postid: req.params.postid })
+      .populate("userid", "fname lname profileImage") // populate
+      .exec();
+
     if (!post) return res.status(404).json({ message: "Post not found" });
+
     res.json(post);
   } catch (err) {
     res.status(500).json({ message: err.message });

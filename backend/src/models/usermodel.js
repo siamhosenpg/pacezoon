@@ -57,7 +57,7 @@ const SecuritySchema = new Schema(
 // =============================
 const UserSchema = new Schema(
   {
-    userid: { type: Number, unique: true, index: true },
+    userid: { type: mongoose.Schema.Types.ObjectId, unique: true, index: true },
     username: { type: String, required: true, unique: true, trim: true },
     fname: { type: String, required: true, trim: true },
     lname: { type: String, required: true, trim: true },

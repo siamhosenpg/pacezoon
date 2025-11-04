@@ -2,10 +2,15 @@ import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema(
   {
-    postid: { type: Number, require: true },
+    postid: {
+      type: mongoose.Schema.Types.ObjectId,
+      require: true,
+      ref: "Post",
+    },
     userid: {
-      type: Number,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "User",
     },
 
     content: {
@@ -20,7 +25,7 @@ const postSchema = new mongoose.Schema(
           },
         },
       ],
-      location: { type: String, trim: true },
+      location: { type: String },
       tags: [{ type: String }],
       mentions: [{ type: String }],
     },
