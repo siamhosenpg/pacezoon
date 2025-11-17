@@ -18,11 +18,13 @@ import { PostTypes } from "@/types/postType";
 import PostcardMedia from "./PostcardMedia";
 import PostcardVideo from "./PostcardVideo";
 
+import PostCardstatus from "./PostCardstatus";
+
 interface PostboxProps {
   post: PostTypes;
 }
 
-const Postbox: React.FC<PostboxProps> = ({ post }) => {
+const Postbox: React.FC<PostboxProps> = async ({ post }) => {
   // Accessing post data from PostContext
   // Accessing user data from UserContext
 
@@ -44,6 +46,7 @@ const Postbox: React.FC<PostboxProps> = ({ post }) => {
         return null;
     }
   };
+
   return (
     <li className="bg-background rounded-none sm:rounded-lg list-none  py-2 sm:py-3 pt-4 sm:pt-5 mb-2 sm:mb-4">
       <div className="flex items-center px-4 sm:px-6 justify-between ">
@@ -93,28 +96,7 @@ const Postbox: React.FC<PostboxProps> = ({ post }) => {
       {/* Engagement section (likes, comments, shares) */}
 
       <div className="  ">
-        <div className="px-4 sm:px-6 py-3 text-sm border-b border-border flex items-center justify-start gap-3">
-          <div className=" flex items-center gap-1">
-            <div className="flex items-center ]">
-              <FcLike className=" text-xl  bg-background p-[2px] rounded-full  relative z-40" />
-              <AiFillLike className=" text-xl text-accent bg-background p-[2px] rounded-full ml-[-3px] relative z-30" />
-            </div>
-            <span className="block smalltext text-secondary">
-              <span className="text-primary font-semibold"> 256</span> Reacts
-            </span>
-          </div>
-          <div className=" flex items-center gap-1">
-            <span className="block smalltext text-secondary">
-              <span className="text-primary font-semibold"> 64</span> Comments
-            </span>
-          </div>
-          <div className=" flex items-center gap-1">
-            <span className="block smalltext text-secondary">
-              <span className="text-primary font-semibold">32</span> Share
-            </span>
-          </div>
-        </div>
-
+        <PostCardstatus postid={post._id} />
         <PostCardButtons />
       </div>
 
