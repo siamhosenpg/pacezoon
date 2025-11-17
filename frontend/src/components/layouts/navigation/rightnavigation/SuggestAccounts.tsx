@@ -3,6 +3,7 @@ import React from "react";
 
 import { getAllUsers } from "@/lib/user/userData";
 import { UserType } from "@/types/userType";
+import Link from "next/link";
 
 const SuggestAccounts = async () => {
   const users: UserType[] = await getAllUsers();
@@ -21,15 +22,23 @@ const SuggestAccounts = async () => {
                 className="flex items-center justify-between mb-1 hover:bg-background px-3 py-2 rounded-lg"
               >
                 <div className="flex items-center gap-2">
-                  <img
-                    className=" object-cover w-[40px] h-[40px] rounded-full border border-border"
-                    src={user.profileImage}
-                    alt=""
-                  />
+                  <Link
+                    href={`/profile/${user.userid}`}
+                    className=" flex items-center justify-center w-[40px] h-[40px] rounded-full border border-border overflow-hidden"
+                  >
+                    <img
+                      className=" object-cover w-full h-full rounded-full"
+                      src={user.profileImage}
+                      alt=""
+                    />
+                  </Link>
                   <div className="text">
-                    <b className="block text-sm font-semibold text-primary">
+                    <Link
+                      href={`/profile/${user.userid}`}
+                      className="block w-fit cursor-pointer text-sm font-semibold text-primary"
+                    >
                       {user.name}
-                    </b>
+                    </Link>
                     <span className="block text-sm text-secondary">
                       @{user.username}
                     </span>
