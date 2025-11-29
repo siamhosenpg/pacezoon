@@ -31,6 +31,25 @@ export const getPostById = async (req, res) => {
   }
 };
 
+// 🟢 Get all posts by specific userid
+export const getPostsByUserId = async (req, res) => {
+  try {
+    const userId = req.params.userid; // route: /posts/user/:userid
+
+    const posts = await Post.find({ userid: userId })
+      .populate("userid", "name userid bio profileImage")
+      .exec();
+
+    if (!posts || posts.length === 0) {
+      return res.status(404).json({ message: "No posts found for this user" });
+    }
+
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // 🟢 Create new post
 export const createPost = async (req, res) => {
   try {

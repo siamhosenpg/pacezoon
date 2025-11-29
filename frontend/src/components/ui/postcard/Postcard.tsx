@@ -72,13 +72,13 @@ const Postbox: React.FC<PostboxProps> = async ({ post }) => {
               {/* Hardcoded user name */}
               <span className="text-sm flex items-center w-fit text-gray-600">
                 <MdOutlineLocationOn className="text-tertiary" />
-                <span className="max-w-[130px] text-secondary text-[12px] sm:text-[13px] sm:max-w-fit text-ellipsis whitespace-nowrap overflow-hidden">
+                <span className="max-w-[130px] text-text-secondary font-medium text-[12px] sm:text-[13px] sm:max-w-fit text-ellipsis whitespace-nowrap overflow-hidden">
                   {post.content.location}
                 </span>{" "}
                 {/* Post location */}
               </span>
             </div>
-            <span className="text-[12px] sm:text-[13px] text-tertiary flex gap-2 items-center">
+            <span className=" smalltext text-text-tertiary flex gap-2 items-center">
               <span>{post.updatedAt}</span> <MdOutlinePublic />{" "}
               {/* Public visibility icon */}
             </span>
@@ -93,7 +93,7 @@ const Postbox: React.FC<PostboxProps> = async ({ post }) => {
       </p>
 
       {/* Media Section */}
-      <div>{renderPostMedia()}</div>
+      <div className="mt-3">{renderPostMedia()}</div>
 
       {/* Engagement section (likes, comments, shares) */}
 

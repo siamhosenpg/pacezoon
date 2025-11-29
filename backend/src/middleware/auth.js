@@ -1,37 +1,35 @@
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config/config.js";
 
-// Protect middleware: requires valid token
 export function protect(req, res, next) {
-  let token;
-  const authHeader = req.headers.authorization || req.headers.Authorization;
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    token = authHeader.split(" ")[1];
-  }
+  const token = req.cookies.token;
 
   if (!token)
-    return res.status(401).json({ message: "Not authorized, token missing" });
+    return res.status(401).json({ message: "Not authorized, no token" });
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = { id: decoded.id };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Not authorized, token invalid" });
+    return res.status(401).json({ message: "Invalid token" });
   }
 }
 
-// Optional auth middleware: if token present, attach req.user but allow requests without token
+// ➤ OPTIONAL AUTH
 export function optionalAuth(req, res, next) {
-  const authHeader = req.headers.authorization || req.headers.Authorization;
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    const token = authHeader.split(" ")[1];
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET);
-      req.user = { id: decoded.id };
-    } catch (err) {
-      // ignore invalid token for optional flow
-    }
+  const token = req.cookies.token;
+
+  if (!token) {
+    req.user = null;
+    return next();
   }
-  return next();
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+  } catch (err) {
+    req.user = null; // টোকেন ভাঙা হলে guest হিসেবে চলবে
+  }
+
+  next();
 }

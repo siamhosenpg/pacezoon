@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import cookieParser from "cookie-parser";
 
 import { PORT } from "./src/config/config.js";
 import { connectDB } from "./src/config/db.js";
@@ -28,9 +29,15 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Use routes
 app.use("/posts", postsRoute);

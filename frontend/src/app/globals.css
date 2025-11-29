@@ -6,7 +6,7 @@
   --accent-transprant: #09330946;
   --text: #1b1b1b;
   --text-secondary: #3a3a3a;
-  --text-therdiary: #6e6e6e;
+  --text-therdiary: #585858;
   --background: #ffffff;
   --background-secondary: #f7f7f7;
   --background-tertiary: #dddddd;
@@ -41,8 +41,8 @@ body {
   font-size: 14px;
 }
 .smalltext {
-  font-size: 13px;
-  font-weight: 400;
+  font-size: 12px;
+  font-weight: 500;
 }
 * {
   box-sizing: border-box;

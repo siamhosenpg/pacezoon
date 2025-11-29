@@ -9,13 +9,13 @@ import { FaBell } from "react-icons/fa6"; // Notification icon filled
 
 const Nav = () => {
   return (
-    <nav className="w-full border-b border-border fixed top-0 left-0 bg-background z-50">
-      <div className="Pagearea flex justify-between items-center h-17 ">
-        <div className="flex items-center gap-4 w-3/12">
+    <nav className="w-full border-b border-border fixed top-0 left-0 bg-background z-50 px-6">
+      <div className="Pagearea flex gap-4 justify-between items-center h-15 lg:h-17 ">
+        <div className="flex items-center gap-4 w-full lg:w-3/12">
           <h1 className=" text-2xl font-bold">Po</h1>
           <Searchboxnav />
         </div>
-        <ul className=" w-6/12 flex items-center justify-center px-2 py-1  gap-2">
+        <ul className=" w-6/12 hidden lg:flex items-center justify-center px-2 py-1  gap-2">
           {NavigationData.map((item) => {
             const Icon = item.icon;
             const ActiveIcon = item.activeIcon;
@@ -34,7 +34,7 @@ const Nav = () => {
             );
           })}
         </ul>
-        <div className="w-3/12 flex items-center justify-end gap-5  ">
+        <div className=" w-fit shrink-0 lg:w-3/12 flex items-center justify-end gap-4 lg:gap-5  ">
           <div className=" flex items-center text-lg">
             <FaRegBell />
           </div>
@@ -46,8 +46,10 @@ const Nav = () => {
                 alt=""
               />
             </div>
-            <div className=" font-semibold text-loose">Siam Hossen</div>
-            <FaCaretDown className="text-loose" />
+            <div className=" hidden sm:block font-semibold text-loose">
+              Siam Hossen
+            </div>
+            <FaCaretDown className="text-loose hidden sm:block" />
           </div>
         </div>
       </div>

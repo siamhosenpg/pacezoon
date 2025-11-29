@@ -13,16 +13,18 @@ interface ProfileTopimageProps {
 const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
   return (
     <div className="bg-background rounded-none lg:rounded-lg mb-4 overflow-hidden w-full pb-8">
-      <div className="profiletopimage  overflow-hidden w-full">
-        <img
-          loading="lazy"
-          src={user?.coverImage || "/images/profile.jpg"}
-          alt=""
-          className="aspect-[7/2] object-cover bg-background-tertiary w-full"
-        />
+      <div className="profiletopimage relative p-6 overflow-hidden w-full">
+        <div className="rounded-lg overflow-hidden">
+          <img
+            loading="lazy"
+            src={user?.coverImage || "/images/profile.jpg"}
+            alt=""
+            className="aspect-[7/2] object-cover bg-background-tertiary w-full"
+          />
+        </div>
       </div>
 
-      <div className="profiletopimagedescrition flex flex-col lg:flex-row items-start lg:items-center justify-start gap-4 px-6 lg:px-10 py-2 mt-[-50px] bg-background rounded-lg">
+      <div className="profiletopimagedescrition relative  flex flex-col lg:flex-row items-start lg:items-center justify-start gap-4 px-6 lg:px-10  py-2 mt-[-60px]  rounded-lg">
         <div className="pfimage w-[110px] lg:w-[140px] shrink-0 h-[110px] lg:h-[140px] rounded-full overflow-hidden p-[5px] bg-background ">
           <img
             loading="lazy"
@@ -60,7 +62,7 @@ const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
           </div>
         </div>
       </div>
-      <div className="px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-3  ">
+      <div className="px-6 lg:px-12 flex flex-col   gap-3  ">
         <div className="w-full lg:w-[50%] text-secondary flex items-center justify-between lg:justify-start mt-3 lg:mt-0  text-sm gap-4 lg:gap-9 font-semibold">
           <div className="">
             <span className="text-primary text-base font-bold">56</span>{" "}
@@ -74,8 +76,8 @@ const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
             <span className="text-primary text-base font-bold">678</span> Post
           </div>
         </div>
-        <div className="w-full lg:w-[50%]    flex flex-row lg:flex-col xl:flex-row items-center gap-3 justify-start lg:justify-end ">
-          <div className="w-fit  lg:w-full xl:w-4/6 2xl:w-fit text-secondary   font-semibold">
+        <div className="w-full    flex flex-row lg:flex-col xl:flex-row items-center gap-3 justify-start  ">
+          <div className="  text-secondary   font-semibold">
             {user.work ? (
               <div className="flex justify-start lg:justify-end w-full items-center gap-1 ">
                 <MdWork className="text-lg shrink-0" />
@@ -87,7 +89,7 @@ const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
               <div></div>
             )}
           </div>
-          <div className=" w-fit lg:w-full xl:w-2/6 2xl:w-fit text-secondary flex font-semibold text-sm gap-1 items-center justify-end">
+          <div className="  text-secondary flex font-semibold text-sm gap-1 items-center justify-end">
             <MdLocationPin className="text-lg" />
             <span className=" block overflow-hidden whitespace-nowrap text-ellipsis truncate text-sm">
               {user?.location || "Unknown"}
