@@ -1,23 +1,32 @@
+"use client";
 import React from "react";
+import { useAuth } from "@/hook/useAuth";
 
 import { HiCheckBadge } from "react-icons/hi2";
+import ProfileStatusBoxLoading from "./ProfileStatusBoxLoading";
 
 const ProfileStatusBox = () => {
+  const { user, isLoading } = useAuth();
+  if (isLoading) {
+    return <ProfileStatusBoxLoading />;
+  }
   return (
     <div className=" px-8 py-6 bg-background rounded-lg ">
       <div className="top flex gap-3 items-center ">
         <div className="shrink-0">
           <img
             className="w-[50px] border border-border   h-[50px] rounded-full "
-            src="/images/profile.jpg"
+            src={user?.user.profileImage}
             alt=""
           />
         </div>
         <div className="texts">
           <b className="flex gap-1.5 items-center text-lg text-primary">
-            Shium Hossen <HiCheckBadge className="text-accent" />{" "}
+            {user.user.name} <HiCheckBadge className="text-accent" />{" "}
           </b>
-          <span className="text-sm block text-secondary">@shiumhossen99</span>
+          <span className="text-sm block text-secondary">
+            @{user.user.username}
+          </span>
         </div>
       </div>
       <div className="flex items-center w-full justify-between mt-7 font-medium">

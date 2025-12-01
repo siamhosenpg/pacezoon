@@ -36,17 +36,27 @@ export const getPostsByUserId = async (req, res) => {
   try {
     const userId = req.params.userid; // route: /posts/user/:userid
 
+    // Posts Query
     const posts = await Post.find({ userid: userId })
       .populate("userid", "name userid bio profileImage")
       .exec();
 
+    // If no posts → return empty array instead of error
     if (!posts || posts.length === 0) {
-      return res.status(404).json({ message: "No posts found for this user" });
+      return res.status(200).json({
+        posts: [],
+        message: "No posts found",
+      });
     }
 
-    res.json(posts);
+    // Normal result
+    return res.status(200).json({
+      posts,
+      count: posts.length,
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 

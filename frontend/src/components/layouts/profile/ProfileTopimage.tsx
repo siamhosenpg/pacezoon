@@ -28,7 +28,7 @@ const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
         <div className="pfimage w-[110px] lg:w-[140px] shrink-0 h-[110px] lg:h-[140px] rounded-full overflow-hidden p-[5px] bg-background ">
           <img
             loading="lazy"
-            src={user?.profileImage || "/post/5.jpg"}
+            src={user?.profileImage}
             alt=""
             className="w-full object-cover h-full rounded-full border-border border"
           />

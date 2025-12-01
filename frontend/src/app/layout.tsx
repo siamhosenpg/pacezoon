@@ -41,10 +41,11 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased bg-background-secondary`}
       >
-        {/* Navigation এখন শর্ত অনুযায়ী show/hide হবে */}
-        <ShowNavigation />
-
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ReactQueryProvider>
+          {/* Navigation এখন শর্ত অনুযায়ী show/hide হবে */}
+          <ShowNavigation />
+          {children}
+        </ReactQueryProvider>
       </body>
     </html>
   );

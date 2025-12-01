@@ -1,13 +1,12 @@
-import mongoose from "mongoose";
-import UserSchema from "../models/usermodel.js";
+import User from "../models/usermodel.js";
+import bcrypt from "bcryptjs";
 
-const User = mongoose.model("User", UserSchema);
 /**
  * ✅ Get all users
  */
 export const getUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password"); // password বাদ
+    const users = await User.find().select("-password");
     res.status(200).json(users);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -15,13 +14,13 @@ export const getUsers = async (req, res) => {
 };
 
 /**
- * ✅ Get a single user by userid (NOT _id)
+ * ✅ Get single user by userid
  */
 export const getUserById = async (req, res) => {
   try {
     const userid = Number(req.params.userid);
-
     const user = await User.findOne({ userid }).select("-password");
+
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json(user);
@@ -31,7 +30,7 @@ export const getUserById = async (req, res) => {
 };
 
 /**
- * ✅ Create new user
+ * ✅ Create new user (with bcrypt hashing)
  */
 export const createUser = async (req, res) => {
   try {
@@ -43,14 +42,22 @@ export const createUser = async (req, res) => {
         .json({ message: "User already exists with this email" });
     }
 
-    const newUser = new User(req.body);
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPass = await bcrypt.hash(req.body.password, salt);
+
+    const newUser = new User({
+      ...req.body,
+      password: hashedPass,
+    });
+
     const savedUser = await newUser.save();
 
     res.status(201).json({
       message: "User created successfully",
       user: {
         ...savedUser._doc,
-        password: undefined, // password hide
+        password: undefined,
       },
     });
   } catch (err) {
@@ -59,13 +66,20 @@ export const createUser = async (req, res) => {
 };
 
 /**
- * ✅ Update user data
+ * ✅ Update user (bcrypt only if password changed)
  */
 export const updateUser = async (req, res) => {
   try {
     const userid = Number(req.params.userid);
+    const updateData = { ...req.body };
 
-    const updatedUser = await User.findOneAndUpdate({ userid }, req.body, {
+    // If password is updated, hash it
+    if (updateData.password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(updateData.password, salt);
+    }
+
+    const updatedUser = await User.findOneAndUpdate({ userid }, updateData, {
       new: true,
     }).select("-password");
 
@@ -100,22 +114,18 @@ export const deleteUser = async (req, res) => {
 };
 
 /**
- * ✅ Get a single user by username (NOT userid)
+ * ✅ Get user by username
  */
 export const getUserByUsername = async (req, res) => {
   try {
     const { username } = req.params;
 
-    if (!username) {
+    if (!username)
       return res.status(400).json({ message: "Username is required" });
-    }
 
-    // Find user by username
     const user = await User.findOne({ username }).select("-password");
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json(user);
   } catch (err) {

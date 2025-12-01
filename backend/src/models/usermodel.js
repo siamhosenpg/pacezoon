@@ -57,20 +57,33 @@ const SecuritySchema = new Schema(
 // =============================
 const UserSchema = new Schema(
   {
-    userid: { type: Number },
+    userid: { type: Number, unique: true },
+
     username: { type: String, required: true, unique: true, trim: true },
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true },
-    profileImage: { type: String, default: "" },
-    coverImage: { type: String, default: "" },
-    bio: { type: String, trim: true, maxlength: 300 },
-    work: { type: String },
-    aboutText: { type: String },
+    password: { type: String, required: true, select: false },
+
+    profileImage: { type: String, default: "/images/profile.jpg" },
+    coverImage: { type: String, default: "/images/cover.jpg" },
+    bio: {
+      type: String,
+      trim: true,
+      maxlength: 300,
+      default: "Capturing moments, coding ideas",
+    },
+    work: { type: String, default: "Social Media user" },
+    aboutText: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+      default:
+        " Just a simple human navigating life, learning new things, and sharing moments along the way. Love connecting with people, exploring ideas, and finding joy in everyday experiences.Always open to growth, positivity, and new adventures.",
+    },
     gender: {
       type: String,
       enum: ["male", "female", "other"],
-      default: "other",
+      default: "male",
     },
     dateOfBirth: { type: Date },
     location: { type: String, trim: true },
@@ -122,13 +135,23 @@ const UserSchema = new Schema(
   }
 );
 
-// Indexes for performance
+// Indexes
 UserSchema.index({ username: 1 });
 UserSchema.index({ email: 1 });
 UserSchema.index({ "settings.language": 1 });
 
 // =============================
-// 🔹 Model Export
+// 🔥 Auto User ID Generator
 // =============================
+UserSchema.pre("save", async function (next) {
+  if (!this.userid) {
+    this.userid = Math.floor(1000000 + Math.random() * 9000000);
+  }
+  next();
+});
 
-export default UserSchema;
+// =============================
+// 🔥 Model Export
+// =============================
+const User = mongoose.model("User", UserSchema);
+export default User;

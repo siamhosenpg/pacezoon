@@ -2,55 +2,72 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-
-import { loginUser, registerUser, logoutUser } from "@/lib/api/authApi";
-import { getCurrentUser } from "@/lib/api/userApi";
+import {
+  loginUser,
+  registerUser,
+  logoutUser,
+  getCurrentUser,
+} from "@/lib/api/authApi";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export const useAuth = (options?: { fetchUser?: boolean }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const fetchUser = options?.fetchUser ?? true; // default: fetch user
+  const fetchUser = options?.fetchUser ?? true;
+  const [error, setError] = useState<string | null>(null);
 
-  // ✔ Fetch Current User
+  // ===================== Current User =====================
   const { data: user, isLoading } = useQuery({
     queryKey: ["currentUser"],
     queryFn: getCurrentUser,
-    enabled: fetchUser, // only fetch if fetchUser=true
-    retry: false, // avoid retrying 401 requests
+    enabled: fetchUser,
+    retry: false,
     onError: (err: any) => {
       if (err.response?.status === 401) {
-        // User not logged in → silent fail, no console error
+        // not logged in
         queryClient.setQueryData(["currentUser"], null);
       }
     },
   });
 
-  // ✔ Login
+  // ===================== Login =====================
   const login = useMutation({
     mutationFn: loginUser,
     onSuccess: () => {
       queryClient.invalidateQueries(["currentUser"]);
-      router.push("/home");
+      router.push("/"); // redirect after login
+    },
+    onError: (err: any) => {
+      const msg = err.response?.data?.message || "Login failed";
+      setError(msg);
     },
   });
 
-  // ✔ Register
+  // ===================== Register =====================
   const register = useMutation({
     mutationFn: registerUser,
     onSuccess: () => {
-      router.push("/login");
+      queryClient.invalidateQueries(["currentUser"]);
+      router.push("/home"); // redirect after register
+    },
+    onError: (err: any) => {
+      const msg = err.response?.data?.message || "Registration failed";
+      setError(msg);
     },
   });
 
-  // ✔ Logout
+  // ===================== Logout =====================
   const logout = useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
       queryClient.setQueryData(["currentUser"], null);
       router.push("/login");
     },
+    onError: (err: any) => {
+      console.error("Logout error:", err);
+    },
   });
 
-  return { user, isLoading, login, register, logout };
+  return { user, isLoading, login, register, logout, error, setError };
 };
