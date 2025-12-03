@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getCommentsCount,
   createComment,
   getCommentsByPost,
   updateComment,
@@ -9,6 +10,9 @@ import {
 import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
+
+// ===============================
+router.get("/count/:postId", getCommentsCount);
 
 // Create comment
 router.post("/", protect, createComment);

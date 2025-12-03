@@ -19,6 +19,7 @@ import PostcardMedia from "./PostcardMedia";
 import PostcardVideo from "./PostcardVideo";
 
 import PostCardstatus from "./PostCardstatus";
+import DateTime from "../datetime/DateTime";
 
 interface PostboxProps {
   post: PostTypes;
@@ -70,16 +71,19 @@ const Postbox: React.FC<PostboxProps> = async ({ post }) => {
                 {post.userid?.name}
               </div>{" "}
               {/* Hardcoded user name */}
-              <span className="text-sm flex items-center w-fit text-gray-600">
-                <MdOutlineLocationOn className="text-tertiary" />
-                <span className="max-w-[130px] text-text-secondary font-medium text-[12px] sm:text-[13px] sm:max-w-fit text-ellipsis whitespace-nowrap overflow-hidden">
-                  {post.content.location}
-                </span>{" "}
-                {/* Post location */}
-              </span>
+              {post.content.location && (
+                <span className="text-sm flex items-center w-fit text-gray-600">
+                  <MdOutlineLocationOn className="text-tertiary" />
+                  <span className="max-w-[130px] text-text-secondary font-medium text-[12px] sm:text-[13px] sm:max-w-fit text-ellipsis whitespace-nowrap overflow-hidden">
+                    {post.content.location}
+                  </span>{" "}
+                  {/* Post location */}
+                </span>
+              )}
             </div>
             <span className=" smalltext text-text-tertiary flex gap-2 items-center">
-              <span>{post.updatedAt}</span> <MdOutlinePublic />{" "}
+              <span className=" capitalize">{post.privacy}</span>{" "}
+              <DateTime date={post.createdAt} />
               {/* Public visibility icon */}
             </span>
           </div>
@@ -98,7 +102,7 @@ const Postbox: React.FC<PostboxProps> = async ({ post }) => {
       {/* Engagement section (likes, comments, shares) */}
 
       <div className="  ">
-        <PostCardstatus postid={post._id} />
+        <PostCardstatus Commentsposition={false} postId={post._id} />
         <PostCardButtons postId={post._id} />
       </div>
 

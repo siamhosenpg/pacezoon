@@ -6,6 +6,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import { getSinglePost } from "@/lib/post/feedPosts";
 import Link from "next/link";
 import CommentsSection from "@/components/layouts/postprevew/CommentsSection";
+import PostCardStatus from "@/components/ui/postcard/PostCardstatus";
 
 interface PostPageProps {
   params: {
@@ -33,7 +34,7 @@ const Post = async ({ params }: PostPageProps) => {
         <div className="w-full md:w-4/12 hidden lg:block">
           <div className="p-4 h-[calc(100vh_-_110px)] bg-background rounded-lg flex flex-col justify-between">
             {/* User Info */}
-            <div className="shrink-0">
+            <div className="shrink-0 ">
               <div className="Profile flex items-center justify-between bg-background-secondary gap-2 px-3 py-2 rounded-lg">
                 <div className="flex items-center gap-2">
                   <Link
@@ -67,10 +68,11 @@ const Post = async ({ params }: PostPageProps) => {
               <p className="text-sm font-medium mt-4 px-2 text-secondary">
                 {post.content.caption}
               </p>
+              <PostCardStatus Commentsposition={true} postId={post._id} />
             </div>
 
             {/* Comments Section */}
-            <div className="mt-4 h-full flex flex-col overflow-hidden">
+            <div className=" h-full flex flex-col overflow-hidden">
               <b className="block shrink-0 py-2 border-b border-border text-loose">
                 Comments
               </b>

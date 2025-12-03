@@ -2,6 +2,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import axiosInstance from "@/lib/axios";
 
+export const useCommentCount = (postId: string) => {
+  return useQuery({
+    queryKey: ["commentCount", postId],
+    queryFn: async () => {
+      const res = await axiosInstance.get(`/comments/count/${postId}`);
+      return res.data.count;
+    },
+    enabled: !!postId,
+  });
+};
+
 export const useGetComments = (postId: string, page: number = 1) => {
   return useQuery({
     queryKey: ["comments", postId, page],

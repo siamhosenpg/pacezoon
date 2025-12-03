@@ -99,3 +99,28 @@ export const getReactionsByPost = async (req, res) => {
     });
   }
 };
+
+// 🟡 Get Reaction Count Only
+export const getReactionCount = async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    if (!postId) {
+      return res.status(400).json({ message: "postId is required" });
+    }
+
+    // শুধু count দরকার → fastest & lightweight
+    const count = await Reaction.countDocuments({ postId });
+
+    return res.status(200).json({
+      success: true,
+      postId,
+      count,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Error fetching reaction count",
+      error: err.message,
+    });
+  }
+};

@@ -4,6 +4,7 @@ import {
   createOrUpdateReaction,
   deleteReaction,
   getReactionsByPost,
+  getReactionCount,
 } from "@/lib/api/reactionApi";
 
 export const useReactions = (postId: string) => {
@@ -29,5 +30,10 @@ export const useReactions = (postId: string) => {
       queryClient.invalidateQueries({ queryKey: ["reactions", postId] }),
   });
 
-  return { data, isLoading, reactMutation, deleteMutation };
+  const reactionCountQuery = useQuery({
+    queryKey: ["reactionCount", postId],
+    queryFn: () => getReactionCount(postId),
+  });
+
+  return { data, isLoading, reactionCountQuery, reactMutation, deleteMutation };
 };

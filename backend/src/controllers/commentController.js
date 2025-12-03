@@ -1,5 +1,19 @@
 import Comment from "../models/commentsModel.js";
 
+export const getCommentsCount = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const count = await Comment.countDocuments({ postId });
+
+    res.status(200).json({
+      success: true,
+      count,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 // ===============================
 // CREATE COMMENT
 // ===============================

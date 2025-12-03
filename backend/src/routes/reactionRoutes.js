@@ -3,6 +3,7 @@ import {
   createOrUpdateReaction,
   deleteReaction,
   getReactionsByPost,
+  getReactionCount,
 } from "../controllers/reactionController.js";
 
 // ✅ Named import (default না)
@@ -18,5 +19,8 @@ router.delete("/:postId", protect, deleteReaction);
 
 // 🟣 Get Reactions of a Post
 router.get("/post/:postId", getReactionsByPost);
+
+// 🟡 Get Reaction Count of a Post
+router.get("/count/:postId", getReactionCount);
 
 export default router;

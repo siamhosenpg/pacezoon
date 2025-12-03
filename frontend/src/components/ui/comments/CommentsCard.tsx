@@ -6,6 +6,7 @@ import { BsReply } from "react-icons/bs";
 import { AiOutlineFire } from "react-icons/ai";
 import { CommentType } from "@/types/commentType";
 import { useDeleteComment } from "@/hook/useComments";
+import { MdDeleteOutline } from "react-icons/md";
 
 interface CommentsCardProps {
   comment: CommentType;
@@ -76,7 +77,7 @@ const CommentsCard: React.FC<CommentsCardProps> = ({ comment }) => {
           onClick={() => handleDelete(comment._id)}
           className="flex text-secondary"
         >
-          <AiOutlineFire className="text-lg" />
+          <MdDeleteOutline className="text-lg text-red-700" />
         </button>
 
         <button className="text-sm text-secondary">

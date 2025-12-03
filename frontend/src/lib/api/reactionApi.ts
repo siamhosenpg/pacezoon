@@ -27,3 +27,9 @@ export const getReactionsByPost = async (postId: string) => {
   const res = await axiosInstance.get(`/reactions/post/${postId}`);
   return res.data;
 };
+
+// 🟡 NEW → Get Reaction Count
+export const getReactionCount = async (postId: string) => {
+  const res = await axiosInstance.get(`/reactions/count/${postId}`);
+  return res.data.count; // শুধু count numeric return করলেই ভালো
+};

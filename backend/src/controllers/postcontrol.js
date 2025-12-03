@@ -8,6 +8,7 @@ export const getPosts = async (req, res) => {
   try {
     const posts = await Post.find()
       .populate("userid", "name userid profileImage") // populate user info
+      .sort({ createdAt: -1 }) // 🔥 newest posts first
       .exec();
 
     res.json(posts);
