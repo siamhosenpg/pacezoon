@@ -9,11 +9,14 @@ import {
 } from "@/lib/api/authApi";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
 import { UserType } from "@/types/userType";
 
 interface UseAuthOptions {
   fetchUser?: boolean;
+}
+interface user {
+  user: UserType;
+  token: string;
 }
 
 export const useAuth = (options?: UseAuthOptions) => {
@@ -24,14 +27,21 @@ export const useAuth = (options?: UseAuthOptions) => {
   const [error, setError] = useState<string | null>(null);
 
   // ===================== Current User =====================
-  const { data: user, isLoading } = useQuery<UserType | null>({
+  const { data: user, isLoading } = useQuery<user | null>({
     queryKey: ["currentUser"],
-    queryFn: getCurrentUser,
     enabled: fetchUser,
     retry: false,
-    onError: (err: any) => {
-      if (err.response?.status === 401) {
-        queryClient.setQueryData(["currentUser"], null);
+    queryFn: async () => {
+      try {
+        return await getCurrentUser();
+      } catch (err: any) {
+        // 401 হলে currentUser null করে দাও
+        if (err.response?.status === 401) {
+          queryClient.setQueryData(["currentUser"], null);
+        }
+
+        // error propagate করো যাতে React Query জানতে পারে
+        throw err;
       }
     },
   });
@@ -40,7 +50,7 @@ export const useAuth = (options?: UseAuthOptions) => {
   const login = useMutation({
     mutationFn: loginUser,
     onSuccess: () => {
-      queryClient.invalidateQueries(["currentUser"]);
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       router.push("/");
     },
     onError: (err: any) => {
@@ -53,8 +63,8 @@ export const useAuth = (options?: UseAuthOptions) => {
   const register = useMutation({
     mutationFn: registerUser,
     onSuccess: () => {
-      queryClient.invalidateQueries(["currentUser"]);
-      router.push("/home");
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      router.push("/");
     },
     onError: (err: any) => {
       const msg = err.response?.data?.message || "Registration failed";
@@ -66,10 +76,7 @@ export const useAuth = (options?: UseAuthOptions) => {
   const logout = useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
-      // 🔥 Clear ALL react-query cache
-
       queryClient.setQueryData(["currentUser"], null);
-      // 🔥 Clear ALL react-query cache
       queryClient.clear();
       router.push("/login");
     },

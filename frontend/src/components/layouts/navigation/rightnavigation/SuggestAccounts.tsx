@@ -24,7 +24,7 @@ const SuggestAccounts = async () => {
                 <div className="flex items-center gap-2">
                   <Link
                     href={`/profile/${user.userid}`}
-                    className=" flex items-center justify-center w-[40px] h-[40px] rounded-full border border-border overflow-hidden"
+                    className=" flex items-center justify-center w-10 h-10 rounded-full border border-border overflow-hidden"
                   >
                     <img
                       className=" object-cover w-full h-full rounded-full"
@@ -44,7 +44,7 @@ const SuggestAccounts = async () => {
                     </span>
                   </div>
                 </div>
-                <FollowButton targetUserId={user._id} />
+                <FollowButton variant="" targetUserId={user._id} />
               </div>
             );
           })}

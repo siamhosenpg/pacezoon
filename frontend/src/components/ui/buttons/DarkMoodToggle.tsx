@@ -17,7 +17,7 @@ const DarkMoodToggle = () => {
       >
         <div
           className={`w-[22px] h-[22px] flex items-center justify-center bg-white rounded-full  duration-300 p-1 ${
-            darkMode ? "ml-[20px]" : "ml-0"
+            darkMode ? "ml-5" : "ml-0"
           }`}
         >
           {darkMode ? (

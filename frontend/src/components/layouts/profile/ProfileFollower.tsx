@@ -6,7 +6,11 @@ import { useFollowing } from "@/hook/useFollow";
 import { useFollowingCount } from "@/hook/useFollow";
 import FollowButton from "@/components/ui/buttons/FollowButton";
 
-const ProfileFollower = ({ userId }) => {
+interface ProfileFollowerProps {
+  userId: string;
+}
+
+const ProfileFollower: React.FC<ProfileFollowerProps> = ({ userId }) => {
   const { data: userData, isLoading } = useFollowing(userId);
   const { data: followingCount } = useFollowingCount(userId);
   if (!userData || !followingCount) {
@@ -50,23 +54,23 @@ const ProfileFollower = ({ userId }) => {
               <div className=" flex items-center gap-2.5">
                 <div className="w-12 h-12  rounded-full overflow-hidden border-border border ">
                   <img
-                    src={user.followingId.profileImage}
+                    src={user.followingId?.profileImage}
                     alt=""
                     className="w-full object-cover h-full rounded-full "
                   />
                 </div>
                 <div className="">
                   <h4 className="  font-bold text-loose">
-                    {user.followingId.name}
+                    {user.followingId?.name}
                   </h4>
                   <span className="text-secondary smalltext font-semibold block mt-1">
-                    {user.followingId.bio}
+                    {user.followingId?.bio}
                   </span>
                 </div>
               </div>
               <div>
                 <FollowButton
-                  targetUserId={user.followingId._id}
+                  targetUserId={user.followingId?._id}
                   variant={"sm"}
                 />
               </div>

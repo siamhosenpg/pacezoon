@@ -38,7 +38,7 @@ export default function RegisterPage() {
 
   return (
     <GuestRoute>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-green-50 to-emerald-100 p-4">
         <div className="w-full max-w-sm bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl p-8 rounded-2xl">
           <h1 className="text-3xl font-bold text-center mb-4 text-gray-800">
             Create Account
@@ -96,15 +96,15 @@ export default function RegisterPage() {
           {/* Register Button */}
           <button
             onClick={handleRegister}
-            disabled={register.isLoading}
+            disabled={register.isPending}
             className={`w-full py-3 rounded-xl text-white font-medium shadow-lg transition-all 
               ${
-                register.isLoading
+                register.isPending
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98]"
               }`}
           >
-            {register.isLoading ? "Registering..." : "Create Account"}
+            {register.isPending ? "Registering..." : "Create Account"}
           </button>
 
           <p className="text-center text-gray-500 text-sm mt-6">

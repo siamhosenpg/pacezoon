@@ -5,7 +5,7 @@ import { useAuth } from "@/hook/useAuth";
 
 interface FollowButtonProps {
   targetUserId: string;
-  variant: "lg" | "sm";
+  variant: "lg" | "sm" | ""; // Button size variant
 }
 
 const FollowButton: React.FC<FollowButtonProps> = ({
@@ -44,14 +44,14 @@ const FollowButton: React.FC<FollowButtonProps> = ({
   );
 
   const handleFollow = () => {
-    if (isFollowing || followMutation.isLoading) return; // Prevent duplicate
+    if (isFollowing || followMutation.isPending) return; // Prevent duplicate
     followMutation.mutate(targetUserId);
   };
 
   return (
     <button
       onClick={handleFollow}
-      disabled={isFollowing || followMutation.isLoading}
+      disabled={isFollowing || followMutation.isPending}
       className={`block text-sm font-semibold border rounded-md transition-all 
         ${variant === "lg" ? "py-1.5 px-8" : "py-[3px] px-3"}
         ${

@@ -13,7 +13,7 @@ interface PostCardStatusProps {
 }
 
 const PostCardStatus = ({ postId, Commentsposition }: PostCardStatusProps) => {
-  const { data, isLoading, reactionCountQuery } = useReactions(postId);
+  const { reactionCountQuery } = useReactions(postId);
   const countReaction = reactionCountQuery.data || 0;
   const { data: countComments } = useCommentCount(postId);
 

@@ -9,11 +9,16 @@ import { AxiosResponse } from "axios";
 interface FollowResponse {
   message: string;
 }
+interface FollowingApiResponse {
+  following: FollowData[];
+}
 
 interface User {
   _id: string;
   username: string;
   name: string;
+  profileImage: string;
+  bio: string;
 }
 
 export interface FollowData {
@@ -88,21 +93,26 @@ export const useFollowers = (userId: string) => {
 };
 
 // ==================== Get Following ====================
-
 export const useFollowing = (userId: string) => {
   return useQuery<FollowData[]>({
     queryKey: ["following", userId],
+    enabled: !!userId,
     queryFn: async () => {
-      const res: AxiosResponse<FollowData[]> = await axiosInstance.get(
+      const res = await axiosInstance.get<FollowingApiResponse>(
         `/follows/following/${userId}`
       );
 
-      if (Array.isArray(res.data)) return res.data;
-      if ("following" in res.data) return res.data.following;
+      // TypeScript-কে explicitly check করতে হবে
+      if (Array.isArray(res.data)) {
+        return res.data;
+      }
+
+      if ("following" in res.data && Array.isArray(res.data.following)) {
+        return res.data.following;
+      }
 
       return [];
     },
-    enabled: !!userId,
   });
 };
 

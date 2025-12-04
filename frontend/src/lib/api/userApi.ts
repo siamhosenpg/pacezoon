@@ -1,22 +1,9 @@
 import axiosInstance from "../axios";
 
-export interface UpdateProfileData {
-  userid: number;
-  name?: string;
-  username?: string;
-  bio?: string;
-  profileImage?: string;
-  coverImage?: string;
-  aboutText?: string;
-  gender?: string;
-  work?: string;
-  location?: string;
-  educations?: string;
-  password?: string;
-}
+import { UserType } from "@/types/userType";
 
 // Update current user's profile
-export const updateUserProfile = async (data: UpdateProfileData) => {
+export const updateUserProfile = async (data: UserType) => {
   const res = await axiosInstance.put(`/users/${data.userid}`, data);
   return res.data;
 };

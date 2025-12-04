@@ -7,20 +7,24 @@ type ProfileFeedProps = {
   useridcall: string;
 };
 
-// Backend possible return structure
-type PostsResponse =
-  | PostTypes[] // sometimes backend returns array directly
-  | { posts: PostTypes[] }; // sometimes backend returns object { posts: [...] }
+// Backend return type
+interface PostsObjectResponse {
+  posts: PostTypes[];
+}
+
+// Union type for backend response
+type PostsResponse = PostTypes[] | PostsObjectResponse;
 
 const ProfileFeed = async ({ useridcall }: ProfileFeedProps) => {
-  // API Call
-  const response: PostsResponse = await getPostsByUserId(useridcall);
+  // API Call with proper typing
+  const response = (await getPostsByUserId(useridcall)) as PostsResponse;
 
   // Normalize data safely
   const userposts: PostTypes[] = Array.isArray(response)
     ? response
     : response?.posts ?? [];
 
+  // Safety check (TS guarantee)
   if (!Array.isArray(userposts)) {
     console.error("❌ userposts is not an array:", userposts);
     return (

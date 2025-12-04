@@ -142,15 +142,15 @@ const EditProfilePage = () => {
             {/* SUBMIT BUTTON */}
             <button
               type="submit"
-              disabled={updateUser.isLoading}
+              disabled={updateUser.isPending}
               className={`mt-2 w-full py-3 rounded-xl bg-accent text-white font-semibold transition
               ${
-                updateUser.isLoading
+                updateUser.isPending
                   ? "bg-primary/60 cursor-not-allowed"
                   : "bg-primary hover:bg-primary-dark"
               }`}
             >
-              {updateUser.isLoading ? "Updating..." : "Update Profile"}
+              {updateUser.isPending ? "Updating..." : "Update Profile"}
             </button>
           </form>
         </div>

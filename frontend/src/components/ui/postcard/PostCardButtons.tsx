@@ -9,6 +9,8 @@ import { useReactions } from "@/hook/useReactions";
 import { useAuth } from "@/hook/useAuth";
 import Link from "next/link";
 
+import { ReactionItem } from "@/types/reactionTypes";
+
 interface Props {
   postId: string;
   postNumber: number;
@@ -23,11 +25,12 @@ const PostCardButtons: React.FC<Props> = ({ postId, postNumber }) => {
 
   const toggleBookmark = () => setBookmarked((prev) => !prev);
 
-  const isMutating = createMutation.isLoading || deleteMutation.isLoading;
+  const isMutating = createMutation.isPending || deleteMutation.isPending;
 
   // ✅ Check if user has already liked
   const userReaction = data?.reactions?.find(
-    (r) => r?.userId?._id === user.user._id || r?.userId?.id === user.user._id
+    (r: ReactionItem) =>
+      r?.userId?._id === user?.user._id || r?.userId?.id === user?.user._id
   )?.reaction;
 
   // ✅ Loading / User check
