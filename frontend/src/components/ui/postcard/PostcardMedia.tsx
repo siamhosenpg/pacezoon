@@ -14,14 +14,14 @@ const PostcardMedia: React.FC<Props> = ({ imagedata, postid }) => {
   return (
     <div>
       {imagedata.length > 1 ? (
-        <PostcardimageMlt imagedata={imagedata} />
+        <PostcardimageMlt imagedata={imagedata} postid={postid} />
       ) : (
         <div>
           {imagedata &&
             imagedata.map((image: string, i: number) => (
               <Link
                 key={i}
-                href={`/post/${postid}`}
+                href={`/post/${postid}?index=${i}`}
                 className="media flex items-center justify-center w-full px-4 sm:px-6 h-auto overflow-hidden"
               >
                 <img

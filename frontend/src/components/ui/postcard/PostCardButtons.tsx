@@ -7,28 +7,45 @@ import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
 import { AiOutlineLike, AiFillLike } from "react-icons/ai";
 import { useReactions } from "@/hook/useReactions";
 import { useAuth } from "@/hook/useAuth";
+import Link from "next/link";
 
 interface Props {
   postId: string;
+  postNumber: number;
 }
 
-const PostCardButtons: React.FC<Props> = ({ postId }) => {
-  const { user } = useAuth();
+const PostCardButtons: React.FC<Props> = ({ postId, postNumber }) => {
+  const { user, isLoading: authLoading } = useAuth();
   const { data, createMutation, deleteMutation } = useReactions(postId);
 
   const [bookmarked, setBookmarked] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+
   const toggleBookmark = () => setBookmarked((prev) => !prev);
 
-  if (!user) return <p className="text-sm text-gray-500">Login to react</p>;
+  const isMutating = createMutation.isLoading || deleteMutation.isLoading;
 
   // ✅ Check if user has already liked
   const userReaction = data?.reactions?.find(
     (r) => r?.userId?._id === user.user._id || r?.userId?.id === user.user._id
   )?.reaction;
 
-  const isMutating = createMutation.isLoading || deleteMutation.isLoading;
+  // ✅ Loading / User check
+  if (authLoading) {
+    return (
+      <div className="px-4 sm:px-6 py-2">
+        <p className="text-sm text-gray-500">Loading...</p>
+      </div>
+    );
+  }
 
+  if (!user?.user?._id) {
+    return (
+      <div className="px-4 sm:px-6 py-2">
+        <p className="text-sm text-gray-500">Login to react</p>
+      </div>
+    );
+  }
   const handleToggleLike = () => {
     setError(null);
 
@@ -81,10 +98,13 @@ const PostCardButtons: React.FC<Props> = ({ postId }) => {
           </button>
 
           {/* Comments */}
-          <div className="flex gap-1 items-center cursor-pointer">
+          <Link
+            href={`/post/${postNumber}?index=0#comments`}
+            className="flex gap-1 items-center cursor-pointer"
+          >
             <FaRegComments className="text-xl text-primary" />
             <span className="text-sm text-primary font-semibold">Comments</span>
-          </div>
+          </Link>
 
           {/* Shares */}
           <div className="flex gap-1 items-center cursor-pointer">

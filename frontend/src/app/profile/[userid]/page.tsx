@@ -7,6 +7,7 @@ import ProfileSectionlist from "@/components/layouts/profile/ProfileSectionlist"
 import ProfileTopimage from "@/components/layouts/profile/ProfileTopimage";
 import ProfileVideos from "@/components/layouts/profile/ProfileVideos";
 import UploadBox from "@/components/layouts/uploadbox/UploadBox";
+import { ProtectedRoute } from "@/components/Protected/ProtectedRoute";
 
 import { getUserByUserid } from "@/lib/user/userData";
 
@@ -26,32 +27,34 @@ const Profile = async ({ params }: ProfilePageProps) => {
   }
 
   return (
-    <div className="bg-background-secondary">
-      <div className="Pagearea">
-        <div className="pt-0 md:pt-4 flex flex-col lg:flex-row gap-6 items-start justify-between overflow-visible">
-          {/* LEFT SIDE */}
-          <div className="w-full lg:w-7/12 static lg:sticky space-y-4">
-            <ProfileTopimage user={user} />
-            <ProfileSectionlist />
-            <ProfileAbout />
-            <ProfileFollower />
-            <ProfilePhotoslist />
-            <ProfileVideos />
-          </div>
+    <ProtectedRoute>
+      <div className="bg-background-secondary">
+        <div className="Pagearea">
+          <div className="pt-0 md:pt-4 flex flex-col lg:flex-row gap-6 items-start justify-between overflow-visible">
+            {/* LEFT SIDE */}
+            <div className="w-full lg:w-7/12 static lg:sticky space-y-4">
+              <ProfileTopimage user={user} />
+              <ProfileSectionlist />
+              <ProfileAbout />
+              <ProfileFollower userId={user._id} />
+              <ProfilePhotoslist />
+              <ProfileVideos />
+            </div>
 
-          {/* RIGHT SIDE */}
-          <div className="flex-1 w-full lg:w-5/12">
-            <UploadBox />
+            {/* RIGHT SIDE */}
+            <div className="flex-1 w-full lg:w-5/12">
+              <UploadBox />
 
-            <ul className="mt-4">
-              <div>
-                <ProfileFeed useridcall={user._id} />
-              </div>
-            </ul>
+              <ul className="mt-4">
+                <div>
+                  <ProfileFeed useridcall={user._id} />
+                </div>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 };
 

@@ -1,12 +1,13 @@
 import React from "react";
-import { MdModeEdit } from "react-icons/md";
+
 import { MdLocationPin } from "react-icons/md";
-import { HiDotsVertical } from "react-icons/hi";
+
 import { MdWork } from "react-icons/md";
-import { IoIosAddCircle } from "react-icons/io";
+
 import { UserType } from "@/types/userType";
 import Link from "next/link";
 import ProfileTopCountStatus from "./ProfileTopCountStatus";
+import ProfileTopButtons from "./ProfileTopButtons";
 
 interface ProfileTopimageProps {
   user: UserType;
@@ -21,7 +22,7 @@ const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
             loading="lazy"
             src={user?.coverImage || "/images/profile.jpg"}
             alt=""
-            className="aspect-[7/2] object-cover bg-background-tertiary w-full"
+            className="aspect-7/2 object-cover bg-background-tertiary w-full"
           />
         </div>
       </div>
@@ -39,35 +40,13 @@ const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
           <div className="w-full lg:w-5/12">
             <h1 className="text-xl font-bold text-primary flex items-center gap-1">
               {user?.name || "Unknown User"}
-              <div className="status w-2 h-2 mt-1 bg-green-600 rounded-full  border-background border-1"></div>
+              <div className="status w-2 h-2 mt-1 bg-green-600 rounded-full  border-background border"></div>
             </h1>
             <p className="text-sm text-loose">
               @{user?.username || "Unknown Username"}
             </p>
           </div>
-          <div className=" w-full  lg:w-7/12  flex justify-between items-center gap-2">
-            <Link
-              href={`/post/createpost`}
-              className="w-5/12 bg-accent rounded-md  px-4 py-2  font-semibold transition duration-200 ease-in-out text-sm text-white flex items-center justify-center gap-2"
-            >
-              <IoIosAddCircle className=" text-xl text-white" />
-              <span className="overflow-hidden text-white whitespace-nowrap text-ellipsis truncate ">
-                Add Post
-              </span>
-            </Link>
-            <Link
-              href={`/profile/edit`}
-              className="w-5/12 bg-red-100 rounded-md  px-4 py-2  font-semibold transition duration-200 ease-in-out text-sm text-red-600 flex items-center justify-center gap-2"
-            >
-              <MdModeEdit className=" text-xl text-red-600" />
-              <span className="overflow-hidden whitespace-nowrap text-ellipsis truncate">
-                Edit Profile
-              </span>
-            </Link>
-            <button className="w-1/12 flex items-center justify-center bg-background-secondary rounded-md   py-2  font-semibold transition duration-200 ease-in-out text-sm   gap-2">
-              <HiDotsVertical className=" text-xl text-loose" />
-            </button>
-          </div>
+          <ProfileTopButtons userId={user._id} />
         </div>
       </div>
       <div className="px-6 lg:px-12 flex flex-col   gap-3  ">

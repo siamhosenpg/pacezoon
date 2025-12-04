@@ -11,7 +11,7 @@ type Props = {
   postid?: Number;
 };
 
-const PostcardimageMlt: React.FC<Props> = ({ imagedata }) => {
+const PostcardimageMlt: React.FC<Props> = ({ imagedata, postid }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     dragFree: true,
     containScroll: "trimSnaps",
@@ -68,7 +68,8 @@ const PostcardimageMlt: React.FC<Props> = ({ imagedata }) => {
       {imagedata.length === 2 && (
         <div className="flex px-4 sm:px-6 gap-2 sm:gap-4">
           {imagedata.map((image, i) => (
-            <div
+            <Link
+              href={`/post/${postid}?index=${i}`}
               key={i}
               className="w-3/6 border border-border aspect-12/18 bg-background-secondary rounded-lg overflow-hidden flex items-center justify-center"
             >
@@ -79,7 +80,7 @@ const PostcardimageMlt: React.FC<Props> = ({ imagedata }) => {
                 alt="Post Image"
                 draggable={false}
               />
-            </div>
+            </Link>
           ))}
         </div>
       )}
@@ -87,10 +88,10 @@ const PostcardimageMlt: React.FC<Props> = ({ imagedata }) => {
       {imagedata.length > 2 && (
         <div className="overflow-hidden px-4 sm:px-6" ref={emblaRef}>
           <div className="flex gap-2 sm:gap-4">
-            {imagedata.map((image, index) => (
+            {imagedata.map((image, i) => (
               <Link
-                href="/videos"
-                key={index}
+                href={`/post/${postid}?index=${i}`}
+                key={i}
                 className="flex-[0_0_45%]  aspect-13/18 bg-background-secondary rounded-lg overflow-hidden"
               >
                 <div

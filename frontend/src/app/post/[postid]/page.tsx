@@ -2,20 +2,27 @@ import ImageSection from "@/components/layouts/postprevew/ImageSection";
 import CommentsInput from "@/components/ui/comments/CommentsInput";
 import React from "react";
 import { HiDotsVertical } from "react-icons/hi";
-
 import { getSinglePost } from "@/lib/post/feedPosts";
 import Link from "next/link";
 import CommentsSection from "@/components/layouts/postprevew/CommentsSection";
 import PostCardStatus from "@/components/ui/postcard/PostCardstatus";
 
-interface PostPageProps {
+interface PageProps {
   params: {
-    postid: string; // Next.js all params come as string
+    postid: string; // dynamic route always string
+  };
+  searchParams: {
+    index?: string; // optional query param
+    [key: string]: string | undefined;
   };
 }
 
-const Post = async ({ params }: PostPageProps) => {
+const Post = async ({ params, searchParams }: PageProps) => {
+  // Convert ID safely
   const postid = Number(params.postid);
+
+  // Convert index safely (fallback = 0)
+  const index = Number(searchParams.index ?? 0);
 
   // API Call
   const post = await getSinglePost(postid);
@@ -28,7 +35,7 @@ const Post = async ({ params }: PostPageProps) => {
     <div className="Pagearea">
       <div className="mt-0 sm:mt-4 flex flex-col md:flex-row items-start justify-between gap-6">
         {/* Left: Image Section */}
-        <ImageSection media={post.content.media} />
+        <ImageSection media={post.content.media} index={index} />
 
         {/* Right: Details */}
         <div className="w-full md:w-4/12 hidden lg:block">
@@ -68,11 +75,12 @@ const Post = async ({ params }: PostPageProps) => {
               <p className="text-sm font-medium mt-4 px-2 text-secondary">
                 {post.content.caption}
               </p>
+
               <PostCardStatus Commentsposition={true} postId={post._id} />
             </div>
 
             {/* Comments Section */}
-            <div className=" h-full flex flex-col overflow-hidden">
+            <div className="h-full flex flex-col overflow-hidden">
               <b className="block shrink-0 py-2 border-b border-border text-loose">
                 Comments
               </b>

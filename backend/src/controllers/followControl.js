@@ -71,7 +71,7 @@ export const getFollowing = async (req, res) => {
     const { userId } = req.params;
     const following = await Follow.find({ followerId: userId }).populate(
       "followingId",
-      "username name"
+      "_id profileImage name bio profilePicture"
     );
     return res.status(200).json(following);
   } catch (err) {

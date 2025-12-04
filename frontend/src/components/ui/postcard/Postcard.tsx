@@ -103,7 +103,7 @@ const Postbox: React.FC<PostboxProps> = async ({ post }) => {
 
       <div className="  ">
         <PostCardstatus Commentsposition={false} postId={post._id} />
-        <PostCardButtons postId={post._id} />
+        <PostCardButtons postId={post._id} postNumber={post.postid} />
       </div>
 
       <div className=" px-4 sm:px-6 hidden">
