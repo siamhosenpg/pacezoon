@@ -81,14 +81,14 @@ export const createPost = async (req, res) => {
   }
 };
 
-// 🟢 Update post (only owner can update)
+// 🟢 Update post by _id
 export const updatePost = async (req, res) => {
   try {
-    const post = await Post.findOne({ postid: Number(req.params.postid) });
+    const post = await Post.findById(req.params.id);
 
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    // ✅ Only allow owner to edit
+    // Owner check
     if (req.user._id.toString() !== post.userid.toString()) {
       return res
         .status(403)
@@ -98,7 +98,6 @@ export const updatePost = async (req, res) => {
     Object.assign(post, req.body, { updatedAt: new Date() });
 
     const updatedPost = await post.save();
-
     await updatedPost.populate("userid", "name userid profileImage");
 
     res.json(updatedPost);
@@ -107,20 +106,21 @@ export const updatePost = async (req, res) => {
   }
 };
 
-// 🟢 Delete post (only owner can delete)
+// 🟢 Delete post by _id
 export const deletePost = async (req, res) => {
   try {
-    const post = await Post.findOne({ postid: Number(req.params.postid) });
+    const post = await Post.findById(req.params.id);
 
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    if (req.user._id.toString() !== post.userid.toString()) {
+    // Owner check
+    if (req.user.id.toString() !== post.userid.toString()) {
       return res
         .status(403)
         .json({ message: "You can only delete your own posts" });
     }
 
-    await post.remove();
+    await Post.findByIdAndDelete(req.params.id);
 
     res.json({ message: "Post deleted successfully" });
   } catch (err) {

@@ -17,7 +17,7 @@ router.get("/:postid", getPostById); // নির্দিষ্ট পোস্
 router.get("/", getPosts); // সব পোস্ট দেখাবে
 
 router.post("/", protect, createPost); // নতুন পোস্ট তৈরি
-router.put("/:postid", protect, updatePost); // পোস্ট এডিট
-router.delete("/:postid", deletePost); // পোস্ট ডিলিট
+router.put("/:id", protect, updatePost); // পোস্ট এডিট
+router.delete("/:id", protect, deletePost); // পোস্ট ডিলিট
 
 export default router;

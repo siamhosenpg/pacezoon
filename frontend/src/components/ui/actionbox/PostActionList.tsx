@@ -18,6 +18,7 @@ import { TbPinned } from "react-icons/tb";
 import { useAuth } from "@/hook/useAuth";
 import { useFollowing } from "@/hook/useFollow";
 import { PostTypes } from "@/types/postType";
+import ActionDeletePost from "./actionactivity/ActionDeletePost";
 
 interface PostActionListProps {
   post: PostTypes;
@@ -99,6 +100,11 @@ const PostActionList: React.FC<PostActionListProps> = ({ post }) => {
       <ul className="p-2">
         {menuItems.map((item, index) => {
           const Icon = item.icon;
+
+          // delete হলে custom component ব্যবহার করো
+          if (item.title === "Delete Post") {
+            return <ActionDeletePost key={index} post={post} />;
+          }
           return (
             <div
               key={index}
