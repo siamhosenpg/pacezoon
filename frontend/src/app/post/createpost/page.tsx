@@ -33,6 +33,22 @@ type CreatePostError = {
   };
 };
 
+// =============================
+// 🟦 SANITIZE FUNCTION
+// triple enter → only double allowed
+// =============================
+const sanitizeCaption = (text: string) => {
+  if (typeof text !== "string") return text;
+
+  return (
+    text
+      // replace 3+ newlines → 2 newlines
+      .replace(/\n{3,}/g, "\n\n")
+
+      // replace 4+ spaces → 4 spaces
+      .replace(/ {6,}/g, "     ")
+  );
+};
 // API
 const createPostApi = async (data: PostData): Promise<any> => {
   const res = await axiosInstance.post("/posts", data, {
@@ -112,14 +128,16 @@ const CreatePostPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!caption.trim() && mediaList.length === 0) {
+
+    const finalCaption = sanitizeCaption(caption);
+    if (!finalCaption.trim() && mediaList.length === 0) {
       alert("Post cannot be empty!");
       return;
     }
 
     const body: PostData = {
       content: {
-        caption,
+        caption: finalCaption,
         media: mediaList,
         type: detectPostType(),
         location,

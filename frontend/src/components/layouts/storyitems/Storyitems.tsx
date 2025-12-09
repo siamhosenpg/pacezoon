@@ -51,7 +51,7 @@ const Storyitems: React.FC<StoryAreaProps> = ({ stories }) => {
     <div className="relative flex items-center">
       {/* Left Button */}
       {showLeft && (
-        <div className="absolute left-2 z-40 -mt-4">
+        <div className="absolute hidden lg:block left-2 z-40 -mt-4">
           <button
             onClick={scrollLeftHandler}
             className="h-10 w-10 flex items-center justify-center bg-background rounded-full shadow-xl cursor-pointer"
@@ -72,7 +72,7 @@ const Storyitems: React.FC<StoryAreaProps> = ({ stories }) => {
 
       {/* Right Button */}
       {showRight && (
-        <div className="absolute right-2 z-40 -mt-4">
+        <div className="absolute hidden lg:block right-2 z-40 -mt-4">
           <button
             onClick={scrollRightHandler}
             className="h-10 w-10 flex items-center justify-center bg-background rounded-full shadow-xl cursor-pointer"

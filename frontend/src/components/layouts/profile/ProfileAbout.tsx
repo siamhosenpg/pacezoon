@@ -10,16 +10,13 @@ import {
   FaLinkedin,
 } from "react-icons/fa";
 import { MdWork } from "react-icons/md";
+import { UserType } from "@/types/userType";
 
-const user = {
-  education: "University of Technology",
-  work: "Software Engineer at TechCorp",
-  date_of_birth: "January 1, 1990",
-  relationship: "Single",
-  fulllocation: "San Francisco, CA",
-};
+interface userProps {
+  user: UserType; // incoming profile owner userId
+}
 
-const ProfileAbout = () => {
+const ProfileAbout: React.FC<userProps> = ({ user }) => {
   return (
     <div className="flex flex-col gap-6 px-6 lg:px-12 py-6 bg-background rounded-md w-full">
       {/* About Section Title */}
@@ -31,7 +28,7 @@ const ProfileAbout = () => {
         <div className="flex items-start gap-1">
           <FaGraduationCap className="text-lg w-[30px] shrink-0" />
           <span>
-            Studied at <span className="font-semibold">{user.education}</span>
+            Studied at <span className="font-semibold">{user.educations}</span>
           </span>
         </div>
         {/* Work  */}
@@ -46,7 +43,7 @@ const ProfileAbout = () => {
         <div className="flex items-start gap-1">
           <FaBirthdayCake className="text-lg w-[30px] shrink-0" />
           <span>
-            Born on <span className="font-semibold">{user.date_of_birth}</span>
+            Born on <span className="font-semibold">{user.dateOfBirth}</span>
           </span>
         </div>
 
@@ -54,7 +51,7 @@ const ProfileAbout = () => {
         <div className="flex items-start gap-1">
           <FaHeart className="text-lg w-[30px] shrink-0" />
           <span>
-            <span className="font-semibold">{user.relationship}</span>
+            <span className="font-semibold">{user.dateOfBirth}</span>
           </span>
         </div>
 
@@ -62,8 +59,7 @@ const ProfileAbout = () => {
         <div className="flex items-start gap-1">
           <FaHome className="text-lg w-[30px] shrink-0" />
           <span>
-            Lives in Now{" "}
-            <span className="font-semibold">{user.fulllocation}</span>
+            Lives in Now <span className="font-semibold">{user?.location}</span>
           </span>
         </div>
 

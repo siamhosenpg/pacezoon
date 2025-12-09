@@ -34,7 +34,7 @@ const Profile = async ({ params }: ProfilePageProps) => {
             <div className="w-full lg:w-7/12 static lg:sticky space-y-4">
               <ProfileTopimage user={user} />
               <ProfileSectionlist />
-              <ProfileAbout />
+              <ProfileAbout user={user} />
               <ProfileFollower userId={user._id} />
               <ProfilePhotoslist />
               <ProfileVideos />
@@ -46,7 +46,7 @@ const Profile = async ({ params }: ProfilePageProps) => {
 
               <ul className="mt-4">
                 <div>
-                  <ProfileFeed useridcall={user._id} />
+                  <ProfileFeed userid={user?._id} />
                 </div>
               </ul>
             </div>

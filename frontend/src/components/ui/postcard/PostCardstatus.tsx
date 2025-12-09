@@ -21,7 +21,7 @@ const PostCardStatus = ({ postId, Commentsposition }: PostCardStatusProps) => {
       className={` text-sm flex items-center justify-start gap-3 ${
         Commentsposition
           ? " mt-2 py-1"
-          : "px-4 sm:px-6 py-3  border-b border-border"
+          : "px-4 sm:px-6 py-1.5 sm:py-3  border-b border-border"
       } `}
     >
       {/* Reaction Count Section */}

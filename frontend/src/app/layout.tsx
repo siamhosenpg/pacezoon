@@ -1,23 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Poppins, Inter } from "next/font/google";
+import { Inter, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 
 import ShowNavigation from "@/components/layouts/navigation/ShowNavigation";
-
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
+const noto_sans_bangla = Noto_Sans_Bengali({
+  variable: "--Noto_Sans_Bengali",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
@@ -35,11 +29,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased bg-background-secondary`}
+        className={`  ${inter.className}  antialiased bg-background-secondary`}
       >
         <ReactQueryProvider>
           {/* Navigation এখন শর্ত অনুযায়ী show/hide হবে */}
           <ShowNavigation />
+
           {children}
         </ReactQueryProvider>
       </body>

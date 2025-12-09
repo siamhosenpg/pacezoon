@@ -76,8 +76,8 @@ const PostCardButtons: React.FC<Props> = ({ postId, postNumber }) => {
 
   return (
     <div className="px-4 sm:px-6 flex flex-col gap-1">
-      <div className="flex items-center justify-between mt-4 pb-3">
-        <div className="left flex items-center justify-start gap-10">
+      <div className="flex items-center justify-between mt-4 sm:mt-4 pb-3 sm:pb-3">
+        <div className="left flex items-center justify-start gap-5 sm:gap-6 lg:gap-10">
           {/* Like / Remove Like */}
           <button
             onClick={handleToggleLike}

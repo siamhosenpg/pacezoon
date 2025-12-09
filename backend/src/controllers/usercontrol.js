@@ -1,5 +1,6 @@
 import User from "../models/usermodel.js";
 import bcrypt from "bcryptjs";
+import Follow from "../models/followModel.js";
 
 /**
  * ✅ Get all users
@@ -26,42 +27,6 @@ export const getUserById = async (req, res) => {
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
-  }
-};
-
-/**
- * ✅ Create new user (with bcrypt hashing)
- */
-export const createUser = async (req, res) => {
-  try {
-    const exists = await User.findOne({ email: req.body.email });
-
-    if (exists) {
-      return res
-        .status(400)
-        .json({ message: "User already exists with this email" });
-    }
-
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPass = await bcrypt.hash(req.body.password, salt);
-
-    const newUser = new User({
-      ...req.body,
-      password: hashedPass,
-    });
-
-    const savedUser = await newUser.save();
-
-    res.status(201).json({
-      message: "User created successfully",
-      user: {
-        ...savedUser._doc,
-        password: undefined,
-      },
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Cannot create user", error: err.message });
   }
 };
 
@@ -162,5 +127,47 @@ export const getUserByUsername = async (req, res) => {
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+/**
+ * 🟦 Suggestion Accounts
+ * → Those users whom logged-in user does NOT follow
+ * → Exclude logged-in user himself
+ */
+export const getSuggestedUsers = async (req, res) => {
+  try {
+    const loggedUserId = req.user.id; // MongoDB _id (string)
+
+    if (!loggedUserId) {
+      return res.status(401).json({ message: "Login required" });
+    }
+
+    // 1️⃣ Find all users I already follow
+    const followingList = await Follow.find({ follower: loggedUserId }).select(
+      "following"
+    );
+
+    const followingIds = followingList.map((item) => item.following.toString());
+
+    // 2️⃣ Add my own id (so I am not suggested)
+    followingIds.push(loggedUserId);
+
+    // 3️⃣ Fetch all users except my following + myself
+    const suggestions = await User.find({
+      _id: { $nin: followingIds },
+    })
+      .select("-password")
+      .limit(20); // want only 20 profiles
+
+    res.status(200).json({
+      count: suggestions.length,
+      users: suggestions,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Server error while loading suggestions",
+      error: err.message,
+    });
   }
 };

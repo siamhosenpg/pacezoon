@@ -1,7 +1,14 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createPost, updatePost, deletePost } from "@/lib/post/feedPosts";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import {
+  createPost,
+  updatePost,
+  deletePost,
+  getSinglePost,
+  getPostsByUserId,
+  getFeedPosts,
+} from "@/lib/post/feedPosts";
 import { useAuth } from "@/hook/useAuth";
 
 export const usePost = () => {
@@ -81,6 +88,31 @@ export const usePost = () => {
     },
   });
 
+  const profilePost = (userid: string | undefined) => {
+    return useQuery({
+      queryKey: ["posts", userid],
+      queryFn: () => getPostsByUserId(userid as string),
+      enabled: !!userid, // userid না থাকলে query run হবে না
+    });
+  };
+
+  // 🟣 Get post by postId
+  // ----------------------------
+  const singlePost = (postId: number | undefined) => {
+    return useQuery({
+      queryKey: ["posts", postId],
+      queryFn: () => getSinglePost(postId as number),
+      enabled: !!postId,
+    });
+  };
+
+  const feedPost = () => {
+    return useQuery({
+      queryKey: ["posts"],
+      queryFn: getFeedPosts,
+    });
+  };
+
   return {
     createPost: createPostMutation.mutate,
     createPostLoading: createPostMutation.isPending,
@@ -90,5 +122,9 @@ export const usePost = () => {
 
     deletePost: deletePostMutation.mutate,
     deletePostLoading: deletePostMutation.isPending,
+
+    profilePost,
+    singlePost,
+    feedPost,
   };
 };

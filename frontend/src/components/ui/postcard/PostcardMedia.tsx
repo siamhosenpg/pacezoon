@@ -22,11 +22,11 @@ const PostcardMedia: React.FC<Props> = ({ imagedata, postid }) => {
               <Link
                 key={i}
                 href={`/post/${postid}?index=${i}`}
-                className="media flex items-center justify-center w-full px-4 sm:px-6 h-auto overflow-hidden"
+                className="media flex items-center justify-center w-full px-0 sm:px-6 h-auto overflow-hidden"
               >
                 <img
                   loading="lazy"
-                  className="rounded-lg object-cover sm:rounded-lg  w-full h-auto min-h-[200px] min-w-[100px] bg-gray-100 max-h-[700px]"
+                  className="rounded-none sm:rounded-lg object-cover   w-full h-auto min-h-[200px] min-w-full bg-gray-100 max-h-[500px] lg:max-h-[700px]"
                   src={image} // 👉 TypeScript safe
                   alt="Post Image"
                 />

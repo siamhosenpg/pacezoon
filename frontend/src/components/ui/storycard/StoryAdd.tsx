@@ -5,7 +5,9 @@ import { useAuth } from "@/hook/useAuth";
 import { MdOutlineAddAPhoto } from "react-icons/md";
 
 const StoryAdd = () => {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, error } = useAuth();
+  if (!user) return "No user Login";
+  if (error) return <p className="text-red-500">Failed to load feed posts</p>;
   if (isLoading)
     return (
       <div className="animate-pulse">
@@ -36,7 +38,7 @@ const StoryAdd = () => {
             <img
               loading="lazy"
               className=" aspect-square w-full h-full block rounded-full bg-background-secondary  object-cover"
-              src={user?.user.profileImage}
+              src={user?.user?.profileImage}
               alt=""
             />
             <div className=" absolute flex items-center justify-center z-30 w-[88%] aspect-square  bg-accent-transprant text-white rounded-full">

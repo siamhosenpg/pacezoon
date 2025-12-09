@@ -1,12 +1,17 @@
+"use client";
 import FollowButton from "@/components/ui/buttons/FollowButton";
 import React from "react";
 
-import { getAllUsers } from "@/lib/user/userData";
+import { useSuggestedUsers } from "@/hook/useUser";
 import { UserType } from "@/types/userType";
 import Link from "next/link";
 
-const SuggestAccounts = async () => {
-  const users: UserType[] = await getAllUsers();
+const SuggestAccounts = () => {
+  const { data, isLoading, isError } = useSuggestedUsers();
+
+  if (isLoading) return <p>Loading suggestions...</p>;
+  if (isError) return <p>Failed to load suggestions</p>;
+
   return (
     <div className="Suggested  p-3  bg-background rounded-lg">
       <div className="flex items-center text-primary p-3 justify-between border-b border-border">
@@ -14,8 +19,8 @@ const SuggestAccounts = async () => {
         <button className="text-sm text-secondary">See all</button>
       </div>
       <ul className="mt-3">
-        {users &&
-          users.map((user, index) => {
+        {data &&
+          data.map((user, index) => {
             return (
               <div
                 key={index}

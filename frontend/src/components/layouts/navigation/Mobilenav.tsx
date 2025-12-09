@@ -19,7 +19,7 @@ const Mobilenav = () => {
                   {Icon && <Icon />}
                   <div className="bg-green-600 hidden w-[11px] h-[11px] rounded-full border-background border-2 absolute top-0 right-0"></div>
                 </div>
-                <span className="  text-[11px] font-medium  ">{item.name}</span>
+                <span className="  text-[10px] font-medium  ">{item.name}</span>
               </Link>
             );
           })}

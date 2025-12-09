@@ -18,7 +18,7 @@ interface PostboxProps {
   post: PostTypes;
 }
 
-const Postbox: React.FC<PostboxProps> = async ({ post }) => {
+const Postbox: React.FC<PostboxProps> = ({ post }) => {
   // Accessing post data from PostContext
   // Accessing user data from UserContext
 
@@ -85,7 +85,7 @@ const Postbox: React.FC<PostboxProps> = async ({ post }) => {
       </div>
 
       {/* Post text content */}
-      <p className="posttext text-sm font-medium text-secondary mt-4 px-4 sm:px-6">
+      <p className="posttext whitespace-pre-wrap text-sm font-medium text-secondary mt-4 px-4 sm:px-6">
         {post.content.caption}
       </p>
 

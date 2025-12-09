@@ -1,49 +1,39 @@
+"use client";
 import React from "react";
 import { PostTypes } from "@/types/postType";
-import { getPostsByUserId } from "@/lib/post/feedPosts";
+import { usePost } from "@/hook/usePost";
 import Postcard from "../../ui/postcard/Postcard";
+import PostcardLoading from "@/components/ui/postcard/PostcardLoading";
 
 type ProfileFeedProps = {
-  useridcall: string;
+  userid: string;
 };
 
-// Backend return type
-interface PostsObjectResponse {
-  posts: PostTypes[];
-}
+// Backend response may return array OR object
+type PostsResponse = PostTypes[] | { posts: PostTypes[] };
 
-// Union type for backend response
-type PostsResponse = PostTypes[] | PostsObjectResponse;
+const ProfileFeed = ({ userid }: ProfileFeedProps) => {
+  const { profilePost } = usePost();
+  const { data, isLoading, error } = profilePost(userid);
 
-const ProfileFeed = async ({ useridcall }: ProfileFeedProps) => {
-  // API Call with proper typing
-  const response = (await getPostsByUserId(useridcall)) as PostsResponse;
-
-  // Normalize data safely
-  const userposts: PostTypes[] = Array.isArray(response)
-    ? response
-    : response?.posts ?? [];
-
-  // Safety check (TS guarantee)
-  if (!Array.isArray(userposts)) {
-    console.error("❌ userposts is not an array:", userposts);
-    return (
-      <div className="text-center text-red-500 mt-10">
-        Invalid response format.
-      </div>
-    );
+  if (isLoading) {
+    return <PostcardLoading />;
   }
 
-  if (userposts.length === 0) {
-    return (
-      <div className="text-center text-primary mt-10">No posts to display.</div>
-    );
-  }
+  if (error) return <p className="text-red-500">Failed to load posts</p>;
+
+  if (!data) return <p className="text-red-500">No posts found.</p>;
+
+  // Normalize data
+  const posts: PostTypes[] = Array.isArray(data) ? data : data.posts;
+
+  if (posts.length === 0)
+    return <p className="w-full text-center mt-5">No posts found.</p>;
 
   return (
     <div>
-      {userposts.map((post: PostTypes) => (
-        <Postcard post={post} key={post.postid} />
+      {posts.map((post) => (
+        <Postcard post={post} key={post._id} />
       ))}
     </div>
   );
