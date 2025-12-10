@@ -17,6 +17,8 @@ import reactionRoutes from "./src/routes/reactionRoutes.js";
 import commentRoutes from "./src/routes/commentRoutes.js";
 import storyRoutes from "./src/routes/storyRoutes.js";
 import followroutes from "./src/routes/followRoutes.js";
+import savedCollectionRoutes from "./src/routes/savesystem/savedCollectionroutes.js";
+import savedItemRoutes from "./src/routes/savesystem/savedItemroutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -32,7 +34,7 @@ const port = process.env.PORT || 4000;
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "http://192.168.31.158:3000"],
     credentials: true,
   })
 );
@@ -48,6 +50,8 @@ app.use("/reactions", reactionRoutes);
 app.use("/comments", commentRoutes);
 app.use("/stories", storyRoutes);
 app.use("/follows", followroutes);
+app.use("/saves/collections", savedCollectionRoutes);
+app.use("/items", savedItemRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
