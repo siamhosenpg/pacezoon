@@ -1,10 +1,11 @@
 import DarkMoodToggle from "@/components/ui/buttons/DarkMoodToggle";
+import Link from "next/link";
 import React from "react";
 
 const Leftnavigationlist = [
   {
     name: "Saved Posts",
-    links: "/group",
+    links: "/save",
     image: "/images/icon/save-instagram.png",
   },
   {
@@ -43,7 +44,8 @@ const Submeunssection = () => {
       <DarkMoodToggle />
       {Leftnavigationlist.map((list, index) => {
         return (
-          <div
+          <Link
+            href={list.links}
             key={index}
             className="flex gap-4 mt-1 mb-1 items-center px-5 py-2 hover:bg-background-secondary duration-150 rounded-lg"
           >
@@ -51,7 +53,7 @@ const Submeunssection = () => {
             <div className="text-[15px] font-semibold text-primary">
               {list.name}
             </div>
-          </div>
+          </Link>
         );
       })}
     </div>

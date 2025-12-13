@@ -57,7 +57,6 @@ const PostActionList: React.FC<PostActionListProps> = ({ post }) => {
       { title: "Unfollow User", icon: RiUserFollowLine },
       { title: "Mute Post Author", icon: RiStopCircleLine },
       { title: "Not Interested", icon: TbHeartX },
-      { title: "Save Post", icon: MdBookmarkBorder },
       { title: "Copy Link to Post", icon: LuCopyCheck },
       { title: "Embed Post", icon: ImEmbed2 },
       { title: "Report Post", icon: RiFlagLine },
@@ -71,7 +70,6 @@ const PostActionList: React.FC<PostActionListProps> = ({ post }) => {
       { title: "Follow User", icon: RiUserFollowLine },
       { title: "Interested", icon: RiHeartAdd2Line },
       { title: "Not Interested", icon: TbHeartX },
-      { title: "Save Post", icon: MdBookmarkBorder },
       { title: "Copy Link to Post", icon: LuCopyCheck },
       { title: "Embed Post", icon: ImEmbed2 },
       { title: "Report Post", icon: RiFlagLine },
@@ -80,7 +78,7 @@ const PostActionList: React.FC<PostActionListProps> = ({ post }) => {
   }
 
   return (
-    <div className="absolute text-left z-40 right-3 border-border border bg-background rounded-lg w-fit max-w-[400px] min-w-[300px] py-2">
+    <div className="absolute  text-left z-40 right-3 border-border border bg-background rounded-lg  w-fit max-w-[400px] min-w-[300px] py-2">
       {/* Why am I seeing this post? */}
       <div className="px-2">
         <div className="px-4 py-2 border-b border-border text-secondary font-semibold">

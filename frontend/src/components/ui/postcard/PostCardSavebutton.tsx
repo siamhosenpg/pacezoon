@@ -9,7 +9,11 @@ import {
 } from "@/hook/save/useSavedItems";
 import { useQueryClient } from "@tanstack/react-query";
 
-const PostCardSaveButton = ({ postId }) => {
+interface PostCardSaveButtonProps {
+  postId: string;
+}
+
+const PostCardSaveButton: React.FC<PostCardSaveButtonProps> = ({ postId }) => {
   const queryClient = useQueryClient();
 
   // Saved status hook
@@ -39,7 +43,6 @@ const PostCardSaveButton = ({ postId }) => {
         { postId, collectionId: "default" },
         {
           onError: () => {
-            // rollback
             queryClient.setQueryData(["saved-status", postId], {
               saved: previous,
             });
@@ -53,7 +56,6 @@ const PostCardSaveButton = ({ postId }) => {
       // DELETE
       deleteSaved(postId, {
         onError: () => {
-          // rollback
           queryClient.setQueryData(["saved-status", postId], {
             saved: previous,
           });

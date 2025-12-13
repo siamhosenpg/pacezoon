@@ -84,7 +84,14 @@ export const getSavedItems = async (req, res) => {
       collectionId: req.params.collectionId,
       userId: req.user.id,
     })
-      .populate("postId")
+      .populate({
+        path: "postId",
+        populate: {
+          path: "userid", // post model-এ যে field টি user ref করে রাখছো
+          model: "User", // তোমার User model নাম
+          select: "name username profileImage userid _id", // শুধু প্রয়োজনীয় ফিল্ড
+        },
+      })
       .sort({ createdAt: -1 });
 
     return res.json(items);

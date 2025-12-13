@@ -1,6 +1,7 @@
 // routes/savedCollection.routes.js
 import express from "express";
 import {
+  getDefaultCollection,
   createCollection,
   getCollections,
   updateCollection,
@@ -15,6 +16,7 @@ const router = express.Router();
 // All routes require login
 router.use(protect);
 
+router.get("/saved/default", getDefaultCollection);
 // Create new folder
 router.post("/", createCollection);
 

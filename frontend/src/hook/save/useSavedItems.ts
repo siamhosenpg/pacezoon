@@ -8,43 +8,72 @@ import {
   checkIfPostSaved,
 } from "@/lib/save/savedItems";
 
-// Get Saved Items of a collection
-export const useSavedItems = (collectionId) => {
-  return useQuery({
-    queryKey: ["saved-items", collectionId],
+import type {
+  CheckSavedResponse,
+  SavePostResponse,
+  GetSavedItemsResponse,
+  DeleteSavedResponse,
+} from "@/types/save/saveitemstype";
+
+/* ======================================================
+ * useSavedItems – Get all items from a collection
+ * ====================================================== */
+export const useSavedItems = (collectionId: string) => {
+  return useQuery<GetSavedItemsResponse>({
+    queryKey: ["saved-items", collectionId] as const,
     queryFn: () => getSavedItems(collectionId),
     enabled: !!collectionId,
   });
 };
 
-// Save Post Hook
+/* ======================================================
+ * useSavePost – Save a post into a folder
+ * ====================================================== */
+
+interface SavePostArgs {
+  postId: string;
+  collectionId?: string;
+}
+
 export const useSavePost = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: ({ postId, collectionId }) => savePost(postId, collectionId),
+  return useMutation<SavePostResponse, Error, SavePostArgs>({
+    mutationFn: ({ postId, collectionId = "default" }) =>
+      savePost(postId, collectionId),
 
-    onSuccess: (_, { collectionId }) => {
-      queryClient.invalidateQueries(["saved-items", collectionId]);
+    // FIX: The query key must be typed correctly
+    onSuccess: (_, { collectionId = "default" }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["saved-items", collectionId],
+      });
     },
   });
 };
 
-// Delete Saved Item
+/* ======================================================
+ * useDeleteSavedItem – Remove saved item
+ * ====================================================== */
 export const useDeleteSavedItem = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: deleteSavedItem,
+  return useMutation<DeleteSavedResponse, Error, string>({
+    mutationFn: (itemId) => deleteSavedItem(itemId),
+
     onSuccess: () => {
-      queryClient.invalidateQueries(["saved-items"]);
+      queryClient.invalidateQueries({
+        queryKey: ["saved-items"],
+      });
     },
   });
 };
 
-export const useCheckSaved = (postId) => {
-  return useQuery({
-    queryKey: ["saved-status", postId],
+/* ======================================================
+ * useCheckSaved – Check if post is saved by this user
+ * ====================================================== */
+export const useCheckSaved = (postId: string) => {
+  return useQuery<CheckSavedResponse>({
+    queryKey: ["saved-status", postId] as const,
     queryFn: () => checkIfPostSaved(postId),
     enabled: !!postId,
   });

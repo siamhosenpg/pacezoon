@@ -10,7 +10,7 @@ const savedCollectionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    description: String,
+
     default: { type: Boolean, default: false }, // <-- added
   },
 

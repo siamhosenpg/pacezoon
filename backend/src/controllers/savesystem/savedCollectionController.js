@@ -3,15 +3,46 @@ import SavedCollection from "../../models/savesystem/savedCollectionSchema.js";
 
 /*
 |--------------------------------------------------------------------------
+| GET Default Collection of logged-in user
+|--------------------------------------------------------------------------
+*/
+export const getDefaultCollection = async (req, res) => {
+  try {
+    // Step 1: default collection আছে কিনা check
+    let defaultCollection = await SavedCollection.findOne({
+      userId: req.user.id,
+      default: true,
+    });
+
+    // Step 2: যদি default না থাকে → auto-create করে দাও
+    if (!defaultCollection) {
+      defaultCollection = await SavedCollection.create({
+        userId: req.user.id,
+        name: "Saved", // Default folder name
+        default: true, // Mark as default
+      });
+    }
+
+    res.json({
+      collectionId: defaultCollection._id,
+      name: defaultCollection.name,
+      default: defaultCollection.default,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+/*
+|--------------------------------------------------------------------------
 | CREATE Folder
 |--------------------------------------------------------------------------
 */
 export const createCollection = async (req, res) => {
   try {
     const collection = await SavedCollection.create({
-      userId: req.user._id,
+      userId: req.user.id,
       name: req.body.name,
-      description: req.body.description || "",
     });
 
     res.status(201).json(collection);
@@ -33,7 +64,7 @@ export const createCollection = async (req, res) => {
 export const getCollections = async (req, res) => {
   try {
     const collections = await SavedCollection.find({
-      userId: req.user._id,
+      userId: req.user.id,
     }).sort({ createdAt: -1 });
 
     res.json(collections);
@@ -50,8 +81,8 @@ export const getCollections = async (req, res) => {
 export const updateCollection = async (req, res) => {
   try {
     const updated = await SavedCollection.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user._id }, // Only own folder
-      { name: req.body.name, description: req.body.description },
+      { _id: req.params.id, userId: req.user.id }, // Only own folder
+      { name: req.body.name },
       { new: true }
     );
 
@@ -77,7 +108,7 @@ export const deleteCollection = async (req, res) => {
   try {
     const deleted = await SavedCollection.findOneAndDelete({
       _id: req.params.id,
-      userId: req.user._id,
+      userId: req.user.id,
     });
 
     if (!deleted) {
@@ -99,7 +130,7 @@ export const getSingleCollection = async (req, res) => {
   try {
     const folder = await SavedCollection.findOne({
       _id: req.params.id,
-      userId: req.user._id,
+      userId: req.user.id,
     });
 
     if (!folder) {

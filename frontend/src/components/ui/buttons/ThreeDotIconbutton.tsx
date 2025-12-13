@@ -27,7 +27,7 @@ const ThreeDotIconButton: React.FC<postpropsdata> = ({ post }) => {
   }, []);
 
   return (
-    <div ref={menuRef} className="relative inline-block">
+    <div ref={menuRef} className=" static sm:relative inline-block">
       <button
         onClick={toggleDialogue}
         className="p-2 rounded-full hover:bg-background-secondary transition"
@@ -36,7 +36,7 @@ const ThreeDotIconButton: React.FC<postpropsdata> = ({ post }) => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0  z-40">
+        <div className="absolute right-0   w-full z-40">
           <PostActionList post={post} />
         </div>
       )}
