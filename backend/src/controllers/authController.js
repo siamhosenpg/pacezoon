@@ -5,8 +5,8 @@ import { generateToken } from "../utils/generateToken.js";
 // Cookie options
 const cookieOptions = {
   httpOnly: true,
-  secure: false, // localhost
-  sameSite: "lax",
+  secure: true, // localhost
+  sameSite: "none",
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
 
