@@ -2,25 +2,51 @@
 import Follow from "../models/followModel.js";
 import mongoose from "mongoose";
 
+import { createNotification } from "../controllers/notification/notificationcontroller.js";
+
 // 🔹 Follow a user
 export const followUser = async (req, res) => {
   try {
-    const { userId } = req.params; // যে ইউজারকে ফলো করতে চাও
-    const followerId = req.user.id;
+    const { userId } = req.params; // যাকে follow করা হচ্ছে
+    const followerId = req.user.id; // যে follow করছে
 
+    // ❌ নিজেকে follow করা যাবে না
     if (userId === followerId) {
       return res.status(400).json({ message: "You cannot follow yourself" });
     }
 
-    const existing = await Follow.findOne({ followerId, followingId: userId });
+    // ❌ আগেই follow করা আছে কিনা
+    const existing = await Follow.findOne({
+      followerId,
+      followingId: userId,
+    });
+
     if (existing) {
       return res.status(400).json({ message: "Already following this user" });
     }
 
-    const follow = await Follow.create({ followerId, followingId: userId });
-    return res
-      .status(201)
-      .json({ message: "User followed successfully", follow });
+    // ✅ Follow create
+    const follow = await Follow.create({
+      followerId,
+      followingId: userId,
+    });
+
+    // 🔔 follower user info (actor)
+    const actorId = req.user.id;
+
+    // 🔔 Create follow notification
+    await createNotification({
+      userId, // যাকে notification যাবে
+      type: "follow",
+      actorId, // যে follow করেছে
+      // follow হলে postId/commentId লাগে না
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "User followed successfully",
+      follow,
+    });
   } catch (err) {
     console.error("Follow error:", err);
     return res.status(500).json({ message: "Server error" });

@@ -1,7 +1,4 @@
-import mongoose from "mongoose";
-import postSchema from "../models/postmodel.js";
-
-const Post = mongoose.model("Post", postSchema);
+import Post from "../models/postmodel.js";
 
 // 🟢 Get all posts with user info
 export const getPosts = async (req, res) => {

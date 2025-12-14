@@ -1,16 +1,43 @@
 "use client";
 
 import React from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavigationData } from "./navigationdata";
 import Searchboxnav from "../../ui/Searchboxnav";
 import Link from "next/link";
 import { FaCaretDown, FaRegBell } from "react-icons/fa";
 import { useAuth } from "@/hook/useAuth";
+import NotificationBox from "../notification/NotificationBox";
 
 const Nav = () => {
-  const { user, isLoading, logout } = useAuth();
+  const { user, isLoading } = useAuth();
 
   const currentUser = user?.user; // safer
+
+  const [open, setOpen] = useState(false);
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  // 🔁 Toggle on bell click
+  const toggleNotification = () => {
+    setOpen((prev) => !prev);
+  };
+
+  // ❌ Close when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (boxRef.current && !boxRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
 
   return (
     <nav className="w-full border-b border-border fixed top-0 left-0 bg-background z-50 px-6">
@@ -40,7 +67,15 @@ const Nav = () => {
 
         {/* Right Section */}
         <div className="w-fit shrink-0 lg:w-3/12 flex items-center justify-end gap-4 lg:gap-5">
-          <FaRegBell className="text-lg" />
+          <button
+            onClick={toggleNotification}
+            className="w-8 h-8 flex items-center justify-center cursor-pointer hover:bg-background-secondary rounded-full"
+          >
+            <FaRegBell className="text-lg" />
+          </button>
+
+          {/* 🔔 Notification Box */}
+          {open && <NotificationBox />}
 
           <div className="flex items-center gap-2">
             {/* 🟡 STATE-1: Loading */}

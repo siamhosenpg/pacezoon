@@ -1,4 +1,6 @@
 import Reaction from "../models/reactionModel.js";
+import Post from "../models/postmodel.js";
+import { createNotification } from "./notification/notificationcontroller.js";
 // 🟢 Create Reaction
 export const createReaction = async (req, res) => {
   try {
@@ -24,6 +26,26 @@ export const createReaction = async (req, res) => {
       postId,
       reaction,
     });
+
+    // 🔹 Get post owner
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    // 🔔 follower user info (actor)
+    const actorId = req.user.id;
+    try {
+      await createNotification({
+        userId: post.userid,
+        actorId: actorId,
+        type: "react",
+        postId: postId,
+        commentId: null,
+      });
+    } catch (err) {
+      console.error("Notification error:", err);
+      // ignore, don't block reaction
+    }
 
     return res.status(201).json({
       message: "Reaction added successfully",
