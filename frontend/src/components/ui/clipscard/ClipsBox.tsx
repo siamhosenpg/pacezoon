@@ -1,15 +1,11 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { AiOutlineLike } from "react-icons/ai";
+import { FaRegComments } from "react-icons/fa";
+import { RiShareForwardLine } from "react-icons/ri";
+import { LuBookmark } from "react-icons/lu";
+import { HiDotsHorizontal } from "react-icons/hi";
+import GlobalSoundToggle from "./GlobalSoundToggle";
 
-// Importing icons for action buttons
-import { AiOutlineLike } from "react-icons/ai"; // Icon for like button
-import { FaRegComments } from "react-icons/fa"; // Icon for comments (not used here)
-import { RiShareForwardLine } from "react-icons/ri"; // Icon for share (not used here)
-import { LuBookmark } from "react-icons/lu"; // Icon for bookmark
-import { HiDotsHorizontal } from "react-icons/hi"; // Icon for more options
-
-interface ClipsBoxProps {
-  src: string;
-}
 interface ClipsBoxProps {
   src: string;
   isPortrait: boolean;
@@ -17,72 +13,137 @@ interface ClipsBoxProps {
 
 const ClipsBox: React.FC<ClipsBoxProps> = ({ src, isPortrait }) => {
   const bgClass = isPortrait ? "object-cover" : "object-contain";
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const [isVisible, setIsVisible] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // 🔊 global sound state
+  const [isPaused, setIsPaused] = useState(false);
+
+  /* 👁️ Intersection Observer */
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = true;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.6 }
+    );
+
+    observer.observe(video);
+
+    // 🔥 initial load fix
+    const rect = video.getBoundingClientRect();
+    if (
+      rect.top < window.innerHeight * 0.6 &&
+      rect.bottom > window.innerHeight * 0.4
+    ) {
+      setIsVisible(true);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  /* ▶️ Play / Pause + Sound */
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = isMuted;
+
+    if (isVisible) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [isVisible, isMuted]);
+
+  /* 🌍 Listen Global Sound Toggle */
+  useEffect(() => {
+    const handleSoundToggle = (e: Event) => {
+      const muted = (e as CustomEvent<boolean>).detail;
+      setIsMuted(muted);
+    };
+
+    window.addEventListener(
+      "reels-sound-toggle",
+      handleSoundToggle as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        "reels-sound-toggle",
+        handleSoundToggle as EventListener
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = isMuted;
+
+    if (isVisible && !isPaused) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [isVisible, isMuted, isPaused]);
+  const handleVideoToggle = () => {
+    setIsPaused((prev) => !prev);
+  };
 
   return (
-    <section className="snap-center  flex items-center justify-center w-full h-full px-0 md:px-4">
-      {/* Reel inner box keeps exact 9:16 ratio visually centered */}
+    <section className="snap-center flex items-center justify-center w-full h-full px-0 md:px-4">
       <div className="relative flex items-center justify-center w-full sm:w-fit">
-        {/* Video element: we make video height = 90vh so it sits nicely in screen.
-                  Width is calculated to preserve 9/16 ratio: width = 90vh * 9/16.
-                  Adjust as needed. */}
+        <GlobalSoundToggle />
+        {/* 🎬 Video */}
         <video
+          onClick={handleVideoToggle}
+          ref={videoRef}
           src={src}
-          playsInline
-          muted
           loop
-          autoPlay
-          className={` rounded-none lg:rounded-xl bg-black max-h-[90vh] object-contain w-full lg:w-[calc(90vh*9/16)] h-[calc(100vh-120px)] lg:h-[90vh]   ${bgClass}`}
+          playsInline
+          preload="metadata"
+          className={`bg-black rounded-none lg:rounded-xl 
+            max-h-[90vh] w-full 
+            lg:w-[calc(90vh*9/16)] 
+            h-[calc(100vh-120px)] 
+            lg:h-[90vh] 
+            ${bgClass}`}
         />
 
-        {/* Overlay: right-side action buttons */}
-        <div className="absolute text-white md:text-black text-shadow-2xs   p-2 rounded-2xl right-1 md:right-[-120px] bottom-8 flex flex-col gap-1 items-center z-20">
-          <button className="flex flex-col w-16 h-15 justify-center rounded-xl hover:bg-background-secondary items-center text-center ">
-            <AiOutlineLike className="text-xl" />
-            <small className="font-semibold text-sm opacity-80 mt-1">
-              1822k
-            </small>
-          </button>
-
-          <button className="flex flex-col w-18 h-16 justify-center rounded-xl hover:bg-background-secondary items-center text-center">
-            <FaRegComments className="text-xl" />
-            <small className="font-semibold text-sm opacity-80 mt-1">123</small>
-          </button>
-
-          <button className="flex flex-col w-18 h-16 justify-center rounded-xl hover:bg-background-secondary items-center text-center">
-            <RiShareForwardLine className="text-xl" />
-            <small className="font-semibold text-sm opacity-80 mt-1">
-              Share
-            </small>
-          </button>
-          <button className="flex flex-col w-18 h-16 justify-center rounded-xl hover:bg-background-secondary items-center text-center">
-            <LuBookmark className="text-xl" />
-            <small className="font-semibold text-sm opacity-80 mt-1">
-              Save
-            </small>
-          </button>
-          <button className="flex flex-col w-18 h-16 justify-center rounded-xl hover:bg-background-secondary items-center text-center">
-            <HiDotsHorizontal className="text-xl" />
-          </button>
+        {/* 👉 Right Action Buttons */}
+        <div className="absolute right-1 md:right-[-120px] bottom-8 z-20 flex flex-col gap-1 text-white md:text-black">
+          <ActionButton icon={<AiOutlineLike />} label="1822k" />
+          <ActionButton icon={<FaRegComments />} label="123" />
+          <ActionButton icon={<RiShareForwardLine />} label="Share" />
+          <ActionButton icon={<LuBookmark />} label="Save" />
+          <ActionButton icon={<HiDotsHorizontal />} />
         </div>
 
-        {/* Bottom-left caption area */}
-        <div className="absolute left-4 bottom-6 max-w-[78%] sm:max-w-[85%] z-20">
-          <div className="flex items-center gap-2 ">
+        {/* 📝 Caption */}
+        <div className="absolute left-4 bottom-6 z-20 max-w-[80%]">
+          <div className="flex items-center gap-2">
             <img
-              className=" block shrink-0 w-8 h-8 object-cover rounded-full bg-background-secondary overflow-hidden shadow-xl"
               src="/images/profile.jpg"
+              className="w-8 h-8 rounded-full object-cover"
               alt=""
             />
-            <span className="text-sm font-semibold text-white mr-2 text-shadow-md">
+            <span className="text-sm font-semibold text-white">
               Siam Hossen
             </span>
-            <button className=" text-sm font-bold border-border border text-white py-0.5 px-2 rounded-md">
+            <button className="text-xs font-bold border border-white text-white px-2 py-0.5 rounded">
               Follow
             </button>
           </div>
-          <p className="smalltext leading-5 text-white line-clamp-2 mt-2 text-shadow-xs shadow-black ">
-            A short caption for this reel. The best football match for ever —
-            #tag @mention
+
+          <p className="mt-2 text-sm text-white line-clamp-2">
+            A short caption for this reel — #tag @mention
           </p>
         </div>
       </div>
@@ -91,3 +152,21 @@ const ClipsBox: React.FC<ClipsBoxProps> = ({ src, isPortrait }) => {
 };
 
 export default ClipsBox;
+
+/* 🔘 Action Button */
+const ActionButton = ({
+  icon,
+  label,
+}: {
+  icon: React.ReactNode;
+  label?: string;
+}) => (
+  <button className="flex flex-col items-center justify-center cursor-pointer w-16 h-14 rounded-xl hover:bg-background-secondary">
+    <span className="text-2xl font-black text-shadow-xs">{icon}</span>
+    {label && (
+      <small className="block smalltext opacity-80 mt-1 text-shadow-xs">
+        {label}
+      </small>
+    )}
+  </button>
+);

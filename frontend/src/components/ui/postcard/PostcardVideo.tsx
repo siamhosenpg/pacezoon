@@ -63,7 +63,7 @@ const PostcardVideo: React.FC<Props> = ({ videodata }) => {
                 ref={videoRef}
                 preload="metadata"
                 playsInline
-                className="rounded-none sm:rounded-lg overflow-hidden mt-2 w-full h-auto min-h-[200px] bg-black max-h-[700px]"
+                className="rounded-none sm:rounded-lg overflow-hidden mt-2 w-full h-auto min-h-[200px] bg-background-secondary max-h-[700px] border-border border"
                 src={video}
               />
             </Link>
