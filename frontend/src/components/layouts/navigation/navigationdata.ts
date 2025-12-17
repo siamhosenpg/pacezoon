@@ -32,7 +32,7 @@ export const NavigationData: NavItem[] = [
   },
   {
     name: "Discover",
-    href: "/explore",
+    href: "/discover",
     icon: MdOutlineExplore,
     activeIcon: MdExplore,
   },

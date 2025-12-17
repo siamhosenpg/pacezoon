@@ -22,12 +22,12 @@ const UploadBox = ({}) => {
           <div className="w-10 h-10 rounded-full bg-background-secondary"></div>
         )}
         <Link
-          href={`/profile/${user?.user.userid}`}
+          href={`/profile/${user?.user?.userid}`}
           className="image w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-full overflow-hidden border border-border"
         >
           <img
             loading="lazy"
-            src={user?.user.profileImage}
+            src={user?.user?.profileImage}
             className="w-full h-full object-cover"
             alt=""
           />

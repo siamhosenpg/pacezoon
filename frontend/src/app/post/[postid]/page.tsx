@@ -9,6 +9,7 @@ import PostCardStatus from "@/components/ui/postcard/PostCardstatus";
 import PostCardButtons from "@/components/ui/postcard/PostCardButtons";
 import DateTime from "@/components/ui/datetime/DateTime";
 import ThreeDotIconButton from "@/components/ui/buttons/ThreeDotIconbutton";
+import PrevewVideoSection from "@/components/layouts/postprevew/PostPrevewVideo";
 
 interface PageProps {
   params: {
@@ -38,7 +39,13 @@ const Post = async ({ params, searchParams }: PageProps) => {
     <div className="Pagearea">
       <div className="mt-0 sm:mt-4 flex flex-col md:flex-row items-start justify-between gap-6">
         {/* Left: Image Section */}
-        <ImageSection media={post.content.media} index={index} />
+        {post.content.type === "image" ? (
+          <ImageSection media={post.content.media} index={index} />
+        ) : post.content.type === "video" ? (
+          <PrevewVideoSection media={post.content.media} />
+        ) : (
+          ""
+        )}
 
         {/* Right: Details */}
         <div className="w-full md:w-4/12 hidden lg:block">
