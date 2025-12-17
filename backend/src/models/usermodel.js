@@ -137,8 +137,11 @@ const UserSchema = new Schema(
 );
 
 // Indexes
-UserSchema.index({ username: 1 });
-UserSchema.index({ email: 1 });
+UserSchema.index({
+  name: "text",
+  username: "text",
+  email: "text",
+});
 UserSchema.index({ "settings.language": 1 });
 
 // =============================

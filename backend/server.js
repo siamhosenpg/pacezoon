@@ -20,6 +20,8 @@ import followroutes from "./src/routes/followRoutes.js";
 import savedCollectionRoutes from "./src/routes/savesystem/savedCollectionroutes.js";
 import savedItemRoutes from "./src/routes/savesystem/savedItemroutes.js";
 import notificationRoutes from "./src/routes/notification/notificationroutes.js";
+import searchRoutes from "./src/routes/otherroutes/searchRoute.js";
+import videoPostRoutes from "./src/routes/post/videopostroute.js";
 
 // Load environment variables
 dotenv.config();
@@ -54,6 +56,8 @@ app.use("/follows", followroutes);
 app.use("/saves/collections", savedCollectionRoutes);
 app.use("/items", savedItemRoutes);
 app.use("/notifications", notificationRoutes);
+app.use("/search", searchRoutes);
+app.use("/videos", videoPostRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

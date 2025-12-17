@@ -4,7 +4,6 @@ import React from "react";
 
 import { RiHeartAdd2Line } from "react-icons/ri";
 import { TbHeartX } from "react-icons/tb";
-import { MdBookmarkBorder } from "react-icons/md";
 import { RiUserFollowLine } from "react-icons/ri";
 import { RiStopCircleLine } from "react-icons/ri";
 import { LuCopyCheck } from "react-icons/lu";
@@ -78,7 +77,7 @@ const PostActionList: React.FC<PostActionListProps> = ({ post }) => {
   }
 
   return (
-    <div className="absolute  text-left z-40 right-3 border-border border bg-background rounded-lg  w-fit max-w-[400px] min-w-[300px] py-2">
+    <div className="absolute  text-left shadow-2xl z-40 right-3 border-border border bg-background rounded-lg  w-fit max-w-[400px] min-w-[300px] py-2">
       {/* Why am I seeing this post? */}
       <div className="px-2">
         <div className="px-4 py-2 border-b border-border text-secondary font-semibold">

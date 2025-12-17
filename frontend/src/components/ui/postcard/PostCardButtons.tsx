@@ -14,9 +14,10 @@ import PostCardSavebutton from "./PostCardSavebutton";
 interface Props {
   postId: string;
   postNumber: number;
+  com: boolean;
 }
 
-const PostCardButtons: React.FC<Props> = ({ postId, postNumber }) => {
+const PostCardButtons: React.FC<Props> = ({ postId, postNumber, com }) => {
   const { user, isLoading: authLoading } = useAuth();
   const { data, createMutation, deleteMutation } = useReactions(postId);
 
@@ -69,7 +70,7 @@ const PostCardButtons: React.FC<Props> = ({ postId, postNumber }) => {
   };
 
   return (
-    <div className="px-4 sm:px-6 flex flex-col gap-1">
+    <div className={` flex flex-col gap-1 ${com ? "px-0" : "px-4 sm:px-6"} `}>
       <div className="flex items-center justify-between mt-2 sm:mt-3 pb-0.5 sm:pb-1">
         <div className="left flex items-center justify-start gap-5 sm:gap-6 lg:gap-10">
           {/* Like Button */}

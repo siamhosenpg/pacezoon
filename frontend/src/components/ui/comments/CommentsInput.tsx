@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { TbMessages } from "react-icons/tb";
+import { FiCornerDownRight } from "react-icons/fi";
 import { useCreateComment } from "@/hook/useComments";
 import { useAuth } from "@/hook/useAuth";
 
@@ -51,7 +51,7 @@ const CommentsInput: React.FC<CommentsInputProps> = ({ postId }) => {
           onClick={handleSubmit}
           className="shrink-0 p-2 rounded-full bg-accent flex items-center justify-center text-white cursor-pointer hover:bg-accent-hover transition-colors"
         >
-          <TbMessages className="text-lg text-secondary" />
+          <FiCornerDownRight className="text-lg text-secondary" />
         </button>
       </div>
     </div>

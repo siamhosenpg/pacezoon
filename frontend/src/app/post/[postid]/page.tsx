@@ -6,6 +6,9 @@ import { getSinglePost } from "@/lib/post/feedPosts";
 import Link from "next/link";
 import CommentsSection from "@/components/layouts/postprevew/CommentsSection";
 import PostCardStatus from "@/components/ui/postcard/PostCardstatus";
+import PostCardButtons from "@/components/ui/postcard/PostCardButtons";
+import DateTime from "@/components/ui/datetime/DateTime";
+import ThreeDotIconButton from "@/components/ui/buttons/ThreeDotIconbutton";
 
 interface PageProps {
   params: {
@@ -60,23 +63,29 @@ const Post = async ({ params, searchParams }: PageProps) => {
                     <div className="font-semibold text-primary">
                       {post.userid.name}
                     </div>
-                    <p className="text-sm text-secondary line-clamp-1 w-full">
-                      {post.userid.bio}
-                    </p>
+                    <div className="smalltext text-secondary line-clamp-1 flex items-center gap-2 w-full">
+                      <span className="block capitalize">{post.privacy}</span>
+                      <DateTime date={post.createdAt} />
+                    </div>
                   </div>
                 </div>
 
-                <button className="text-secondary">
-                  <HiDotsVertical className="text-xl text-secondary" />
-                </button>
+                <ThreeDotIconButton post={post} />
               </div>
 
               {/* Caption */}
-              <p className="text-sm font-medium mt-4 px-2 text-secondary">
+              <p className="text-sm font-medium mt-4 px-2 text-secondary line-clamp-3">
                 {post.content.caption}
               </p>
 
               <PostCardStatus Commentsposition={true} postId={post._id} />
+              <div className="border-t border-border">
+                <PostCardButtons
+                  com={true}
+                  postId={post._id}
+                  postNumber={postid}
+                />
+              </div>
             </div>
 
             {/* Comments Section */}

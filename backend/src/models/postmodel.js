@@ -17,7 +17,7 @@ const postSchema = new mongoose.Schema(
       type: {
         type: String,
         enum: ["image", "video", "text"],
-        default: "image",
+        default: "text",
       },
       location: { type: String },
       tags: [{ type: String }],
@@ -32,6 +32,10 @@ const postSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+postSchema.index({
+  "content.caption": "text",
+});
 // ✅ MUST export model
 const Post = mongoose.model("Post", postSchema);
 export default Post;

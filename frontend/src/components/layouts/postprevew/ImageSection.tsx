@@ -51,7 +51,7 @@ const ImageSection: React.FC<ImageSectionProps> = ({ media, index }) => {
   };
 
   return (
-    <div className="leftArea w-full md:w-8/12 h-[calc(100vh-110px)] relative flex items-center bg-background-secondary rounded-none sm:rounded-lg overflow-hidden justify-center">
+    <div className="leftArea w-full md:w-8/12 h-[calc(100vh-110px)] relative flex items-center bg-background-tertiary border-border border-none lg:border rounded-none sm:rounded-lg overflow-hidden justify-center">
       {/* Top Buttons */}
       <div className="absolute z-30 left-0 top-0 flex items-center justify-center gap-3 p-3">
         <button

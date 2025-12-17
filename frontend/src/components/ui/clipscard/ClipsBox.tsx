@@ -1,17 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
-import { AiOutlineLike } from "react-icons/ai";
-import { FaRegComments } from "react-icons/fa";
+
 import { RiShareForwardLine } from "react-icons/ri";
-import { LuBookmark } from "react-icons/lu";
 import { HiDotsHorizontal } from "react-icons/hi";
+import { MdOutlineLocationOn } from "react-icons/md";
 import GlobalSoundToggle from "./GlobalSoundToggle";
+import { PostTypes } from "@/types/postType";
+import ClipsBoxSkeleton from "./ClipsBoxSkeleton";
+import VideoCardFollow from "./buttons/VideoCardFollow";
+import VideoLikeButton from "./buttons/VideoLikeButton";
+import VideoCommentsButton from "./buttons/VideoCommentsButton";
+import VideoSaveButton from "./buttons/VideoSaveButton";
 
 interface ClipsBoxProps {
-  src: string;
+  post: PostTypes;
   isPortrait: boolean;
+  isLoading: any;
 }
 
-const ClipsBox: React.FC<ClipsBoxProps> = ({ src, isPortrait }) => {
+const ClipsBox: React.FC<ClipsBoxProps> = ({ post, isPortrait, isLoading }) => {
   const bgClass = isPortrait ? "object-cover" : "object-contain";
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -97,53 +103,61 @@ const ClipsBox: React.FC<ClipsBoxProps> = ({ src, isPortrait }) => {
     setIsPaused((prev) => !prev);
   };
 
+  if (isLoading) return <ClipsBoxSkeleton />;
   return (
     <section className="snap-center flex items-center justify-center w-full h-full px-0 md:px-4">
-      <div className="relative flex items-center justify-center w-full sm:w-fit">
+      <div className="relative flex items-center justify-center w-full sm:w-fit ">
         <GlobalSoundToggle />
         {/* 🎬 Video */}
-        <video
-          onClick={handleVideoToggle}
-          ref={videoRef}
-          src={src}
-          loop
-          playsInline
-          preload="metadata"
-          className={`bg-black rounded-none lg:rounded-xl 
-            max-h-[90vh] w-full 
-            lg:w-[calc(90vh*9/16)] 
-            h-[calc(100vh-120px)] 
-            lg:h-[90vh] 
+        {post.content.media.map((videourl, i) => {
+          return (
+            <video
+              key={i}
+              onClick={handleVideoToggle}
+              ref={videoRef}
+              src={videourl}
+              loop
+              playsInline
+              preload="metadata"
+              className={`bg-black border-none lg:border border-border   rounded-none lg:rounded-xl overflow-hidden   max-h-[90vh] w-full lg:w-[calc(90vh*9/16)] h-[calc(100vh-120px)] lg:h-[90vh] 
             ${bgClass}`}
-        />
+            />
+          );
+        })}
 
         {/* 👉 Right Action Buttons */}
-        <div className="absolute right-1 md:right-[-120px] bottom-8 z-20 flex flex-col gap-1 text-white md:text-black">
-          <ActionButton icon={<AiOutlineLike />} label="1822k" />
-          <ActionButton icon={<FaRegComments />} label="123" />
+        <div className="absolute right-1 md:right-[-120px] bottom-2 z-20 flex flex-col gap-1 text-white md:text-black">
+          <VideoLikeButton postId={post._id} />
+          <VideoCommentsButton postId={post._id} postNumber={post.postid} />
+
           <ActionButton icon={<RiShareForwardLine />} label="Share" />
-          <ActionButton icon={<LuBookmark />} label="Save" />
+          <VideoSaveButton postId={post._id} />
+
           <ActionButton icon={<HiDotsHorizontal />} />
         </div>
 
         {/* 📝 Caption */}
-        <div className="absolute left-4 bottom-6 z-20 max-w-[80%]">
+        <div className="absolute left-4 bottom-5 z-20 max-w-[80%]">
           <div className="flex items-center gap-2">
             <img
-              src="/images/profile.jpg"
+              src={post.userid.profileImage}
               className="w-8 h-8 rounded-full object-cover"
               alt=""
             />
             <span className="text-sm font-semibold text-white">
-              Siam Hossen
+              {post.userid.name}
             </span>
-            <button className="text-xs font-bold border border-white text-white px-2 py-0.5 rounded">
-              Follow
-            </button>
+            <VideoCardFollow targetUserId={post.userid._id} />
           </div>
+          {post.content.location && (
+            <span className="smalltext mt-1 text-white text-shadow-2xs flex items-center gap-0.5">
+              <MdOutlineLocationOn className="text-lg" />
+              {post.content.location}
+            </span>
+          )}
 
-          <p className="mt-2 text-sm text-white line-clamp-2">
-            A short caption for this reel — #tag @mention
+          <p className="mt-1 smalltext text-white text-shadow-2xs line-clamp-2">
+            {post.content.caption}
           </p>
         </div>
       </div>
