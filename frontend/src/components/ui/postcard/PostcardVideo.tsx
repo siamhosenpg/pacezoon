@@ -8,9 +8,10 @@ type VideoType = string;
 
 type Props = {
   videodata: VideoType[];
+  postid: number;
 };
 
-const PostcardVideo: React.FC<Props> = ({ videodata }) => {
+const PostcardVideo: React.FC<Props> = ({ videodata, postid }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const [isVisible, setIsVisible] = useState(false);
@@ -105,7 +106,7 @@ const PostcardVideo: React.FC<Props> = ({ videodata }) => {
           return (
             <Link
               key={i}
-              href="/post"
+              href={`/post/${postid}`}
               className="block w-full  h-auto overflow-hidden"
             >
               <video

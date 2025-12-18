@@ -12,13 +12,13 @@ const Discover = () => {
   if (isError) return <p>Error loading posts</p>;
 
   return (
-    <div className="Pagearea pt-4">
-      <div className=" columns-4 gap-4">
+    <div className="Pagearea pt-2 lg:pt-4">
+      <div className=" px-2 lg:px-0 columns-2 md:columns-3 xl:columns-4 2xl:columns-4 gap-2 lg:gap-4">
         {data?.posts?.map((post) => {
           return (
             <div
               key={post._id}
-              className=" break-inside-avoid mb-4 rounded-lg overflow-hidden border border-border"
+              className=" break-inside-avoid mb-2 lg:mb-4 rounded-lg overflow-hidden border border-border"
             >
               {post.content.type === "image" && (
                 <Link
@@ -31,7 +31,7 @@ const Discover = () => {
                     className=" max-h-[670px] w-full object-cover "
                   />
                   {post.content.media.length >= 2 && (
-                    <div className=" absolute bottom-3 text-shadow-2xs text-white  flex items-center gap-1">
+                    <div className=" absolute bottom-3 text-[10px] xl:text-[13px] text-shadow-2xs text-white  flex items-center gap-0.5">
                       <GoDotFill />
                       <GoDotFill />
                       <GoDotFill />

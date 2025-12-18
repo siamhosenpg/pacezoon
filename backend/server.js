@@ -23,6 +23,7 @@ import notificationRoutes from "./src/routes/notification/notificationroutes.js"
 import searchRoutes from "./src/routes/otherroutes/searchRoute.js";
 import videoPostRoutes from "./src/routes/post/videopostroute.js";
 import discoverRoutes from "./src/routes/post/discoverRoute.js";
+import peopleRoutes from "./src/routes/user/peopleRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -60,6 +61,7 @@ app.use("/notifications", notificationRoutes);
 app.use("/search", searchRoutes);
 app.use("/videos", videoPostRoutes);
 app.use("/discovers", discoverRoutes);
+app.use("/peoples", peopleRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

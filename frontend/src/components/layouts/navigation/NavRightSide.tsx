@@ -60,7 +60,7 @@ const NavRightSide = () => {
           <>
             <Link href={`/profile/${currentUser.userid}`}>
               <img
-                className="w-[34px] h-[34px] rounded-full border object-cover"
+                className="w-[34px] h-[34px] rounded-full border border-border object-cover"
                 src={currentUser.profileImage}
                 alt={currentUser.name}
               />

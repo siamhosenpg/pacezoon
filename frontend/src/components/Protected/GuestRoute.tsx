@@ -16,7 +16,7 @@ export const GuestRoute = ({ children }: Props) => {
     }
   }, [user, isLoading, router]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div></div>;
 
   return <>{children}</>;
 };

@@ -30,7 +30,9 @@ const Postbox: React.FC<PostboxProps> = ({ post }) => {
         );
 
       case "video":
-        return <PostcardVideo videodata={post.content.media} />;
+        return (
+          <PostcardVideo videodata={post.content.media} postid={post.postid} />
+        );
 
       case "audio":
         return null;

@@ -6,7 +6,7 @@ import { useAuth } from "@/hook/useAuth";
 
 interface FollowButtonProps {
   targetUserId: string;
-  variant: "lg" | "sm" | ""; // Button size variant
+  variant?: "lg" | "sm" | ""; // Button size variant
 }
 
 const FollowButton: React.FC<FollowButtonProps> = ({
