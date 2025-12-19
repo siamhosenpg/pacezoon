@@ -42,6 +42,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://pacezoon.vercel.app",
+      "https://pacezoon.vercel.app/",
       "http://192.168.31.158:3000",
     ],
     credentials: true,
