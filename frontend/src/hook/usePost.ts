@@ -17,16 +17,14 @@ export const usePost = () => {
   const currentUserId = user?.user?._id;
 
   // ----------------------------
-  // 🟢 Create Post (UPDATED)
+  // 🟢 Create Post (UPLOAD READY)
   // ----------------------------
   const createPostMutation = useMutation({
-    mutationFn: async ({ data }: { data: any }) => {
+    mutationFn: async ({ data }: { data: FormData }) => {
       if (!currentUserId) throw new Error("Unauthorized: Login required");
 
-      return createPost({
-        ...data,
-        userid: currentUserId,
-      });
+      // 🔥 FormData directly send
+      return createPost(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
@@ -71,7 +69,7 @@ export const usePost = () => {
       enabled: !!userid,
     });
 
-  const singlePost = (postId?: number) =>
+  const singlePost = (postId?: string) =>
     useQuery({
       queryKey: ["posts", postId],
       queryFn: () => getSinglePost(postId!),

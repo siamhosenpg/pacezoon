@@ -51,12 +51,19 @@ export const getPostsByUserId = async (
   }
 };
 
-// 🟢 Create new post
-export const createPost = async (
-  postData: Partial<PostTypes>
-): Promise<PostTypes> => {
+// 🟢 Create new post (TEXT + IMAGE + VIDEO)
+export const createPost = async (formData: FormData): Promise<PostTypes> => {
   try {
-    const response = await axiosInstance.post<PostTypes>("/posts", postData);
+    const response = await axiosInstance.post<PostTypes>(
+      "/posts", // ⚠️ backend route
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
     return response.data;
   } catch (error: any) {
     handleApiError(error);

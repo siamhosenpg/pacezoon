@@ -6,25 +6,12 @@ import { ImCross } from "react-icons/im";
 import { FaPlus } from "react-icons/fa";
 
 import { useAuth } from "@/hook/useAuth";
-
 import { usePost } from "@/hook/usePost";
 import { UserType } from "@/types/userType";
 import { ProtectedRoute } from "@/components/Protected/ProtectedRoute";
 import ModalPortal from "../ModalPortal";
 
 import { motion, AnimatePresence } from "framer-motion";
-
-interface PostData {
-  content: {
-    caption: string;
-    media?: string[];
-    type: "image" | "video" | "text";
-    location?: string;
-    tags?: string[];
-    mentions?: string[];
-  };
-  privacy: "public" | "private" | "friends";
-}
 
 // =============================
 // 🟦 SANITIZE FUNCTION
@@ -51,60 +38,56 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
   // 🧠 Local States
   // ----------------------------
   const [caption, setCaption] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
   const [location, setLocation] = useState("");
-  const [mediaList, setMediaList] = useState<string[]>([]);
+  const [images, setImages] = useState<File[]>([]);
   const [privacy, setPrivacy] = useState<"public" | "private" | "friends">(
     "public"
   );
 
   // ----------------------------
-  // Helpers
+  // 🖼 Handle Image Select
   // ----------------------------
-  const handleAddImage = () => {
-    if (!imageUrl.trim()) return;
-    setMediaList((prev) => [...prev, imageUrl]);
-    setImageUrl("");
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    setImages((prev) => [...prev, ...Array.from(e.target.files!)]);
   };
 
-  const detectPostType = (): "image" | "video" | "text" => {
-    if (mediaList.length > 0) {
-      const first = mediaList[0];
-      return /\.(mp4|mov|mkv)$/i.test(first) ? "video" : "image";
-    }
-    return "text";
+  // ----------------------------
+  // ❌ Remove Image
+  // ----------------------------
+  const handleRemoveImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // ----------------------------
+  // 🚀 Submit
+  // ----------------------------
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const finalCaption = sanitizeCaption(caption);
 
-    if (!finalCaption.trim() && mediaList.length === 0) {
+    if (!finalCaption.trim() && images.length === 0) {
       alert("Post cannot be empty!");
       return;
     }
 
-    const body: PostData = {
-      content: {
-        caption: finalCaption,
-        media: mediaList,
-        type: detectPostType(),
-        location,
-        tags: [],
-        mentions: [],
-      },
-      privacy,
-    };
+    const formData = new FormData();
+    formData.append("caption", finalCaption);
+    formData.append("privacy", privacy);
+    formData.append("location", location);
 
-    createPost(body, {
+    images.forEach((img) => {
+      formData.append("media", img); // backend expects "media"
+    });
+
+    createPost(formData, {
       onSuccess: () => {
         setCaption("");
-        setImageUrl("");
-        setMediaList([]);
+        setImages([]);
         setLocation("");
-        onClose(); // ✅ modal hide
-        router.push("/"); // ✅ redirect
+        onClose();
+        router.push("/");
       },
       onError: (err: any) => {
         alert(err?.message || "Failed to create post");
@@ -128,9 +111,8 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
   }
 
   // ----------------------------
-  // UI
+  // Animations
   // ----------------------------
-
   const overlayVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
@@ -138,27 +120,19 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
   };
 
   const modalVariants = {
-    hidden: {
-      y: 80,
-      opacity: 0,
-    },
+    hidden: { y: 80, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: {
-        duration: 0.35,
-        ease: "easeOut" as any,
-      },
+      transition: { duration: 0.35, ease: "easeOut" as any },
     },
     exit: {
       y: 80,
       opacity: 0,
-      transition: {
-        duration: 0.25,
-        ease: "easeIn" as any,
-      },
+      transition: { duration: 0.25, ease: "easeIn" as any },
     },
   };
+
   return (
     <ProtectedRoute>
       <ModalPortal>
@@ -168,14 +142,14 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed inset-0 z-60 flex items-end lg:items-center justify-center  bg-background-tertiary/80 backdrop-blur-xs"
+            className="fixed inset-0 z-60 flex items-end lg:items-center justify-center bg-background-tertiary/80 backdrop-blur-xs"
           >
             <motion.div
               variants={modalVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="-mt-12 w-full lg:w-2/6 rounded-2xl rounded-b-none lg:rounded-b-2xl  border border-white/30 bg-background p-6 shadow-2xl"
+              className="-mt-12 w-full lg:w-2/6 rounded-2xl rounded-b-none lg:rounded-b-2xl border border-white/30 bg-background p-6 shadow-2xl"
             >
               {/* Header */}
               <div className="mb-4 flex items-center justify-between">
@@ -199,8 +173,7 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
                   placeholder={`What's on your mind, ${user.name}?`}
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
-                  className="rounded-lg border border-border bg-white/70 p-4 text-gray-900 
-              transition-all focus:ring-2 focus:ring-blue-400"
+                  className="rounded-lg border border-border bg-white/70 p-4 text-gray-900 focus:ring-2 focus:ring-blue-400"
                 />
 
                 {/* Location */}
@@ -209,48 +182,59 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
                   placeholder="📍 Add location (optional)"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="rounded-lg border border-border bg-white/70 p-3 text-gray-900 
-              transition-all focus:ring-2 focus:ring-purple-400"
+                  className="rounded-lg border border-border bg-white/70 p-3 text-gray-900"
                 />
 
-                {/* Add Image */}
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="Image URL"
-                    className="w-full rounded-lg border border-border bg-white/70 p-3 text-gray-900"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddImage}
-                    className="rounded-lg bg-accent px-4 py-2 text-white active:scale-95"
-                  >
-                    Add
-                  </button>
-                </div>
+                {/* Modern Image Upload */}
+                <label
+                  htmlFor="image-upload"
+                  className="flex cursor-pointer flex-col items-center justify-center
+                  gap-2 rounded-xl border-2 border-dashed border-border
+                  bg-white/60 p-6 text-center transition-all
+                  hover:bg-white/80 hover:border-accent"
+                >
+                  <FaPlus className="text-xl text-accent" />
+                  <p className="text-sm font-medium text-gray-700">
+                    Click to upload images
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    PNG, JPG, JPEG (multiple allowed)
+                  </p>
+                </label>
 
-                {/* Media Preview */}
-                {mediaList.length > 0 && (
-                  <div className="w-full rounded-xl border border-white/40 bg-white/50">
-                    {detectPostType() === "image" ? (
-                      <div className="flex gap-3 overflow-x-auto p-2">
-                        {mediaList.map((url, i) => (
-                          <img
-                            key={i}
-                            src={url}
-                            className="w-2/6 rounded-xl border"
-                          />
-                        ))}
+                <input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageSelect}
+                  className="hidden"
+                />
+
+                {/* Image Preview */}
+                {images.length > 0 && (
+                  <div className="flex gap-3 overflow-x-auto rounded-xl border border-white/40 bg-white/50 p-2">
+                    {images.map((img, i) => (
+                      <div key={i} className="relative w-2/6 shrink-0">
+                        {/* Remove Button */}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(i)}
+                          className="absolute right-1 top-1 z-10
+                          flex h-6 w-6 items-center justify-center
+                          rounded-full bg-black/70 text-white
+                          hover:bg-red-600"
+                        >
+                          <ImCross size={10} />
+                        </button>
+
+                        <img
+                          src={URL.createObjectURL(img)}
+                          className="w-full rounded-xl border object-cover"
+                          alt="preview"
+                        />
                       </div>
-                    ) : (
-                      <video
-                        src={mediaList[0]}
-                        controls
-                        className="w-full rounded-xl border"
-                      />
-                    )}
+                    ))}
                   </div>
                 )}
 
@@ -273,8 +257,7 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
                   <button
                     type="submit"
                     disabled={createPostLoading}
-                    className="rounded-lg bg-accent px-8 py-3 text-white 
-                transition-all hover:scale-105 active:scale-95"
+                    className="rounded-lg bg-accent px-8 py-3 text-white hover:scale-105 active:scale-95"
                   >
                     {createPostLoading ? "Posting..." : "Share"}
                   </button>

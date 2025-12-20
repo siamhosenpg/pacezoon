@@ -1,4 +1,5 @@
 import express from "express";
+import upload from "../middleware/upload.js";
 import {
   getPosts,
   createPost,
@@ -15,7 +16,7 @@ const router = express.Router();
 router.get("/user/:userid", getPostsByUserId); // নির্দিষ্ট ইউজারের সব পোস্ট
 router.get("/", getPosts); // সব পোস্ট দেখাবে
 
-router.post("/", protect, createPost); // নতুন পোস্ট তৈরি
+router.post("/", protect, upload.array("media", 10), createPost); // নতুন পোস্ট তৈরি
 router.put("/:id", protect, updatePost); // পোস্ট এডিট
 router.delete("/:id", protect, deletePost); // পোস্ট ডিলিট
 router.get("/post/:id", getPostByMongoId);

@@ -78,7 +78,7 @@ const PostCardButtons: React.FC<Props> = ({ postId, postNumber, com }) => {
             onClick={handleToggleLike}
             disabled={isMutating}
             className={`flex gap-1 items-center transition-opacity cursor-pointer  py-1 ${
-              isMutating ? "opacity-50" : ""
+              isMutating ? "text-accent" : ""
             }`}
           >
             {userReaction === "like" ? (

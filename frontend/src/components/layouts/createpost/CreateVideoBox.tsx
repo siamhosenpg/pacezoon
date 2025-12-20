@@ -13,18 +13,6 @@ import ModalPortal from "../ModalPortal";
 
 import { motion, AnimatePresence } from "framer-motion";
 
-interface PostData {
-  content: {
-    caption: string;
-    media?: string[];
-    type: "video";
-    location?: string;
-    tags?: string[];
-    mentions?: string[];
-  };
-  privacy: "public" | "private" | "friends";
-}
-
 /* 🧼 Sanitize */
 const sanitizeCaption = (text: string) =>
   text.replace(/\n{3,}/g, "\n\n").replace(/ {6,}/g, "     ");
@@ -44,49 +32,71 @@ const CreateVideoBox = ({ onClose }: CreateVideoBoxProps) => {
 
   /* 🧠 States */
   const [caption, setCaption] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
+  const [videoFile, setVideoFile] = useState<File | null>(null);
   const [location, setLocation] = useState("");
   const [privacy, setPrivacy] = useState<"public" | "private" | "friends">(
     "public"
   );
 
-  /* 🎯 Submit */
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  // ----------------------------
+  // 🎥 Handle Video Select
+  // ----------------------------
+  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
 
-    const finalCaption = sanitizeCaption(caption);
+    const file = e.target.files[0];
 
-    if (!videoUrl.trim()) {
-      alert("Video link is required!");
+    if (!file.type.startsWith("video")) {
+      alert("Only video files are allowed");
       return;
     }
 
-    const body: PostData = {
-      content: {
-        caption: finalCaption,
-        media: [videoUrl], // ✅ only one video
-        type: "video",
-        location,
-        tags: [],
-        mentions: [],
-      },
-      privacy,
-    };
+    setVideoFile(file); // ✅ single video
+  };
 
-    createPost(body, {
+  // ----------------------------
+  // ❌ Remove Video
+  // ----------------------------
+  const handleRemoveVideo = () => {
+    setVideoFile(null);
+  };
+
+  // ----------------------------
+  // 🚀 Submit
+  // ----------------------------
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!videoFile) {
+      alert("Video file is required!");
+      return;
+    }
+
+    const finalCaption = sanitizeCaption(caption);
+
+    const formData = new FormData();
+    formData.append("caption", finalCaption);
+    formData.append("privacy", privacy);
+    formData.append("location", location);
+    formData.append("media", videoFile); // 👈 single video
+
+    createPost(formData, {
       onSuccess: () => {
         setCaption("");
-        setVideoUrl("");
+        setVideoFile(null);
         setLocation("");
         onClose();
         router.push("/");
       },
       onError: (err: any) => {
-        alert(err?.message || "Failed to create video post");
+        alert(err?.message || "Failed to upload video");
       },
     });
   };
 
+  // ----------------------------
+  // Auth Handling
+  // ----------------------------
   if (isLoading) {
     return <div className="p-4 text-center">Loading...</div>;
   }
@@ -129,16 +139,14 @@ const CreateVideoBox = ({ onClose }: CreateVideoBoxProps) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed inset-0 z-60 flex items-end lg:items-center justify-center
-            bg-background-tertiary/80 backdrop-blur-xs"
+            className="fixed inset-0 z-60 flex items-end lg:items-center justify-center bg-background-tertiary/80 backdrop-blur-xs"
           >
             <motion.div
               variants={modalVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="-mt-12 w-full lg:w-2/6 rounded-2xl rounded-b-none
-              lg:rounded-b-2xl border border-white/30 bg-background p-6 shadow-2xl"
+              className="-mt-12 w-full lg:w-2/6 rounded-2xl rounded-b-none lg:rounded-b-2xl border border-white/30 bg-background p-6 shadow-2xl"
             >
               {/* Header */}
               <div className="mb-4 flex items-center justify-between">
@@ -148,8 +156,7 @@ const CreateVideoBox = ({ onClose }: CreateVideoBoxProps) => {
                 </h2>
                 <button
                   onClick={onClose}
-                  className="flex h-10 w-10 items-center justify-center
-                  rounded-full bg-background-secondary"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-background-secondary"
                 >
                   <ImCross />
                 </button>
@@ -163,27 +170,48 @@ const CreateVideoBox = ({ onClose }: CreateVideoBoxProps) => {
                   placeholder={`Say something about your video, ${user.name}`}
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
-                  className="rounded-lg border border-border bg-white/70
-                  p-4 text-gray-900 focus:ring-2 focus:ring-blue-400"
+                  className="rounded-lg border border-border bg-white/70 p-4 text-gray-900 focus:ring-2 focus:ring-blue-400"
                 />
 
-                {/* Video URL */}
+                {/* Modern Video Upload */}
+                <label
+                  htmlFor="video-upload"
+                  className="flex cursor-pointer flex-col items-center justify-center
+                  gap-2 rounded-xl border-2 border-dashed border-border
+                  bg-white/60 p-6 text-center transition-all
+                  hover:bg-white/80 hover:border-accent"
+                >
+                  <FaVideo className="text-xl text-accent" />
+                  <p className="text-sm font-medium text-gray-700">
+                    Click to upload video
+                  </p>
+                  <p className="text-xs text-gray-500">MP4, MOV, MKV</p>
+                </label>
+
                 <input
-                  type="text"
-                  placeholder="🎬 Video URL (mp4, mov)"
-                  value={videoUrl}
-                  onChange={(e) => setVideoUrl(e.target.value)}
-                  className="rounded-lg border border-border bg-white/70
-                  p-3 text-gray-900"
+                  id="video-upload"
+                  type="file"
+                  accept="video/*"
+                  onChange={handleVideoSelect}
+                  className="hidden"
                 />
 
                 {/* Video Preview */}
-                {videoUrl && (
-                  <video
-                    src={videoUrl}
-                    controls
-                    className="w-full max-h-[300px] rounded-xl border border-border"
-                  />
+                {videoFile && (
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={handleRemoveVideo}
+                      className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/70 text-white hover:bg-red-600"
+                    >
+                      <ImCross size={12} />
+                    </button>
+                    <video
+                      src={URL.createObjectURL(videoFile)}
+                      controls
+                      className="w-full max-h-[300px] rounded-xl border border-border"
+                    />
+                  </div>
                 )}
 
                 {/* Location */}
@@ -192,8 +220,7 @@ const CreateVideoBox = ({ onClose }: CreateVideoBoxProps) => {
                   placeholder="📍 Add location (optional)"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="rounded-lg border border-border bg-white/70
-                  p-3 text-gray-900"
+                  className="rounded-lg border border-border bg-white/70 p-3 text-gray-900"
                 />
 
                 {/* Bottom */}
@@ -205,8 +232,7 @@ const CreateVideoBox = ({ onClose }: CreateVideoBoxProps) => {
                         e.target.value as "public" | "private" | "friends"
                       )
                     }
-                    className="w-[45%] rounded-lg border border-border
-                    bg-white/70 p-3 text-gray-900"
+                    className="w-[45%] rounded-lg border border-border bg-white/70 p-3 text-gray-900"
                   >
                     <option value="public">🌍 Public</option>
                     <option value="friends">👥 Friends</option>
@@ -216,8 +242,7 @@ const CreateVideoBox = ({ onClose }: CreateVideoBoxProps) => {
                   <button
                     type="submit"
                     disabled={createPostLoading}
-                    className="rounded-lg bg-accent px-8 py-3 text-white
-                    transition-all hover:scale-105 active:scale-95"
+                    className="rounded-lg bg-accent px-8 py-3 text-white transition-all hover:scale-105 active:scale-95"
                   >
                     {createPostLoading ? "Posting..." : "Upload"}
                   </button>

@@ -21,6 +21,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
     currentUser || ""
   );
   const followMutation = useFollowUser();
+  const followPanding = followMutation.isPending;
 
   // 🔥 নিজের account-এ follow button hide
   if (!currentUser || currentUser === targetUserId) {
@@ -56,7 +57,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
     <button
       onClick={handleFollow}
       disabled={isFollowing || followMutation.isPending}
-      className={`block text-sm font-semibold border rounded-md transition-all 
+      className={`block text-sm font-semibold border rounded-md transition-all cursor-pointer 
         ${
           variant === "lg"
             ? "py-1.5 px-8 bg-accent text-white "
@@ -69,6 +70,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
         }
       `}
     >
+      {followPanding && "Following..."}
       {isFollowing ? "Following" : "Follow"}
     </button>
   );

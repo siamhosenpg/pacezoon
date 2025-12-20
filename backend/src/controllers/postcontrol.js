@@ -50,32 +50,80 @@ export const getPostsByUserId = async (req, res) => {
   }
 };
 // 🟢 Create new post (login user required)
+
+// 🟢 Create new post (login required)
 export const createPost = async (req, res) => {
   try {
     if (!req.user || !req.user.id) {
       return res.status(401).json({ message: "Login required to create post" });
     }
 
-    // ✅ Generate random postid (7 digit number)
-    const randomPostId = Math.floor(10000500 + Math.random() * 90600000); // 1000000 - 9999999
+    const { caption, privacy, location, tags, mentions } = req.body;
 
-    const newPost = new Post({
+    const files = req.files || []; // multer gives array
+    let mediaUrls = [];
+    let contentType = "text";
+
+    // 🧠 If media exists
+    if (files.length > 0) {
+      const images = files.filter((file) => file.mimetype.startsWith("image"));
+      const videos = files.filter((file) => file.mimetype.startsWith("video"));
+
+      // ❌ image + video together not allowed
+      if (images.length > 0 && videos.length > 0) {
+        return res.status(400).json({
+          message: "You can upload either images or a video, not both",
+        });
+      }
+
+      // 🎥 Only one video allowed
+      if (videos.length > 1) {
+        return res.status(400).json({
+          message: "Only one video is allowed",
+        });
+      }
+
+      // 🖼 Multiple images allowed
+      if (images.length > 0) {
+        contentType = "image";
+        mediaUrls = images.map((file) => file.path); // Cloudinary URLs
+      }
+
+      // 🎥 Single video
+      if (videos.length === 1) {
+        contentType = "video";
+        mediaUrls = [videos[0].path];
+      }
+    }
+
+    // ✅ Generate random postid (7–8 digit safe)
+    const randomPostId = Math.floor(1000000 + Math.random() * 9000000);
+
+    const newPost = await Post.create({
       postid: randomPostId,
-      userid: req.user.id, // Logged-in user id automatically
-      content: req.body.content,
-      privacy: req.body.privacy || "public",
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      userid: req.user.id,
+      content: {
+        caption,
+        media: mediaUrls,
+        type: contentType,
+        location,
+        tags,
+        mentions,
+      },
+      privacy: privacy || "public",
     });
 
-    const savedPost = await newPost.save();
+    await newPost.populate("userid", "name username profileImage");
 
-    // Populate user info in response
-    await savedPost.populate("userid", "name username profileImage");
-
-    res.status(201).json(savedPost);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(201).json({
+      success: true,
+      post: newPost,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
