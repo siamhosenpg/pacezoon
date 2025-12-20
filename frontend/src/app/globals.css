@@ -1,145 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  --accent: #00914d;
-  --accent-secondary: #00d672;
-  --accent-transprant: #09330946;
-  --text: #1b1b1b;
-  --text-secondary: #3a3a3a;
-  --text-therdiary: #585858;
   --background: #ffffff;
-  --background-secondary: #f7f7f7;
-  --background-tertiary: #dddddd;
-  --background-transparent: #0000003b;
-
-  --background-gradient: linear-gradient(90deg, #0cce7d, #a80404);
-  --foreground: #1b1b1b;
-  --border: #e7e7e7;
+  --foreground: #171717;
 }
 
 @theme inline {
-  --color-accent: var(--accent);
-  --color-accent-transprant: var(--accent-transprant);
-  --color-text: var(--text);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-tertiary: var(--text-therdiary);
   --color-background: var(--background);
-  --color-background-secondary: var(--background-secondary);
-  --color-background-tertiary: var(--background-tertiary);
-  --color-background-transparent: var(--background-transparent);
-  --color-background-gradient: var(--background-gradient);
   --color-foreground: var(--foreground);
-  --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
 body {
-  background: var(--background-secondary);
+  background: var(--background);
   color: var(--foreground);
-
-  font-size: 14px;
-}
-.smalltext {
-  font-size: 12px;
-  font-weight: 500;
-}
-* {
-  box-sizing: border-box;
-}
-
-.Pagearea {
-  width: 1500px;
-  margin: auto;
-}
-
-input,
-textarea,
-select,
-button {
-  font-family: inherit;
-  font-size: inherit;
-  outline: none;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media screen and (min-width: 1900px) {
-  .Pagearea {
-    width: 1500px;
-  }
-}
-
-@media screen and (max-width: 1600px) {
-  .Pagearea {
-    width: 100%;
-    padding-left: 3%;
-    padding-right: 3%;
-  }
-}
-@media screen and (max-width: 1100px) {
-  .Pagearea {
-    width: 100%;
-    padding-left: 4%;
-    padding-right: 4%;
-  }
-}
-@media screen and (max-width: 600px) {
-  .Pagearea {
-    width: 100%;
-    padding-left: 0%;
-    padding-right: 0%;
-  }
-}
-
-/* ============================
-   Firefox
-   ============================ */
-/* scrollbar-color: thumb track; */
-.ScrollSystem {
-  /* 'thin' বা 'auto' ব্যবহার করা যায় */
-  scrollbar-width: thin;
-  scrollbar-color: rgb(226, 226, 226) transparent;
-}
-
-/* ============================
-   WebKit (Chrome, Edge, Safari)
-   ============================ */
-/* scrollbar width */
-.ScrollSystem::-webkit-scrollbar {
-  width: 12px; /* vertical scrollbar width */
-  height: 12px; /* horizontal scrollbar height */
-  background: transparent; /* ensure no background behind scrollbar */
-}
-
-/* track (the background area) */
-.ScrollSystem::-webkit-scrollbar-track {
-  background: transparent; /* background-less track */
-}
-
-/* thumb (the draggable part) */
-.ScrollSystem::-webkit-scrollbar-thumb {
-  background: silver; /* silver thumb */
-  border-radius: 10px; /* rounded corners */
-  border: 3px solid transparent; /* space between thumb and track */
-  background-clip: padding-box; /* keeps the border transparent */
-}
-
-/* optional: hover effect for better affordance */
-.ScrollSystem::-webkit-scrollbar-thumb:hover {
-  background: #c0c0c0; /* slightly darker on hover */
-}
-
-.ScrollbarHide::-webkit-scrollbar {
-  display: none;
-}
-.ScrollbarHide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-.ScrollbarHide::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  font-family: Arial, Helvetica, sans-serif;
 }
