@@ -11,6 +11,9 @@ import { HiDotsVertical } from "react-icons/hi";
 import { useAuth } from "@/hook/useAuth";
 import FollowButton from "@/components/ui/buttons/FollowButton";
 import CreatePostCard from "../createpost/CreatePostCard";
+import MessageButton from "@/components/ui/buttons/MessageButton";
+import { ConversationType } from "@/types/message/Conversation";
+import ChatBox from "../chat/ChatBox";
 
 interface ProfileTopButtonsProps {
   userId: string; // incoming profile owner userId
@@ -21,6 +24,8 @@ const ProfileTopButtons: React.FC<ProfileTopButtonsProps> = ({ userId }) => {
   const [open, setOpen] = useState(false);
   // Safe auth user ID
   const authUserId: string | undefined = user?.user?._id;
+  const [activeConversation, setActiveConversation] =
+    useState<ConversationType | null>(null);
 
   if (isLoading) return <div>Loading...</div>;
   if (!authUserId) return null; // prevent crash if user isn't loaded
@@ -62,6 +67,12 @@ const ProfileTopButtons: React.FC<ProfileTopButtonsProps> = ({ userId }) => {
           <FollowButton targetUserId={userId} variant="lg" />
         </div>
       )}
+      <MessageButton
+        userId={userId}
+        onConversationOpen={(conversation) =>
+          setActiveConversation(conversation)
+        }
+      />
 
       <button
         className="w-1/12 flex items-center justify-center bg-background-secondary 

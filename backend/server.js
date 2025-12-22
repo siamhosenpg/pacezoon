@@ -5,9 +5,13 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
+import http from "http"; // <-- important
 
 import { PORT } from "./src/config/config.js";
 import { connectDB } from "./src/config/db.js";
+
+// Import socket
+import { initSocket } from "./src/socket/socket.js";
 
 // Import routes (must include .js extension)
 import authRoutes from "./src/routes/authRoutes.js";
@@ -24,6 +28,8 @@ import searchRoutes from "./src/routes/otherroutes/searchRoute.js";
 import videoPostRoutes from "./src/routes/post/videopostroute.js";
 import discoverRoutes from "./src/routes/post/discoverRoute.js";
 import peopleRoutes from "./src/routes/user/peopleRoutes.js";
+import messageRoutes from "./src/routes/message/messageRoutes.js";
+import conversationRoutes from "./src/routes/message/conversationRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -69,6 +75,9 @@ app.use("/videos", videoPostRoutes);
 app.use("/discovers", discoverRoutes);
 app.use("/peoples", peopleRoutes);
 
+app.use("/messages", messageRoutes);
+app.use("/conversations", conversationRoutes);
+
 // Test Route
 app.get("/", (req, res) => {
   res.send("API is running...");
@@ -86,10 +95,17 @@ app.get("/maybe", optionalAuth, (req, res) => {
   return res.json({ message: "Hello guest" });
 });
 
-// Start the server
+// Start server with socket.io
 (async () => {
   await connectDB();
-  app.listen(PORT, () =>
+
+  // Create HTTP server
+  const server = http.createServer(app);
+
+  // Initialize socket.io
+  initSocket(server);
+
+  server.listen(port, () =>
     console.log(`Server running http://localhost:${port}`)
   );
 })();

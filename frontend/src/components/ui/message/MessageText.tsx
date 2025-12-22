@@ -1,6 +1,17 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
-const MessageText = () => {
+import { MessageType } from "@/types/message/Message";
+
+type Props = {
+  messages: MessageType[];
+};
+const MessageText = ({ messages }: Props) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
   return (
     <div className="  w-full ">
       <div className="w-full flex flex-col items-start mt-4">
@@ -12,6 +23,19 @@ const MessageText = () => {
           <span>Sent</span> <span>3:54AM</span>
         </div>
       </div>
+      {messages.map((msg) => (
+        <div key={msg._id} className="flex items-start gap-2">
+          <img
+            src={msg.sender?.profileImage}
+            alt={msg.sender?.username}
+            className="w-8 h-8 rounded-full"
+          />
+          <div>
+            <p className="text-sm font-semibold">{msg.sender?.username}</p>
+            <p className="text-sm">{msg?.text}</p>
+          </div>
+        </div>
+      ))}
 
       <div className="w-full flex flex-col items-end mt-4 ">
         <p className=" max-w-[70%] px-4 py-3 mt-1 bg-accent text-white font-medium w-fit rounded-xl">

@@ -4,6 +4,7 @@ import "./globals.css";
 
 import ShowNavigation from "@/components/layouts/navigation/ShowNavigation";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import { SocketProvider } from "@/context/SocketProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -27,10 +28,12 @@ export default async function RootLayout({
         className={`  ${inter.className}  antialiased bg-background-secondary`}
       >
         <ReactQueryProvider>
-          {/* Navigation এখন শর্ত অনুযায়ী show/hide হবে */}
-          <ShowNavigation />
+          <SocketProvider>
+            {/* Navigation এখন শর্ত অনুযায়ী show/hide হবে */}
+            <ShowNavigation />
 
-          {children}
+            {children}
+          </SocketProvider>
         </ReactQueryProvider>
       </body>
     </html>
