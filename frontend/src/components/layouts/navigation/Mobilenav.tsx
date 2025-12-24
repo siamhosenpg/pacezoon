@@ -3,9 +3,9 @@ import { NavigationData } from "./navigationdata";
 import Link from "next/link";
 const Mobilenav = () => {
   return (
-    <div className=" w-full fixed lg:hidden bottom-0 z-50 bg-background border-t border-border">
-      <div className="NavMobile   h-15 flex  items-center">
-        <ul className=" w-full grid grid-cols-5 items-center justify-center px-2 py-1  gap-2">
+    <div className=" w-full  lg:hidden ">
+      <div className="NavMobile   h-12 pb-2 flex  items-center">
+        <ul className=" w-full flex items-center justify-between px-2  gap-2">
           {NavigationData.map((item) => {
             const Icon = item.icon;
 
@@ -13,13 +13,15 @@ const Mobilenav = () => {
               <Link
                 href={item.href}
                 key={item.name}
-                className=" flex flex-col  shrink-0  items-center px-6 py-2 hover:bg-background-secondary rounded cursor-pointer"
+                className=" flex flex-col  shrink-0  items-center   hover:bg-background-secondary rounded cursor-pointer"
               >
-                <div className=" text-[24px] relative">
+                <div className=" text-[26px] relative">
                   {Icon && <Icon />}
                   <div className="bg-green-600 hidden w-[11px] h-[11px] rounded-full border-background border-2 absolute top-0 right-0"></div>
                 </div>
-                <span className="  text-[10px] font-medium  ">{item.name}</span>
+                <span className="  text-[10px] font-medium hidden   ">
+                  {item.name}
+                </span>
               </Link>
             );
           })}

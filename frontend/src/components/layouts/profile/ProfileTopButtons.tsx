@@ -13,7 +13,6 @@ import FollowButton from "@/components/ui/buttons/FollowButton";
 import CreatePostCard from "../createpost/CreatePostCard";
 import MessageButton from "@/components/ui/buttons/MessageButton";
 import { ConversationType } from "@/types/message/Conversation";
-import ChatBox from "../chat/ChatBox";
 
 interface ProfileTopButtonsProps {
   userId: string; // incoming profile owner userId

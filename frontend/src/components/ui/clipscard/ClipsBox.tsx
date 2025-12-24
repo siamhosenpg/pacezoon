@@ -119,7 +119,7 @@ const ClipsBox: React.FC<ClipsBoxProps> = ({ post, isPortrait, isLoading }) => {
               loop
               playsInline
               preload="metadata"
-              className={`bg-black border-none lg:border border-border   rounded-none lg:rounded-xl overflow-hidden   max-h-[90vh] w-full lg:w-[calc(90vh*9/16)] h-[calc(100vh-116px)] lg:h-[90vh] 
+              className={`bg-black border-none lg:border border-border   rounded-none lg:rounded-xl overflow-hidden   max-h-[90vh] w-full lg:w-[calc(90vh*9/16)] h-[calc(100vh-104px)] lg:h-[90vh] 
             ${bgClass}`}
             />
           );

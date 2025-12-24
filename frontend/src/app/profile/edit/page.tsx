@@ -12,41 +12,38 @@ const EditProfilePage = () => {
   const [form, setForm] = useState({
     name: "",
     username: "",
-    profileImage: "",
-    coverImage: "",
     bio: "",
     aboutText: "",
     gender: "",
     work: "",
     location: "",
     educations: "",
-    password: "",
   });
 
+  // Load existing user data
   useEffect(() => {
-    if (user && user.user) {
+    if (user?.user) {
       setForm({
         name: user.user.name || "",
         username: user.user.username || "",
-        profileImage: user.user.profileImage || "",
-        coverImage: user.user.coverImage || "",
         bio: user.user.bio || "",
         aboutText: user.user.aboutText || "",
         gender: user.user.gender || "",
         work: user.user.work || "",
         location: user.user.location || "",
         educations: user.user.educations || "",
-        password: "",
       });
     }
   }, [user]);
 
+  // Text input handler
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Submit handler
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateUser.mutate({
@@ -64,27 +61,21 @@ const EditProfilePage = () => {
           <h2 className="text-3xl font-bold mb-6 text-center">Edit Profile</h2>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            {/* Single Input Group */}
+            {/* TEXT INPUTS */}
             {[
-              { label: "Full Name", name: "name", type: "text" },
-              { label: "Username", name: "username", type: "text" },
-              {
-                label: "Profile Image URL",
-                name: "profileImage",
-                type: "text",
-              },
-              { label: "Cover Image URL", name: "coverImage", type: "text" },
-              { label: "Gender", name: "gender", type: "text" },
-              { label: "Work", name: "work", type: "text" },
-              { label: "Location", name: "location", type: "text" },
-              { label: "Education", name: "educations", type: "text" },
+              { label: "Full Name", name: "name" },
+              { label: "Username", name: "username" },
+              { label: "Gender", name: "gender" },
+              { label: "Work", name: "work" },
+              { label: "Location", name: "location" },
+              { label: "Education", name: "educations" },
             ].map((field) => (
               <div key={field.name}>
                 <label className="block mb-1 font-medium text-sm text-foreground/80">
                   {field.label}
                 </label>
                 <input
-                  type={field.type}
+                  type="text"
                   name={field.name}
                   value={form[field.name as keyof typeof form]}
                   onChange={handleChange}
@@ -94,7 +85,7 @@ const EditProfilePage = () => {
               </div>
             ))}
 
-            {/* TEXTAREAS */}
+            {/* BIO */}
             <div>
               <label className="block mb-1 font-medium text-sm text-foreground/80">
                 Bio
@@ -109,6 +100,7 @@ const EditProfilePage = () => {
               />
             </div>
 
+            {/* ABOUT */}
             <div>
               <label className="block mb-1 font-medium text-sm text-foreground/80">
                 About
@@ -122,22 +114,6 @@ const EditProfilePage = () => {
                          focus:outline-none focus:ring-2 focus:ring-primary transition resize-none"
               />
             </div>
-
-            {/* PASSWORD */}
-            {/* <div>
-            <label className="block mb-1 font-medium text-sm text-foreground/80">
-              Password (optional)
-            </label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Leave blank to keep same password"
-              value={form.password}
-              onChange={handleChange}
-              className="w-full px-4 py-3 bg-background-secondary border border-border rounded-xl 
-                         focus:outline-none focus:ring-2 focus:ring-primary transition"
-            />
-          </div> */}
 
             {/* SUBMIT BUTTON */}
             <button

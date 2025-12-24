@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { MdLocationPin } from "react-icons/md";
 import { MdWork } from "react-icons/md";
 import { UserType } from "@/types/userType";
@@ -6,11 +7,23 @@ import { UserType } from "@/types/userType";
 import ProfileTopCountStatus from "./ProfileTopCountStatus";
 import ProfileTopButtons from "./ProfileTopButtons";
 
+import { TbPhotoEdit } from "react-icons/tb";
+
+import EditProfileImages from "../updateprofile/EditProfileImages";
+import { useAuth } from "@/hook/useAuth";
+
 interface ProfileTopimageProps {
   user: UserType;
 }
 
 const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
+  const { user: authuser, isLoading } = useAuth();
+  const [open, setOpen] = useState(false);
+  const authUserId: string | undefined = authuser?.user?._id;
+  if (isLoading) return <div>Loading...</div>;
+  if (!authUserId) return null; // prevent crash if user isn't loaded
+
+  const isMyProfile = authUserId === user._id;
   return (
     <div className="bg-background rounded-none lg:rounded-lg mb-4 overflow-hidden w-full pb-8">
       <div className="profiletopimage relative p-2 lg:p-6 overflow-hidden w-full">
@@ -25,13 +38,23 @@ const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
       </div>
 
       <div className="profiletopimagedescrition relative z-30  flex flex-col lg:flex-row items-start lg:items-center justify-start gap-4 px-6 lg:px-10  py-2 mt-[-60px]  rounded-lg">
-        <div className="pfimage w-[110px] lg:w-[140px] shrink-0 h-[110px] lg:h-[140px] rounded-full overflow-hidden p-[5px] bg-background ">
+        <div className="pfimage relative  w-[110px] lg:w-[140px] shrink-0 h-[110px] lg:h-[140px] rounded-full  p-[5px] bg-background ">
           <img
             loading="lazy"
             src={user?.profileImage}
             alt=""
             className="w-full object-cover h-full rounded-full border-border border"
           />
+          {isMyProfile && (
+            <div
+              onClick={() => setOpen(true)}
+              className="  absolute right-2 bottom-2 border-border border cursor-pointer flex items-center justify-center z-30 w-8 h-8 bg-white rounded-full "
+            >
+              <TbPhotoEdit className="text-lg " />
+            </div>
+          )}
+
+          {open && <EditProfileImages onClose={() => setOpen(false)} />}
         </div>
         <div className=" w-full pfdescription mt-0 lg:mt-6 flex flex-col lg:flex-row items-start lg:items-center gap-2 justify-between">
           <div className="w-full lg:w-5/12">

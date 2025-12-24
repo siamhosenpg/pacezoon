@@ -32,11 +32,11 @@ const Searchboxnav: React.FC = () => {
       <form
         onSubmit={handleSubmit}
         action=""
-        className="flex items-center justify-between bg-background lg:bg-background-secondary rounded-full"
+        className="flex items-center justify-between bg-background-secondary rounded-full"
       >
         <input
           type="text"
-          className="px-3 hidden lg:block py-2 font-semibold w-full rounded-full bg-background-secondary focus:outline-none"
+          className="px-3  py-2 font-semibold w-full rounded-full bg-background-secondary focus:outline-none"
           placeholder="Search your items here..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}

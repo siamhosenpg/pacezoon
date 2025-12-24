@@ -44,7 +44,7 @@ export default function ReelsPage() {
   return (
     <div>
       {!posts && "No Video Available"}
-      <main className="h-[calc(100vh-116px)]  lg:h-[calc(100vh-72px)] overflow-y-scroll ScrollbarHide snap-y snap-mandatory scroll-smooth">
+      <main className="h-[calc(100vh-104px)]   lg:h-[calc(100vh-72px)] overflow-y-scroll ScrollbarHide snap-y snap-mandatory scroll-smooth">
         {posts.map(({ post, isPortrait }) => (
           <ClipsBox
             key={post._id}

@@ -54,8 +54,6 @@ export interface UserType {
   name: string;
   email: string;
   password: string;
-  profileImage?: string;
-  coverImage: string;
   bio?: string;
   gender: "male" | "female" | "other";
   dateOfBirth: string;
@@ -65,6 +63,9 @@ export interface UserType {
   work?: string;
   educations?: string;
   aboutText?: string;
+  // 👇 important for TS
+  profileImage?: string | File;
+  coverImage?: string | File;
 
   blockedUsers: string[]; // array of Mongo ObjectId strings
 

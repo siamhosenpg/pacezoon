@@ -3,22 +3,23 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateUserProfile } from "@/lib/api/userApi";
 import { useRouter } from "next/navigation";
+import type { UserType } from "@/types/userType";
 
 export function useUpdateUser() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (data: any) => updateUserProfile(data), // <-- এখানে data.userid যাবে
-    onSuccess: ({ user, message }) => {
-      // cache update
-      queryClient.setQueryData(["currentUser"], user);
+    mutationFn: (data: UserType) => updateUserProfile(data),
 
-      // ✅ Direct redirect to home page
-      router.push("/");
+    onSuccess: (data) => {
+      // assuming backend returns { user, message }
+      queryClient.setQueryData(["currentUser"], data.user);
+      router.push(`/profile/${data.user.username}`);
     },
+
     onError: (err: any) => {
-      alert(err.response?.data?.message || "Something went wrong");
+      alert(err?.response?.data?.message || "Something went wrong");
     },
   });
 }

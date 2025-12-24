@@ -30,40 +30,28 @@ export const getUserById = async (req, res) => {
   }
 };
 
-///** ✅ Update user
-// */
+// 🟢 Update user (with profile & cover image upload)
 export const updateUser = async (req, res) => {
   try {
-    const userid = Number(req.params.userid); // numeric userid
-    const loggedInUserId = req.user.id; // MongoDB _id (string)
+    const userid = Number(req.params.userid);
+    const loggedInUserId = req.user.id;
 
-    // Step 1: First find user by numeric userid
     const user = await User.findOne({ userid });
-    console.log("FOUND USER:", user);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    if (user._id.toString() !== loggedInUserId)
+      return res
+        .status(403)
+        .json({ message: "You can only edit your own profile" });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Step 2: Compare user._id with loggedIn user id
-    if (user._id.toString() !== loggedInUserId) {
-      return res.status(403).json({
-        message: "You can only edit your own profile",
-      });
-    }
-
-    // Allowed fields
     const allowedFields = [
       "name",
       "username",
       "bio",
-      "profileImage",
-      "coverImage",
       "aboutText",
       "gender",
       "work",
       "location",
-      "education",
+      "educations", // FE field name
     ];
 
     const updateData = {};
@@ -72,21 +60,37 @@ export const updateUser = async (req, res) => {
       if (req.body[field] !== undefined) updateData[field] = req.body[field];
     });
 
-    // Password handle
+    // password update
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
       updateData.password = await bcrypt.hash(req.body.password, salt);
     }
 
-    // Step 3: Update with MongoDB _id
-    const updatedUser = await User.findByIdAndUpdate(user._id, updateData, {
-      new: true,
-    }).select("-password");
+    // profile & cover images
+    if (req.files) {
+      if (req.files.profileImage) {
+        updateData.profileImage = req.files.profileImage[0].path;
+      }
+      if (req.files.coverImage) {
+        updateData.coverImage = req.files.coverImage[0].path;
+      }
+    }
 
-    res.status(200).json({
-      message: "User updated successfully",
-      user: updatedUser,
-    });
+    if (Object.keys(updateData).length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No valid data provided to update" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      { $set: updateData },
+      { new: true }
+    ).select("-password");
+
+    res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
   } catch (err) {
     res.status(500).json({ message: "Cannot update user", error: err.message });
   }

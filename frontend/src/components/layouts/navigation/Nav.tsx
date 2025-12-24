@@ -7,6 +7,7 @@ import Link from "next/link";
 import { NavigationData } from "./navigationdata";
 import Searchboxnav from "../../ui/Searchboxnav";
 import NavRightSide from "./NavRightSide";
+import Mobilenav from "./Mobilenav";
 
 const Nav = () => {
   const router = useRouter();
@@ -31,14 +32,14 @@ const Nav = () => {
   };
 
   return (
-    <nav className="w-full  border-b border-border fixed top-0 left-0 bg-background z-50 px-4 lg:px-6 ">
-      <div className="Pagearea flex gap-0 sm:gap-2 lg:gap-4 justify-between items-center h-14 lg:h-17">
+    <nav className="w-full pt-1 lg:pt-0  border-b border-border fixed top-0 left-0 bg-background z-50 px-4 lg:px-6 ">
+      <div className="Pagearea  flex gap-2 lg:gap-4 justify-between items-center h-14 lg:h-17">
         {/* Logo + Search */}
-        <div className="flex items-center justify-between lg:justify-start gap-4 w-full lg:w-3/12">
-          <h1 className="w-28 h-full flex items-center justify-center overflow-hidden">
+        <div className="flex items-center  justify-between lg:justify-start gap-4 w-full lg:w-3/12">
+          <h1 className="w-10 h-full flex items-center justify-center overflow-hidden">
             <img
               className="w-full h-full object-center "
-              src="/images/hiyaboni.png"
+              src="/images/hiya.png"
               alt=""
             />
           </h1>
@@ -81,6 +82,7 @@ const Nav = () => {
         {/* Right Section */}
         <NavRightSide />
       </div>
+      <Mobilenav />
     </nav>
   );
 };
