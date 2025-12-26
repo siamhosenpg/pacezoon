@@ -8,8 +8,10 @@ import {
   getSinglePost,
   getPostsByUserId,
   getFeedPosts,
+  sharePost, // 🟢 NEW
 } from "@/lib/post/feedPosts";
 import { useAuth } from "@/hook/useAuth";
+import { PostTypes } from "@/types/postType";
 
 export const usePost = () => {
   const queryClient = useQueryClient();
@@ -22,12 +24,40 @@ export const usePost = () => {
   const createPostMutation = useMutation({
     mutationFn: async ({ data }: { data: FormData }) => {
       if (!currentUserId) throw new Error("Unauthorized: Login required");
-
-      // 🔥 FormData directly send
       return createPost(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
+  });
+
+  // ----------------------------
+  // 🟢 Share Post (TEXT ONLY)
+  // ----------------------------
+  const sharePostMutation = useMutation({
+    mutationFn: async ({
+      parentPost,
+      caption,
+      privacy,
+    }: {
+      parentPost: string;
+      caption?: string;
+      privacy?: "public" | "friends" | "private";
+    }) => {
+      if (!currentUserId) throw new Error("Unauthorized: Login required");
+
+      return sharePost({
+        parentPost,
+        caption,
+        privacy,
+      });
+    },
+
+    // 🔥 Instantly update feed
+    onSuccess: (newPost) => {
+      queryClient.setQueryData<PostTypes[]>(["posts"], (old) =>
+        old ? [newPost, ...old] : [newPost]
+      );
     },
   });
 
@@ -37,7 +67,6 @@ export const usePost = () => {
   const updatePostMutation = useMutation({
     mutationFn: async ({ postId, updatedData, postUserId }: any) => {
       if (currentUserId !== postUserId) throw new Error("Unauthorized");
-
       return updatePost(postId, updatedData);
     },
     onSuccess: () => {
@@ -51,7 +80,6 @@ export const usePost = () => {
   const deletePostMutation = useMutation({
     mutationFn: async ({ postid, postUserId }: any) => {
       if (currentUserId !== postUserId) throw new Error("Unauthorized");
-
       return deletePost(postid);
     },
     onSuccess: () => {
@@ -82,10 +110,13 @@ export const usePost = () => {
       queryFn: getFeedPosts,
     });
 
+  // ----------------------------
+  // 🔥 Exposed API
+  // ----------------------------
   return {
-    // 🔥 expose mutate with callback support
+    // Create
     createPost: (
-      data: any,
+      data: FormData,
       options?: {
         onSuccess?: () => void;
         onError?: (err: any) => void;
@@ -94,23 +125,41 @@ export const usePost = () => {
       createPostMutation.mutate(
         { data },
         {
-          onSuccess: () => {
-            options?.onSuccess?.();
-          },
-          onError: (err) => {
-            options?.onError?.(err);
-          },
+          onSuccess: () => options?.onSuccess?.(),
+          onError: (err) => options?.onError?.(err),
         }
       ),
 
     createPostLoading: createPostMutation.isPending,
 
+    // 🟢 Share
+    sharePost: (
+      data: {
+        parentPost: string;
+        caption?: string;
+        privacy?: "public" | "friends" | "private";
+      },
+      options?: {
+        onSuccess?: () => void;
+        onError?: (err: any) => void;
+      }
+    ) =>
+      sharePostMutation.mutate(data, {
+        onSuccess: () => options?.onSuccess?.(),
+        onError: (err) => options?.onError?.(err),
+      }),
+
+    sharePostLoading: sharePostMutation.isPending,
+
+    // Update
     updatePost: updatePostMutation.mutate,
     updatePostLoading: updatePostMutation.isPending,
 
+    // Delete
     deletePost: deletePostMutation.mutate,
     deletePostLoading: deletePostMutation.isPending,
 
+    // Queries
     profilePost,
     singlePost,
     feedPost,

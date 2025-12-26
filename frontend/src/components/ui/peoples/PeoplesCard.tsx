@@ -1,9 +1,6 @@
 import React from "react";
 import { UserType } from "@/types/userType";
 import FollowButton from "../buttons/FollowButton";
-
-import { MdLocationPin } from "react-icons/md";
-import { MdWork } from "react-icons/md";
 import Link from "next/link";
 import UserBadge from "../text/UserBadge";
 

@@ -11,6 +11,7 @@ import { ReactionItem } from "@/types/reactionTypes";
 import { motion, AnimatePresence } from "framer-motion";
 import PostCardSavebutton from "./PostCardSavebutton";
 import LikeBoxIcon from "./LikeBox";
+import ShareButton from "./ShareButton";
 
 interface Props {
   postId: string;
@@ -101,8 +102,7 @@ const PostCardButtons: React.FC<Props> = ({ postId, postNumber, com }) => {
 
           {/* Shares */}
           <div className="flex gap-1 items-center cursor-pointer py-1">
-            <RiShareForwardLine className="text-xl text-primary" />
-            <span className="text-sm text-primary font-semibold">Share</span>
+            <ShareButton postId={postId} />
           </div>
         </div>
 

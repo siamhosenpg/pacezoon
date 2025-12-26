@@ -7,6 +7,7 @@ import {
   deletePost,
   getPostsByUserId,
   getPostByMongoId,
+  createSharePost,
 } from "../controllers/postcontrol.js";
 import { protect } from "../middleware/auth.js";
 
@@ -20,5 +21,7 @@ router.post("/", protect, upload.array("media", 10), createPost); // নতু�
 router.put("/:id", protect, updatePost); // পোস্ট এডিট
 router.delete("/:id", protect, deletePost); // পোস্ট ডিলিট
 router.get("/post/:id", getPostByMongoId);
+
+router.post("/share", protect, createSharePost);
 
 export default router;

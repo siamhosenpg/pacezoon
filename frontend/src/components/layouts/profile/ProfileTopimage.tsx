@@ -11,6 +11,7 @@ import { TbPhotoEdit } from "react-icons/tb";
 
 import EditProfileImages from "../updateprofile/EditProfileImages";
 import { useAuth } from "@/hook/useAuth";
+import UserBadge from "@/components/ui/text/UserBadge";
 
 interface ProfileTopimageProps {
   user: UserType;
@@ -60,7 +61,7 @@ const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
           <div className="w-full lg:w-5/12">
             <h1 className="text-xl font-bold text-primary flex items-center gap-1">
               {user?.name || "Unknown User"}
-              <div className="status w-2 h-2 mt-1 bg-green-600 rounded-full  border-background border"></div>
+              <UserBadge badges={user.badges} />
             </h1>
             <p className="text-sm text-loose">
               @{user?.username || "Unknown Username"}

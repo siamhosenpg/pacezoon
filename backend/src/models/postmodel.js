@@ -9,11 +9,17 @@ const postSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "User",
+      default: null,
+      index: true,
     },
-
+    postType: { type: String, default: "post" },
     content: {
+      parentPost: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      },
       caption: { type: String, trim: true },
-      media: [{ type: String, required: true }],
+      media: [{ type: String }],
       type: {
         type: String,
         enum: ["image", "video", "text"],

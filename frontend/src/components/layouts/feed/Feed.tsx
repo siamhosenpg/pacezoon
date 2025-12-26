@@ -5,6 +5,7 @@ import React from "react";
 
 import { PostTypes } from "@/types/postType";
 import { usePost } from "@/hook/usePost";
+import SharePostCard from "@/components/ui/postcard/SharePostCard/SharePostCard";
 const Feed = () => {
   const { feedPost } = usePost(); // hook থেকে feedPost নিলাম
   const { data, isLoading, error } = feedPost();
@@ -23,8 +24,14 @@ const Feed = () => {
     <div>
       <div>
         {data &&
-          data.map((post: PostTypes) => {
-            return <Postbox post={post} key={post?._id} />;
+          data?.map((post: PostTypes) => {
+            // 🟢 If share post
+            if (post.content?.parentPost) {
+              return <SharePostCard key={post._id} post={post} />;
+            }
+
+            // 🔵 Normal post
+            return <Postbox key={post._id} post={post} />;
           })}
       </div>
 

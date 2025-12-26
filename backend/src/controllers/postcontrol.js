@@ -1,16 +1,27 @@
 import mongoose from "mongoose";
 import Post from "../models/postmodel.js";
-
-// 🟢 Get all posts with user info
+// 🟢 Get all posts with user info + shared parent post
 export const getPosts = async (req, res) => {
   try {
     const posts = await Post.find()
-      .populate("userid", "name username badges profileImage") // populate user info
-      .sort({ createdAt: -1 }) // 🔥 newest posts first
+      // 🔵 Post owner
+      .populate("userid", "name username badges profileImage")
+
+      // 🔥 Shared post → parent post populate
+      .populate({
+        path: "content.parentPost",
+        populate: {
+          path: "userid",
+          select: "name username badges profileImage",
+        },
+      })
+
+      .sort({ createdAt: -1 }) // newest first
       .exec();
 
     res.json(posts);
   } catch (err) {
+    console.error("Get posts error:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -196,5 +207,71 @@ export const getPostByMongoId = async (req, res) => {
   } catch (err) {
     console.error("Get post by _id error:", err);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+// 🟢 Create share post (caption only)
+export const createSharePost = async (req, res) => {
+  try {
+    // 🔐 Auth check
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Login required" });
+    }
+
+    const { parentPost, caption, privacy } = req.body;
+
+    // ❌ parentPost missing
+    if (!parentPost) {
+      return res.status(400).json({
+        message: "parentPost is required to share a post",
+      });
+    }
+
+    // ❌ Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(parentPost)) {
+      return res.status(400).json({ message: "Invalid parent post id" });
+    }
+
+    // 🔍 Check original post exists
+    const originalPost = await Post.findById(parentPost);
+    if (!originalPost) {
+      return res.status(404).json({ message: "Original post not found" });
+    }
+
+    // 🚫 Media not allowed in share
+    if (req.files && req.files.length > 0) {
+      return res.status(400).json({
+        message: "Media upload is not allowed for share post",
+      });
+    }
+
+    // 🆕 Create share post
+    const sharePost = await Post.create({
+      userid: req.user.id,
+      postType: "share",
+      content: {
+        parentPost: parentPost,
+        caption: caption || "",
+      },
+      privacy: privacy || "public",
+    });
+
+    // 🔥 Increase share count (optional but recommended)
+    await Post.findByIdAndUpdate(parentPost, {
+      $inc: { sharesCount: 1 },
+    });
+
+    await sharePost.populate("userid", "name username badges profileImage");
+
+    res.status(201).json({
+      success: true,
+      post: sharePost,
+    });
+  } catch (error) {
+    console.error("Share post error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

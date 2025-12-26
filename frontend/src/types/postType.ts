@@ -1,4 +1,5 @@
 interface Content {
+  parentPost?: PostTypes;
   caption: string;
   media: string[];
   type: "image" | "video" | "audio" | "text" | string; // media type যদি পরে নতুন type আসে

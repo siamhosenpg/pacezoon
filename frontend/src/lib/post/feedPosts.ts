@@ -98,3 +98,19 @@ export const deletePost = async (postId: string): Promise<boolean> => {
     throw error;
   }
 };
+
+// 🟢 Share a post (caption only)
+export const sharePost = async (data: {
+  parentPost: string;
+  caption?: string;
+  privacy?: "public" | "friends" | "private";
+}): Promise<PostTypes> => {
+  try {
+    const response = await axiosInstance.post<PostTypes>("/posts/share", data);
+
+    return response.data;
+  } catch (error: any) {
+    handleApiError(error);
+    throw error;
+  }
+};
