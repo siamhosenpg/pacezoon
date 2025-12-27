@@ -22,7 +22,7 @@ const StoryPage = async ({ params }: StoryProps) => {
     <ProtectedRoute>
       <div className="pt-4">
         <div className="w-full Pagearea flex items-center h-[calc(100vh-106px)] gap-22">
-          <div className="left w-[400px] shrink-0 h-auto max-h-full flex flex-col gap-4">
+          <div className="left w-[400px] hidden lg:block shrink-0 h-auto max-h-full flex flex-col gap-4">
             <StoryPageCreateBox />
             <StoryPageLeft />
           </div>

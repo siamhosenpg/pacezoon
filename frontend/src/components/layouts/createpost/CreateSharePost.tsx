@@ -158,11 +158,17 @@ const CreateSharePost = ({ postId, onClose }: Props) => {
                           e.target.value as "public" | "private" | "friends"
                         )
                       }
-                      className="w-fit rounded-lg border border-border bg-white/70 p-1 smalltext mt-1  cursor-pointer"
+                      className="w-fit rounded-lg border border-border  py-1 px-1.5 smalltext mt-1  cursor-pointer"
                     >
-                      <option value="public">🌍 Public</option>
-                      <option value="friends">👥 Friends</option>
-                      <option value="private">🔒 Private</option>
+                      <option className="bg-background" value="public">
+                        🌍 Public
+                      </option>
+                      <option className="bg-background" value="friends">
+                        👥 Friends
+                      </option>
+                      <option className="bg-background" value="private">
+                        🔒 Private
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -200,7 +206,7 @@ const CreateSharePost = ({ postId, onClose }: Props) => {
                 <div className="flex justify-end gap-2 mt-4 ">
                   <button
                     onClick={onClose}
-                    className="px-4 py-2 text-sm rounded-lg bg-gray-100"
+                    className="px-4 py-2 text-sm rounded-lg bg-background-secondary hover:bg-background-tertiary"
                   >
                     Cancel
                   </button>

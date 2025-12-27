@@ -14,7 +14,7 @@ const StoryPageContent: React.FC<StoryPageContentProps> = ({ story }) => {
       <div className=" shrink-0 w-fit h-full">
         <StoryPrevewCard story={story} />
       </div>
-      <div className=" flex flex-col gap-3 ml-22">
+      <div className=" hidden lg:flex flex-col gap-3 ml-22">
         <button className="w-12 h-12 flex items-center justify-center rounded-full bg-background border border-border ">
           <FaCaretUp className="text-xl" />
         </button>

@@ -194,11 +194,17 @@ const CreateVideoBox = ({ onClose }: CreateVideoBoxProps) => {
                           e.target.value as "public" | "private" | "friends"
                         )
                       }
-                      className="w-fit rounded-lg border border-border bg-white/70 p-1 smalltext mt-1  cursor-pointer"
+                      className="w-fit rounded-lg border  border-border  py-1 px-1.5 smalltext mt-1  cursor-pointer"
                     >
-                      <option value="public">🌍 Public</option>
-                      <option value="friends">👥 Friends</option>
-                      <option value="private">🔒 Private</option>
+                      <option className="bg-background" value="public">
+                        🌍 Public
+                      </option>
+                      <option className="bg-background" value="friends">
+                        👥 Friends
+                      </option>
+                      <option className="bg-background" value="private">
+                        🔒 Private
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -216,7 +222,7 @@ const CreateVideoBox = ({ onClose }: CreateVideoBoxProps) => {
                     <button
                       type="button"
                       onClick={handleRemoveVideo}
-                      className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-black/40 text-white hover:bg-red-600"
+                      className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full border-border bg-background-secondary text-white hover:bg-red-600"
                     >
                       <ImCross size={12} />
                     </button>
@@ -246,10 +252,12 @@ const CreateVideoBox = ({ onClose }: CreateVideoBoxProps) => {
                     />
                     <div>
                       {" "}
-                      <p className="text-sm font-medium text-gray-700">
+                      <p className="text-sm font-medium text-text-secondary">
                         Click to upload video
                       </p>
-                      <p className="text-xs text-gray-500">MP4, MOV, MKV</p>
+                      <p className="text-xs mt-0.5 text-text-tertiary">
+                        MP4, MOV, MKV
+                      </p>
                     </div>
                   </label>
 

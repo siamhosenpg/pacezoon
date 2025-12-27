@@ -49,7 +49,7 @@ const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
           {isMyProfile && (
             <div
               onClick={() => setOpen(true)}
-              className="  absolute right-2 bottom-2 border-border border cursor-pointer flex items-center justify-center z-30 w-8 h-8 bg-white rounded-full "
+              className="  absolute right-2 bottom-2 border-border border cursor-pointer flex items-center justify-center z-30 w-8 h-8 bg-background rounded-full "
             >
               <TbPhotoEdit className="text-lg " />
             </div>

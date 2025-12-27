@@ -127,7 +127,7 @@ const ClipsBox: React.FC<ClipsBoxProps> = ({ post, isPortrait, isLoading }) => {
         })}
 
         {/* 👉 Right Action Buttons */}
-        <div className="absolute right-1 md:-right-30 bottom-2 lg:bottom-8 z-20 flex flex-col gap-1 text-white md:text-black">
+        <div className="absolute right-1 md:-right-30 bottom-2 lg:bottom-8 z-20 flex flex-col gap-1 text-white md:text-black ">
           <VideoLikeButton postId={post._id} />
           <VideoCommentsButton postId={post._id} postNumber={post._id} />
 
@@ -177,7 +177,7 @@ const ActionButton = ({
   icon: React.ReactNode;
   label?: string;
 }) => (
-  <button className="flex flex-col items-center justify-center cursor-pointer w-16 h-14 rounded-xl hover:bg-background-secondary">
+  <button className="flex flex-col  lg:text-text items-center justify-center cursor-pointer w-16 h-14 rounded-xl hover:bg-background-secondary">
     <span className="text-2xl font-black text-shadow-xs">{icon}</span>
     {label && (
       <small className="block smalltext opacity-80 mt-1 text-shadow-xs">

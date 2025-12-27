@@ -16,7 +16,7 @@ const UploadBox = ({}) => {
   const [open, setOpen] = useState(false);
   const [openvideo, setOpenvideo] = useState(false);
   return (
-    <div className="w-full bg-background rounded-none lg:rounded-lg px-4 sm:px-6 py-3 sm:py-4 flex flex-col items-center justify-center mb-2 sm:mb-4">
+    <div className="w-full bg-background  rounded-none lg:rounded-lg px-4 sm:px-6 py-3 sm:py-4 flex flex-col items-center justify-center mb-2 sm:mb-4">
       <div className="flex items-center justify-between w-full gap-4 mb-2 sm:mb-4 border-b border-border pb-2 sm:pb-4">
         {isLoading && (
           <div className="w-10 h-10 rounded-full bg-background-secondary"></div>

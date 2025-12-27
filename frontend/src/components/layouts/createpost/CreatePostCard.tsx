@@ -197,11 +197,17 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
                           e.target.value as "public" | "private" | "friends"
                         )
                       }
-                      className="w-fit rounded-lg border border-border bg-white/70 p-1 smalltext mt-1  cursor-pointer"
+                      className="w-fit rounded-lg border border-border  py-1 px-1.5 smalltext mt-1  cursor-pointer"
                     >
-                      <option value="public">🌍 Public</option>
-                      <option value="friends">👥 Friends</option>
-                      <option value="private">🔒 Private</option>
+                      <option className="bg-background" value="public">
+                        🌍 Public
+                      </option>
+                      <option className="bg-background" value="friends">
+                        👥 Friends
+                      </option>
+                      <option className="bg-background" value="private">
+                        🔒 Private
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -225,7 +231,7 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
 
                 {/* Image Preview */}
                 {images.length > 0 && (
-                  <div className="flex gap-3 overflow-x-auto ScrollSystem rounded-xl border border-white/40 bg-white/50 p-2">
+                  <div className="flex gap-3 overflow-x-auto ScrollSystem rounded-xl border border-border bg-background-secondary p-2">
                     {images.map((img, i) => (
                       <div key={i} className="relative w-3/12 shrink-0">
                         {/* Remove Button */}
@@ -266,10 +272,10 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
                     />
                     <div>
                       {" "}
-                      <p className="text-sm font-medium text-gray-700">
+                      <p className="text-sm font-medium text-text-secondary">
                         Click to upload images
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs mt-0.5 text-text-tertiary">
                         PNG, JPG, JPEG (multiple allowed)
                       </p>
                     </div>
