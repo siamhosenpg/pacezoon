@@ -14,8 +14,8 @@ import { protect } from "../middleware/auth.js";
 const router = express.Router();
 
 // ✅ Specific routes first
-router.get("/user/:userid", getPostsByUserId); // নির্দিষ্ট ইউজারের সব পোস্ট
 router.get("/", getPosts); // সব পোস্ট দেখাবে
+router.get("/user/:userid", getPostsByUserId); // নির্দিষ্ট ইউজারের সব পোস্ট
 
 router.post("/", protect, upload.array("media", 10), createPost); // নতুন পোস্ট তৈরি
 router.put("/:id", protect, updatePost); // পোস্ট এডিট

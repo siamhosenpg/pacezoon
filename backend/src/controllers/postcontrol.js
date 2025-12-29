@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
 import Post from "../models/postmodel.js";
-// 🟢 Get all posts with user info + shared parent post
+// GET /api/posts?limit=10&cursor=2025-12-29T17:00:00.000Z
 export const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find()
+    const limit = parseInt(req.query.limit) || 10;
+    const cursor = req.query.cursor ? new Date(req.query.cursor) : null;
+
+    const query = cursor ? { createdAt: { $lt: cursor } } : {};
+
+    const posts = await Post.find(query)
       // 🔵 Post owner
       .populate("userid", "name username badges profileImage")
 
@@ -16,10 +21,17 @@ export const getPosts = async (req, res) => {
         },
       })
 
-      .sort({ createdAt: -1 }) // newest first
+      .sort({ createdAt: -1 })
+      .limit(limit + 1) // extra 1 for hasMore
       .exec();
 
-    res.json(posts);
+    const hasMore = posts.length > limit;
+    if (hasMore) posts.pop(); // remove extra post
+
+    res.json({
+      posts,
+      nextCursor: hasMore ? posts[posts.length - 1].createdAt : null,
+    });
   } catch (err) {
     console.error("Get posts error:", err);
     res.status(500).json({ message: err.message });
@@ -46,13 +58,27 @@ export const getPostsByUserId = async (req, res) => {
   try {
     const userId = req.params.userid;
 
-    const posts = await Post.find({ userid: userId })
+    const limit = parseInt(req.query.limit) || 10;
+    const cursor = req.query.cursor ? new Date(req.query.cursor) : null;
+
+    const query = { userid: userId };
+    if (cursor) {
+      query.createdAt = { $lt: cursor };
+    }
+
+    const posts = await Post.find(query)
       .populate("userid", "name username bio badges profileImage")
+      .sort({ createdAt: -1 }) // 🔥 latest first
+      .limit(limit + 1) // 🔥 extra 1 for hasMore
       .exec();
+
+    const hasMore = posts.length > limit;
+    if (hasMore) posts.pop(); // extra item remove
 
     return res.status(200).json({
       posts: posts || [],
       count: posts.length || 0,
+      nextCursor: hasMore ? posts[posts.length - 1].createdAt : null,
       message: posts.length === 0 ? "No posts found" : undefined,
     });
   } catch (err) {

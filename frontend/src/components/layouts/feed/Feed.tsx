@@ -1,41 +1,85 @@
 "use client";
+import React, { useRef, useEffect } from "react";
 import Postbox from "@/components/ui/postcard/Postcard";
-import PostcardLoading from "@/components/ui/postcard/PostcardLoading";
-import React from "react";
-
-import { PostTypes } from "@/types/postType";
-import { usePost } from "@/hook/usePost";
 import SharePostCard from "@/components/ui/postcard/SharePostCard/SharePostCard";
-const Feed = () => {
-  const { feedPost } = usePost(); // hook থেকে feedPost নিলাম
-  const { data, isLoading, error } = feedPost();
+import PostcardLoading from "@/components/ui/postcard/PostcardLoading";
+import { usePost } from "@/hook/usePost";
+import { PostTypes } from "@/types/postType";
+interface FeedPostsResponse {
+  posts: PostTypes[];
+  nextCursor: string | null;
+}
 
+const Feed = () => {
+  const { feedPost } = usePost();
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = feedPost();
+
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  // ----------------------------
+  // Intersection Observer for Infinite Scroll
+  // ----------------------------
+  useEffect(() => {
+    if (!hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) fetchNextPage();
+      },
+      { root: null, rootMargin: "200px", threshold: 1 }
+    );
+
+    if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+    return () => observer.disconnect();
+  }, [hasNextPage, fetchNextPage]);
+
+  // ----------------------------
+  // Loading / Error States
+  // ----------------------------
   if (isLoading)
     return (
-      <div>
-        <PostcardLoading /> <PostcardLoading />
+      <div className="flex flex-col gap-4">
+        <PostcardLoading />
+        <PostcardLoading />
       </div>
     );
 
-  if (error) return <p className="text-red-500">Failed to load feed posts</p>;
+  if (isError) return <p className="text-red-500">Failed to load feed posts</p>;
 
-  if (!data || data.length === 0) return <p>No posts found</p>;
+  // Flatten all pages into a single array
+  const allPosts: PostTypes[] = data?.pages.flatMap((page) => page.posts) || [];
+
+  if (allPosts.length === 0) return <p>No posts found</p>;
+
   return (
-    <div>
-      <div>
-        {data &&
-          data?.map((post: PostTypes) => {
-            // 🟢 If share post
-            if (post.content?.parentPost) {
-              return <SharePostCard key={post._id} post={post} />;
-            }
+    <div className="flex flex-col">
+      {allPosts.map((post: PostTypes) =>
+        post.content?.parentPost ? (
+          <SharePostCard key={post._id} post={post} />
+        ) : (
+          <Postbox key={post._id} post={post} />
+        )
+      )}
 
-            // 🔵 Normal post
-            return <Postbox key={post._id} post={post} />;
-          })}
-      </div>
+      {/* Sentinel div for Intersection Observer */}
+      <div ref={loadMoreRef} className="h-10" />
 
-      <PostcardLoading />
+      {isFetchingNextPage && (
+        <div className="text-center py-2">
+          <PostcardLoading />
+        </div>
+      )}
+
+      {!hasNextPage && allPosts.length > 0 && (
+        <p className="text-center text-gray-500 py-22">No more posts</p>
+      )}
     </div>
   );
 };

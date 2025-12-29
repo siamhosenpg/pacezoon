@@ -2,6 +2,16 @@
 
 import axiosInstance from "../axios";
 import { PostTypes } from "@/types/postType";
+interface FetchPostsResponse {
+  posts: PostTypes[];
+  nextCursor: string | null;
+}
+
+export interface ProfilePostsResponse {
+  posts: PostTypes[];
+  count: number;
+  nextCursor: string | null;
+}
 
 // 🔵 Global Reusable API Error Handler
 const handleApiError = (error: any): never => {
@@ -14,14 +24,22 @@ const handleApiError = (error: any): never => {
   }
 };
 
-// 🟢 Get all feed posts
-export const getFeedPosts = async (): Promise<PostTypes[]> => {
+export const getFeedPosts = async (
+  cursor: string | null = null,
+  limit: number = 10
+): Promise<FetchPostsResponse> => {
   try {
-    const response = await axiosInstance.get<PostTypes[]>("/posts");
+    const params: any = { limit };
+    if (cursor) params.cursor = cursor;
+
+    const response = await axiosInstance.get<FetchPostsResponse>("/posts", {
+      params,
+    });
+
     return response.data;
   } catch (error: any) {
     handleApiError(error);
-    throw error; // ⬅ required for TypeScript safety
+    throw error; // required for TypeScript safety
   }
 };
 
@@ -36,21 +54,28 @@ export const getSinglePost = async (id: string): Promise<PostTypes> => {
   }
 };
 
-// 🟢 Get posts by specific userId
 export const getPostsByUserId = async (
-  userid: string
-): Promise<PostTypes[]> => {
+  userid: string,
+  cursor?: string | null,
+  limit: number = 10
+): Promise<ProfilePostsResponse> => {
   try {
-    const response = await axiosInstance.get<PostTypes[]>(
-      `/posts/user/${userid}`
+    const response = await axiosInstance.get<ProfilePostsResponse>(
+      `/posts/user/${userid}`,
+      {
+        params: {
+          limit,
+          cursor,
+        },
+      }
     );
+
     return response.data;
   } catch (error: any) {
     handleApiError(error);
     throw error;
   }
 };
-
 // 🟢 Create new post (TEXT + IMAGE + VIDEO)
 export const createPost = async (formData: FormData): Promise<PostTypes> => {
   try {

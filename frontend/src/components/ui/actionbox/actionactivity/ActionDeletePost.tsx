@@ -16,7 +16,7 @@ const ActionDeletePost: React.FC<Props> = ({ post, onClose }) => {
   const handleDelete = () => {
     deletePost(
       {
-        postid: post._id,
+        postId: post._id,
         postUserId: post.userid._id,
       },
       {

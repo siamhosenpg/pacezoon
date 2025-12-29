@@ -1,6 +1,11 @@
 "use client";
 
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useInfiniteQuery,
+  useQuery,
+} from "@tanstack/react-query";
 import {
   createPost,
   updatePost,
@@ -8,93 +13,150 @@ import {
   getSinglePost,
   getPostsByUserId,
   getFeedPosts,
-  sharePost, // 🟢 NEW
+  sharePost,
 } from "@/lib/post/feedPosts";
 import { useAuth } from "@/hook/useAuth";
 import { PostTypes } from "@/types/postType";
 
+// ----------------------------
+// TypeScript types
+// ----------------------------
+interface CreatePostData {
+  data: FormData;
+}
+
+interface SharePostData {
+  parentPost: string;
+  caption?: string;
+  privacy?: "public" | "friends" | "private";
+}
+
+interface UpdatePostData {
+  postId: string;
+  updatedData: Partial<PostTypes>;
+  postUserId: string;
+}
+
+interface DeletePostData {
+  postId: string;
+  postUserId: string;
+}
+
+// API return type
+interface FetchPostsResponse {
+  posts: PostTypes[];
+  nextCursor: string | null;
+}
+// ----------------------------
+// Hook
+// ----------------------------
 export const usePost = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const currentUserId = user?.user?._id;
 
   // ----------------------------
-  // 🟢 Create Post (UPLOAD READY)
+  // Create Post Mutation
   // ----------------------------
   const createPostMutation = useMutation({
-    mutationFn: async ({ data }: { data: FormData }) => {
+    mutationFn: async ({ data }: CreatePostData) => {
       if (!currentUserId) throw new Error("Unauthorized: Login required");
       return createPost(data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["feedPosts"] });
     },
   });
 
   // ----------------------------
-  // 🟢 Share Post (TEXT ONLY)
+  // Share Post Mutation
   // ----------------------------
   const sharePostMutation = useMutation({
-    mutationFn: async ({
-      parentPost,
-      caption,
-      privacy,
-    }: {
-      parentPost: string;
-      caption?: string;
-      privacy?: "public" | "friends" | "private";
-    }) => {
+    mutationFn: async (data: SharePostData) => {
       if (!currentUserId) throw new Error("Unauthorized: Login required");
-
-      return sharePost({
-        parentPost,
-        caption,
-        privacy,
-      });
+      return sharePost(data);
     },
-
-    // 🔥 Instantly update feed
-    onSuccess: (newPost) => {
-      queryClient.setQueryData<PostTypes[]>(["posts"], (old) =>
-        old ? [newPost, ...old] : [newPost]
+    onSuccess: (newPost: PostTypes) => {
+      queryClient.setQueryData<{ pages: PostTypes[][]; pageParams: any[] }>(
+        ["feedPosts"],
+        (old: any) => {
+          if (!old) return { pages: [[newPost]], pageParams: [undefined] };
+          const updatedPages = [...old.pages];
+          updatedPages[0] = [newPost, ...updatedPages[0]];
+          return { ...old, pages: updatedPages };
+        }
       );
     },
   });
 
   // ----------------------------
-  // 🟡 Update Post
+  // Update Post Mutation
   // ----------------------------
   const updatePostMutation = useMutation({
-    mutationFn: async ({ postId, updatedData, postUserId }: any) => {
+    mutationFn: async ({ postId, updatedData, postUserId }: UpdatePostData) => {
       if (currentUserId !== postUserId) throw new Error("Unauthorized");
       return updatePost(postId, updatedData);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["feedPosts"] }),
   });
 
   // ----------------------------
-  // 🔴 Delete Post
+  // Delete Post
   // ----------------------------
   const deletePostMutation = useMutation({
-    mutationFn: async ({ postid, postUserId }: any) => {
+    mutationFn: async ({ postId, postUserId }: DeletePostData) => {
+      if (!postId) throw new Error("Post ID missing");
       if (currentUserId !== postUserId) throw new Error("Unauthorized");
-      return deletePost(postid);
+      return deletePost(postId);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+
+    onSuccess: (_, variables) => {
+      // 🔥 1. Update MAIN FEED
+      queryClient.setQueryData(["feedPosts"], (old: any) => {
+        if (!old) return old;
+
+        return {
+          ...old,
+          pages: old.pages.map((page: any) => ({
+            ...page,
+            posts: page.posts.filter(
+              (post: PostTypes) => post._id !== variables.postId
+            ),
+          })),
+        };
+      });
+
+      // 🔥 2. Update PROFILE FEED
+      queryClient.setQueryData(
+        ["feedPosts", variables.postUserId],
+        (old: any) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            pages: old.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.filter(
+                (post: PostTypes) => post._id !== variables.postId
+              ),
+            })),
+          };
+        }
+      );
     },
   });
-
   // ----------------------------
-  // 🔵 Queries
+  // Queries
   // ----------------------------
   const profilePost = (userid?: string) =>
-    useQuery({
-      queryKey: ["posts", userid],
-      queryFn: () => getPostsByUserId(userid!),
+    useInfiniteQuery<FetchPostsResponse, Error>({
+      queryKey: ["feedPosts", userid],
+      queryFn: ({ pageParam = null }) =>
+        getPostsByUserId(userid!, pageParam, 10),
+      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       enabled: !!userid,
+      staleTime: 1000 * 60 * 2,
+      cacheTime: 1000 * 60 * 10,
     });
 
   const singlePost = (postId?: string) =>
@@ -104,50 +166,35 @@ export const usePost = () => {
       enabled: !!postId,
     });
 
+  // ----------------------------
+  // Infinite Scroll Feed
+  // ----------------------------
   const feedPost = () =>
-    useQuery({
-      queryKey: ["posts"],
-      queryFn: getFeedPosts,
+    useInfiniteQuery<FetchPostsResponse, Error>({
+      queryKey: ["feedPosts"],
+      queryFn: ({ pageParam = null }) => getFeedPosts(pageParam, 10), // cursor + limit
+      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+      staleTime: 1000 * 60 * 2,
+      cacheTime: 1000 * 60 * 10,
     });
 
   // ----------------------------
-  // 🔥 Exposed API
+  // Exposed API
   // ----------------------------
   return {
     // Create
     createPost: (
       data: FormData,
-      options?: {
-        onSuccess?: () => void;
-        onError?: (err: any) => void;
-      }
-    ) =>
-      createPostMutation.mutate(
-        { data },
-        {
-          onSuccess: () => options?.onSuccess?.(),
-          onError: (err) => options?.onError?.(err),
-        }
-      ),
+      options?: { onSuccess?: () => void; onError?: (err: any) => void }
+    ) => createPostMutation.mutate({ data }, options),
 
     createPostLoading: createPostMutation.isPending,
 
-    // 🟢 Share
+    // Share
     sharePost: (
-      data: {
-        parentPost: string;
-        caption?: string;
-        privacy?: "public" | "friends" | "private";
-      },
-      options?: {
-        onSuccess?: () => void;
-        onError?: (err: any) => void;
-      }
-    ) =>
-      sharePostMutation.mutate(data, {
-        onSuccess: () => options?.onSuccess?.(),
-        onError: (err) => options?.onError?.(err),
-      }),
+      data: SharePostData,
+      options?: { onSuccess?: () => void; onError?: (err: any) => void }
+    ) => sharePostMutation.mutate(data, options),
 
     sharePostLoading: sharePostMutation.isPending,
 
@@ -162,6 +209,6 @@ export const usePost = () => {
     // Queries
     profilePost,
     singlePost,
-    feedPost,
+    feedPost, // Infinite Scroll ready
   };
 };
