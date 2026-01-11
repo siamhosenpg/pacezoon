@@ -3,8 +3,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { AiOutlineLike } from "react-icons/ai";
 
-import React from "react";
-
 type ReactionType = "like" | "love" | "care" | "angry" | "wow" | "sad";
 
 interface LikeIconProps {

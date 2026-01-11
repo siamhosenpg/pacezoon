@@ -105,16 +105,50 @@ export const useReactions = (postId: string) => {
   });
 
   /* ---------------------------------------------------
-   * UPDATE REACTION (for future: like → love etc.)
+   * UPDATE REACTION (Optimistic)
    * --------------------------------------------------- */
   const updateMutation = useMutation({
     mutationFn: updateReaction,
+
+    onMutate: async (variables: { postId: string; reaction: string }) => {
+      await queryClient.cancelQueries({ queryKey: ["reactions", postId] });
+
+      const previousData = queryClient.getQueryData<any>(["reactions", postId]);
+
+      // Optimistic update
+      queryClient.setQueryData(["reactions", postId], (old: any) => {
+        if (!old || !userId) return old;
+
+        return {
+          ...old,
+          reactions: old.reactions.map((r: ReactionItem) => {
+            const rUserId = r?.userId?._id || r?.userId?.id;
+
+            if (String(rUserId) === String(userId)) {
+              return {
+                ...r,
+                reaction: variables.reaction, // 🔥 update reaction instantly
+              };
+            }
+
+            return r;
+          }),
+        };
+      });
+
+      return { previousData };
+    },
+
+    onError: (_err, _vars, context) => {
+      // rollback
+      queryClient.setQueryData(["reactions", postId], context?.previousData);
+    },
+
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["reactions", postId] });
       queryClient.invalidateQueries({ queryKey: ["reactionCount", postId] });
     },
   });
-
   /* ---------------------------------------------------
    * REACTION COUNT
    * --------------------------------------------------- */
