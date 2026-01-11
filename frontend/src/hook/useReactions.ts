@@ -6,6 +6,7 @@ import {
   deleteReaction,
   getReactionsByPost,
   getReactionCount,
+  getTopReactionsByPost,
 } from "@/lib/api/reactionApi";
 import { useAuth } from "@/hook/useAuth";
 import { ReactionItem } from "@/types/reactionTypes";
@@ -65,6 +66,7 @@ export const useReactions = (postId: string) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["reactions", postId] });
       queryClient.invalidateQueries({ queryKey: ["reactionCount", postId] });
+      queryClient.invalidateQueries({ queryKey: ["topReactions", postId] });
     },
   });
 
@@ -101,6 +103,7 @@ export const useReactions = (postId: string) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["reactions", postId] });
       queryClient.invalidateQueries({ queryKey: ["reactionCount", postId] });
+      queryClient.invalidateQueries({ queryKey: ["topReactions", postId] });
     },
   });
 
@@ -147,6 +150,7 @@ export const useReactions = (postId: string) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["reactions", postId] });
       queryClient.invalidateQueries({ queryKey: ["reactionCount", postId] });
+      queryClient.invalidateQueries({ queryKey: ["topReactions", postId] });
     },
   });
   /* ---------------------------------------------------
@@ -158,6 +162,12 @@ export const useReactions = (postId: string) => {
     enabled: !!postId,
   });
 
+  const topReactionsQuery = useQuery({
+    queryKey: ["topReactions", postId],
+    queryFn: () => getTopReactionsByPost(postId),
+    enabled: !!postId,
+  });
+
   return {
     data,
     isLoading,
@@ -165,5 +175,6 @@ export const useReactions = (postId: string) => {
     createMutation,
     updateMutation,
     deleteMutation,
+    topReactionsQuery,
   };
 };

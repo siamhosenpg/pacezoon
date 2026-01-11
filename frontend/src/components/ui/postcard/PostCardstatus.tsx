@@ -11,10 +11,20 @@ interface PostCardStatusProps {
   Commentsposition: boolean; // <- TypeScript fix
 }
 
+const reactionImageMap: Record<string, string> = {
+  like: "/images/icon/reaction/like.png",
+  love: "/images/icon/reaction/love.png",
+  care: "/images/icon/reaction/emoji.png",
+  angry: "/images/icon/reaction/angry.png",
+  wow: "/images/icon/reaction/wow.png",
+  sad: "/images/icon/reaction/sad.png",
+};
 const PostCardStatus = ({ postId, Commentsposition }: PostCardStatusProps) => {
-  const { reactionCountQuery } = useReactions(postId);
+  const { reactionCountQuery, topReactionsQuery } = useReactions(postId);
   const countReaction = reactionCountQuery.data || 0;
   const { data: countComments } = useCommentCount(postId);
+
+  const topReactions = topReactionsQuery.data || [];
 
   return (
     <div
@@ -26,12 +36,21 @@ const PostCardStatus = ({ postId, Commentsposition }: PostCardStatusProps) => {
     >
       {/* Reaction Count Section */}
       <div className={`flex items-center gap-1 `}>
-        {countReaction > 0 && (
-          <div className="flex items-center">
-            <FcLike className="text-xl bg-background p-0.5 rounded-full relative z-40" />
-            <AiFillLike className="text-xl text-accent bg-background p-0.5 rounded-full ml-[-3px] relative z-30" />
-          </div>
-        )}
+        {topReactions.slice(0, 3).map((reaction: any, index: any) => {
+          const imgSrc = reactionImageMap[reaction.type];
+
+          if (!imgSrc) return null; // safety
+
+          return (
+            <img
+              key={index}
+              src={imgSrc}
+              alt={reaction.type}
+              className={`w-5 h-5 rounded-full border-2 border-background -ml-2 relative`}
+              style={{ zIndex: 20 - index }} // ✅ z-index fix
+            />
+          );
+        })}
 
         <span className="block smalltext text-secondary">
           <span className="text-primary font-semibold">{countReaction}</span>{" "}

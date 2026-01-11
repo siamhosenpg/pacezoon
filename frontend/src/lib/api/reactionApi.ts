@@ -57,3 +57,10 @@ export const getReactionCount = async (postId: string) => {
   const res = await axiosInstance.get(`/reactions/count/${postId}`);
   return res.data.count; // শুধু count return
 };
+
+// ==================== GET TOP REACTIONS OF A POST ====================
+
+export const getTopReactionsByPost = async (postId: string) => {
+  const res = await axiosInstance.get(`/reactions/top/${postId}`);
+  return res.data.topReactions;
+};

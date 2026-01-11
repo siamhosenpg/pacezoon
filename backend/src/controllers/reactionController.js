@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Reaction from "../models/reactionModel.js";
 import Post from "../models/postmodel.js";
 import { createNotification } from "./notification/notificationcontroller.js";
@@ -170,6 +171,58 @@ export const getReactionCount = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       message: "Error fetching reaction count",
+      error: err.message,
+    });
+  }
+};
+
+// 🔵 Get Top 3 Reaction Types of a Post
+export const getTopReactionsByPost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    if (!postId) {
+      return res.status(400).json({ message: "postId is required" });
+    }
+
+    // ✅ Convert string → ObjectId
+    const postObjectId = new mongoose.Types.ObjectId(postId);
+
+    const topReactions = await Reaction.aggregate([
+      {
+        $match: {
+          postId: postObjectId,
+        },
+      },
+      {
+        $group: {
+          _id: "$reaction", // like, love, care etc
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { count: -1 }, // highest first
+      },
+      {
+        $limit: 3, // top 3 reactions
+      },
+      {
+        $project: {
+          _id: 0,
+          type: "$_id",
+          count: 1,
+        },
+      },
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      postId,
+      topReactions,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Error fetching top reactions",
       error: err.message,
     });
   }

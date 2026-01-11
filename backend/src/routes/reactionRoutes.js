@@ -5,6 +5,7 @@ import {
   deleteReaction,
   getReactionsByPost,
   getReactionCount,
+  getTopReactionsByPost,
 } from "../controllers/reactionController.js";
 
 // ✅ Named import (default না)
@@ -26,5 +27,7 @@ router.get("/post/:postId", getReactionsByPost);
 
 // 🟡 Get Reaction Count of a Post
 router.get("/count/:postId", getReactionCount);
+// 🔵 Get Top Reactions of a Post
+router.get("/top/:postId", getTopReactionsByPost);
 
 export default router;
