@@ -144,24 +144,28 @@ const EditProfileImages = ({ onClose }: EditProfileImagesProps) => {
               >
                 {/* Cover Image */}
                 <div className="flex flex-col items-center">
-                  {coverPreview && (
-                    <label
-                      htmlFor="cover-image"
-                      className="w-full block cursor-pointer relative"
-                    >
+                  <label
+                    htmlFor="cover-image"
+                    className="w-full block cursor-pointer relative"
+                  >
+                    {coverPreview ? (
                       <img
+                        loading="lazy"
                         src={coverPreview}
-                        alt="Cover Preview"
+                        alt=""
                         className="w-full aspect-7/2 object-cover  border border-border rounded-xl"
                       />
-                      <label
-                        className="w-10 h-10 bg-background rounded-full flex items-center justify-center absolute z-20 right-1 bottom-1 border border-border cursor-pointer"
-                        htmlFor="cover-image"
-                      >
-                        <TbPhotoEdit className="text-lg" />
-                      </label>
+                    ) : (
+                      <div className="w-full aspect-7/2 object-cover bg-background-tertiary  border border-border rounded-xl"></div>
+                    )}
+                    <label
+                      className="w-10 h-10 bg-background rounded-full flex items-center justify-center absolute z-20 right-1 bottom-1 border border-border cursor-pointer"
+                      htmlFor="cover-image"
+                    >
+                      <TbPhotoEdit className="text-lg" />
                     </label>
-                  )}
+                  </label>
+
                   <input
                     id="cover-image"
                     className="hidden"
@@ -172,24 +176,29 @@ const EditProfileImages = ({ onClose }: EditProfileImagesProps) => {
                 </div>
                 {/* Profile Image */}
                 <div className="flex flex-col items-center">
-                  {profilePreview && (
+                  <label
+                    htmlFor="profile-image"
+                    className=" cursor-pointer font-medium relative"
+                  >
+                    <img
+                      src={
+                        profilePreview
+                          ? profilePreview
+                          : user?.user?.gender === "female"
+                            ? "/images/femaleprofile.jpg"
+                            : "/images/profile.jpg" // male or default
+                      }
+                      alt="Profile Preview"
+                      className="w-32 h-32 object-cover rounded-full border border-border"
+                    />
                     <label
+                      className="w-10 h-10 bg-background rounded-full flex items-center justify-center absolute z-20 right-1 bottom-1 border border-border cursor-pointer"
                       htmlFor="profile-image"
-                      className=" cursor-pointer font-medium relative"
                     >
-                      <img
-                        src={profilePreview}
-                        alt="Profile Preview"
-                        className="w-32 h-32 object-cover rounded-full border border-border"
-                      />
-                      <label
-                        className="w-10 h-10 bg-background rounded-full flex items-center justify-center absolute z-20 right-1 bottom-1 border border-border cursor-pointer"
-                        htmlFor="profile-image"
-                      >
-                        <TbPhotoEdit className="text-lg" />
-                      </label>
+                      <TbPhotoEdit className="text-lg" />
                     </label>
-                  )}
+                  </label>
+
                   <input
                     id="profile-image"
                     type="file"

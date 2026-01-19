@@ -58,7 +58,13 @@ const SuggestAccounts = () => {
                   >
                     <img
                       className=" object-cover w-full h-full rounded-full"
-                      src={user.profileImage}
+                      src={
+                        user?.profileImage
+                          ? user.profileImage
+                          : user?.gender === "female"
+                            ? "/images/femaleprofile.jpg"
+                            : "/images/profile.jpg" // male or default
+                      }
                       alt=""
                     />
                   </Link>

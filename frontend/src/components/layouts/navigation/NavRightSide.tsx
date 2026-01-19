@@ -68,7 +68,13 @@ const NavRightSide = () => {
             <Link href={`/profile/${currentUser.username}`}>
               <img
                 className="w-[34px] h-[34px] rounded-full border border-border object-cover"
-                src={currentUser.profileImage}
+                src={
+                  currentUser?.profileImage
+                    ? currentUser?.profileImage
+                    : currentUser?.gender === "female"
+                      ? "/images/femaleprofile.jpg"
+                      : "/images/profile.jpg" // male or default
+                }
                 alt={currentUser.name}
               />
             </Link>

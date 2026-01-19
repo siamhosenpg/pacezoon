@@ -5,6 +5,7 @@ import ProfileStatusBoxLoading from "./ProfileStatusBoxLoading";
 import Link from "next/link";
 import { useFollowersCount, useFollowingCount } from "@/hook/useFollow";
 import UserBadge from "@/components/ui/text/UserBadge";
+import { useUserPostCount } from "@/hook/usePost";
 
 const ProfileStatusBox = () => {
   const { user, isLoading: authLoading } = useAuth();
@@ -13,6 +14,8 @@ const ProfileStatusBox = () => {
   // 🔹 Hooks always call, even if user undefined
   const { data: followersCount } = useFollowersCount(userId ?? "");
   const { data: followingCount } = useFollowingCount(userId ?? "");
+
+  const { data: postCount } = useUserPostCount(userId ?? "");
 
   // 🔹 Loading state
   if (authLoading || !userId) {
@@ -25,7 +28,13 @@ const ProfileStatusBox = () => {
         <Link href={`/profile/${user.user.username}`} className="shrink-0">
           <img
             className="w-[50px] border border-border object-cover h-[50px] rounded-full"
-            src={user.user.profileImage}
+            src={
+              user.user?.profileImage
+                ? user.user?.profileImage
+                : user.user?.gender === "female"
+                  ? "/images/femaleprofile.jpg"
+                  : "/images/profile.jpg" // male or default
+            }
             alt=""
           />
         </Link>
@@ -49,7 +58,9 @@ const ProfileStatusBox = () => {
           <span className="text-sm text-secondary">Following</span>
         </div>
         <div className="text-center">
-          <b className="block font-bold text-primary">49</b>
+          <b className="block font-bold text-primary">
+            {postCount?.count ?? 0}
+          </b>
           <span className="text-sm text-secondary">Post</span>
         </div>
       </div>

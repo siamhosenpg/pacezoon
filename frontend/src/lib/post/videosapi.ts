@@ -1,32 +1,46 @@
 import axiosInstance from "../axios";
 import { PostTypes } from "@/types/postType";
 
-/* =======================
-   Types
-======================= */
-
 export interface VideoPostResponse {
   posts: PostTypes[];
-  count: number;
-  message?: string;
+  nextCursor: string | null;
+  hasMore: boolean;
 }
 
-/* =======================
-   API functions
-======================= */
-
-// 🔥 Get all video posts
-export const getVideoPostsApi = async (): Promise<VideoPostResponse> => {
-  const { data } = await axiosInstance.get<VideoPostResponse>("/videos/videos");
+// 🔥 Get all video posts (infinite)
+export const getVideoPostsApi = async ({
+  pageParam,
+}: {
+  pageParam?: string | null;
+}): Promise<VideoPostResponse> => {
+  const { data } = await axiosInstance.get<VideoPostResponse>(
+    "/videos/videos",
+    {
+      params: {
+        limit: 6,
+        cursor: pageParam,
+      },
+    }
+  );
   return data;
 };
 
-// 🔥 Get video posts by user
-export const getVideoPostsByUserApi = async (
-  userid: string
-): Promise<VideoPostResponse> => {
+// 🔥 Get video posts by user (infinite)
+export const getVideoPostsByUserApi = async ({
+  pageParam,
+  userid,
+}: {
+  pageParam?: string | null;
+  userid: string;
+}): Promise<VideoPostResponse> => {
   const { data } = await axiosInstance.get<VideoPostResponse>(
-    `/videos/videos/user/${userid}`
+    `/videos/videos/user/${userid}`,
+    {
+      params: {
+        limit: 6,
+        cursor: pageParam,
+      },
+    }
   );
   return data;
 };

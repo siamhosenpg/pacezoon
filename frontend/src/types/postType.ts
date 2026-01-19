@@ -15,6 +15,7 @@ interface Profiledata {
   badges: string[];
   bio: string;
   profileImage: string;
+  gender: "male" | "female" | "other";
 }
 
 export interface PostTypes {

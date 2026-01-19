@@ -1,25 +1,32 @@
-import { useQuery } from "@tanstack/react-query";
-import { getVideoPostsApi, getVideoPostsByUserApi } from "@/lib/post/videosapi";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getVideoPostsApi } from "@/lib/post/videosapi";
 
-/* =======================
-   Hooks
-======================= */
+import { getVideoPostsByUserApi } from "@/lib/post/videosapi";
 
-// 🔥 All video posts
 export const useVideoPosts = () => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["video-posts"],
-    queryFn: getVideoPostsApi,
-    staleTime: 1000 * 60, // 1 minute cache
+    queryFn: ({ pageParam }) =>
+      getVideoPostsApi({ pageParam: pageParam ?? undefined }),
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore ? lastPage.nextCursor : undefined,
+    staleTime: 1000 * 60, // 1 min
+    initialPageParam: null,
   });
 };
 
-// 🔥 Video posts by user
 export const useVideoPostsByUser = (userid?: string) => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["video-posts", userid],
-    queryFn: () => getVideoPostsByUserApi(userid as string),
-    enabled: !!userid, // userid না থাকলে call হবে না
+    queryFn: ({ pageParam }) =>
+      getVideoPostsByUserApi({
+        pageParam,
+        userid: userid as string,
+      }),
+    enabled: !!userid,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore ? lastPage.nextCursor : undefined,
     staleTime: 1000 * 60,
+    initialPageParam: null,
   });
 };

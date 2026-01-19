@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 
 import { RiShareForwardLine } from "react-icons/ri";
 import { HiDotsHorizontal } from "react-icons/hi";
@@ -18,100 +18,105 @@ interface ClipsBoxProps {
   isLoading: any;
 }
 
-const ClipsBox: React.FC<ClipsBoxProps> = ({ post, isPortrait, isLoading }) => {
-  const bgClass = isPortrait ? "object-cover" : "object-contain";
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+// ✅ ForwardRef added
+const ClipsBox = forwardRef<HTMLDivElement, ClipsBoxProps>(
+  ({ post, isPortrait, isLoading }, ref) => {
+    const bgClass = isPortrait ? "object-cover" : "object-contain";
+    const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const [isVisible, setIsVisible] = useState(false);
-  const [isMuted, setIsMuted] = useState(true); // 🔊 global sound state
-  const [isPaused, setIsPaused] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    const [isMuted, setIsMuted] = useState(true);
+    const [isPaused, setIsPaused] = useState(false);
 
-  /* 👁️ Intersection Observer */
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    /* 👁️ Intersection Observer for play/pause */
+    useEffect(() => {
+      const video = videoRef.current;
+      if (!video) return;
 
-    video.muted = true;
+      video.muted = true;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      { threshold: 0.6 }
-    );
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          setIsVisible(entry.isIntersecting);
+        },
+        { threshold: 0.6 }
+      );
 
-    observer.observe(video);
+      observer.observe(video);
 
-    // 🔥 initial load fix
-    const rect = video.getBoundingClientRect();
-    if (
-      rect.top < window.innerHeight * 0.6 &&
-      rect.bottom > window.innerHeight * 0.4
-    ) {
-      setIsVisible(true);
-    }
+      const rect = video.getBoundingClientRect();
+      if (
+        rect.top < window.innerHeight * 0.6 &&
+        rect.bottom > window.innerHeight * 0.4
+      ) {
+        setIsVisible(true);
+      }
 
-    return () => observer.disconnect();
-  }, []);
+      return () => observer.disconnect();
+    }, []);
 
-  /* ▶️ Play / Pause + Sound */
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    /* ▶️ Play / Pause + Sound */
+    useEffect(() => {
+      const video = videoRef.current;
+      if (!video) return;
 
-    video.muted = isMuted;
+      video.muted = isMuted;
 
-    if (isVisible) {
-      video.play().catch(() => {});
-    } else {
-      video.pause();
-    }
-  }, [isVisible, isMuted]);
+      if (isVisible) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    }, [isVisible, isMuted]);
 
-  /* 🌍 Listen Global Sound Toggle */
-  useEffect(() => {
-    const handleSoundToggle = (e: Event) => {
-      const muted = (e as CustomEvent<boolean>).detail;
-      setIsMuted(muted);
-    };
+    /* 🌍 Global Sound Toggle */
+    useEffect(() => {
+      const handleSoundToggle = (e: Event) => {
+        const muted = (e as CustomEvent<boolean>).detail;
+        setIsMuted(muted);
+      };
 
-    window.addEventListener(
-      "reels-sound-toggle",
-      handleSoundToggle as EventListener
-    );
-
-    return () => {
-      window.removeEventListener(
+      window.addEventListener(
         "reels-sound-toggle",
         handleSoundToggle as EventListener
       );
+
+      return () => {
+        window.removeEventListener(
+          "reels-sound-toggle",
+          handleSoundToggle as EventListener
+        );
+      };
+    }, []);
+
+    useEffect(() => {
+      const video = videoRef.current;
+      if (!video) return;
+
+      video.muted = isMuted;
+
+      if (isVisible && !isPaused) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    }, [isVisible, isMuted, isPaused]);
+
+    const handleVideoToggle = () => {
+      setIsPaused((prev) => !prev);
     };
-  }, []);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    if (isLoading) return <ClipsBoxSkeleton />;
 
-    video.muted = isMuted;
-
-    if (isVisible && !isPaused) {
-      video.play().catch(() => {});
-    } else {
-      video.pause();
-    }
-  }, [isVisible, isMuted, isPaused]);
-  const handleVideoToggle = () => {
-    setIsPaused((prev) => !prev);
-  };
-
-  if (isLoading) return <ClipsBoxSkeleton />;
-  return (
-    <section className="snap-center flex items-center justify-center w-full h-full px-0 md:px-4">
-      <div className="relative flex items-center justify-center w-full sm:w-fit ">
-        <GlobalSoundToggle />
-        {/* 🎬 Video */}
-        {post.content.media.map((videourl, i) => {
-          return (
+    return (
+      <section
+        ref={ref} // ✅ Forwarded ref for observer
+        className="snap-center flex items-center justify-center w-full h-full px-0 md:px-4"
+      >
+        <div className="relative flex items-center justify-center w-full sm:w-fit ">
+          <GlobalSoundToggle />
+          {/* 🎬 Video */}
+          {post.content.media.map((videourl, i) => (
             <video
               key={i}
               onClick={handleVideoToggle}
@@ -120,52 +125,52 @@ const ClipsBox: React.FC<ClipsBoxProps> = ({ post, isPortrait, isLoading }) => {
               loop
               playsInline
               preload="metadata"
-              className={`bg-black border-none lg:border border-border   rounded-none lg:rounded-xl overflow-hidden   max-h-[90vh] w-full lg:w-[calc(90vh*9/16)] h-[calc(100vh-104px)] lg:h-[90vh] 
+              className={`bg-black border-none lg:border border-border rounded-none lg:rounded-xl overflow-hidden max-h-[90vh] w-full lg:w-[calc(90vh*9/16)] h-[calc(100vh-104px)] lg:h-[90vh] 
             ${bgClass}`}
             />
-          );
-        })}
+          ))}
 
-        {/* 👉 Right Action Buttons */}
-        <div className="absolute right-1 md:-right-30 bottom-2 lg:bottom-8 z-20 flex flex-col gap-1 text-white md:text-black ">
-          <VideoLikeButton postId={post._id} />
-          <VideoCommentsButton postId={post._id} postNumber={post._id} />
-
-          <ActionButton icon={<RiShareForwardLine />} label="Share" />
-          <VideoSaveButton postId={post._id} />
-
-          <ActionButton icon={<HiDotsHorizontal />} />
-        </div>
-
-        {/* 📝 Caption */}
-        <div className="absolute left-4 bottom-5 z-20 max-w-[80%]">
-          <div className="flex items-center gap-2">
-            <img
-              src={post.userid.profileImage}
-              className="w-8 h-8 rounded-full object-cover"
-              alt=""
-            />
-            <span className="text-sm font-semibold text-white flex items-center gap-1">
-              {post.userid.name}
-              <UserBadge badges={post.userid.badges} variants="white" />
-            </span>
-            <VideoCardFollow targetUserId={post.userid._id} />
+          {/* 👉 Right Action Buttons */}
+          <div className="absolute right-1 md:-right-30 bottom-2 lg:bottom-8 z-20 flex flex-col gap-1 text-white md:text-black ">
+            <VideoLikeButton postId={post._id} />
+            <VideoCommentsButton postId={post._id} postNumber={post._id} />
+            <ActionButton icon={<RiShareForwardLine />} label="Share" />
+            <VideoSaveButton postId={post._id} />
+            <ActionButton icon={<HiDotsHorizontal />} />
           </div>
-          {post.content.location && (
-            <span className="smalltext mt-1 text-white text-shadow-2xs flex items-center gap-0.5">
-              <MdOutlineLocationOn className="text-lg" />
-              {post.content.location}
-            </span>
-          )}
 
-          <p className="mt-1 text-[13px] font-semibold text-white text-shadow-2xs line-clamp-2">
-            {post.content.caption}
-          </p>
+          {/* 📝 Caption */}
+          <div className="absolute left-4 bottom-5 z-20 max-w-[80%]">
+            <div className="flex items-center gap-2">
+              <img
+                src={post.userid.profileImage}
+                className="w-8 h-8 rounded-full object-cover"
+                alt=""
+              />
+              <span className="text-sm font-semibold text-white flex items-center gap-1">
+                {post.userid.name}
+                <UserBadge badges={post.userid.badges} variants="white" />
+              </span>
+              <VideoCardFollow targetUserId={post.userid._id} />
+            </div>
+            {post.content.location && (
+              <span className="smalltext mt-1 text-white text-shadow-2xs flex items-center gap-0.5">
+                <MdOutlineLocationOn className="text-lg" />
+                {post.content.location}
+              </span>
+            )}
+
+            <p className="mt-1 text-[13px] font-semibold text-white text-shadow-2xs line-clamp-2">
+              {post.content.caption}
+            </p>
+          </div>
         </div>
-      </div>
-    </section>
-  );
-};
+      </section>
+    );
+  }
+);
+
+ClipsBox.displayName = "ClipsBox";
 
 export default ClipsBox;
 
@@ -177,7 +182,7 @@ const ActionButton = ({
   icon: React.ReactNode;
   label?: string;
 }) => (
-  <button className="flex flex-col  lg:text-text items-center justify-center cursor-pointer w-16 h-14 rounded-xl hover:bg-background-secondary">
+  <button className="flex flex-col lg:text-text items-center justify-center cursor-pointer w-16 h-14 rounded-xl hover:bg-background-secondary">
     <span className="text-2xl font-black text-shadow-xs">{icon}</span>
     {label && (
       <small className="block smalltext opacity-80 mt-1 text-shadow-xs">

@@ -173,3 +173,30 @@ a {
 .ScrollbarHide::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
+
+.video-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: #4b5563; /* gray-600 */
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+/* Chrome / Edge / Safari */
+.video-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background: white;
+  margin-top: -5px;
+}
+
+/* Firefox */
+.video-range::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background: white;
+}

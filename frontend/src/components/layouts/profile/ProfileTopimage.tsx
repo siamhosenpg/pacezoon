@@ -29,12 +29,16 @@ const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
     <div className="bg-background rounded-none lg:rounded-lg mb-4 overflow-hidden w-full pb-8">
       <div className="profiletopimage relative p-2 lg:p-6 overflow-hidden w-full">
         <div className="rounded-lg overflow-hidden">
-          <img
-            loading="lazy"
-            src={user?.coverImage || "/images/profile.jpg"}
-            alt=""
-            className="aspect-7/2 object-cover bg-background-tertiary w-full"
-          />
+          {user?.coverImage ? (
+            <img
+              loading="lazy"
+              src={user?.coverImage}
+              alt=""
+              className="aspect-7/2 object-cover bg-background-tertiary w-full"
+            />
+          ) : (
+            <div className="aspect-7/2 object-cover bg-background-tertiary w-full"></div>
+          )}
         </div>
       </div>
 
@@ -42,7 +46,13 @@ const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
         <div className="pfimage relative  w-[110px] lg:w-[140px] shrink-0 h-[110px] lg:h-[140px] rounded-full  p-[5px] bg-background ">
           <img
             loading="lazy"
-            src={user?.profileImage}
+            src={
+              user?.profileImage
+                ? user.profileImage
+                : user?.gender === "female"
+                  ? "/images/femaleprofile.jpg"
+                  : "/images/profile.jpg" // male or default
+            }
             alt=""
             className="w-full object-cover h-full rounded-full border-border border"
           />
@@ -74,30 +84,35 @@ const ProfileTopimage: React.FC<ProfileTopimageProps> = ({ user }) => {
         <ProfileTopCountStatus userId={user._id} />
         <div className="w-full    flex flex-row lg:flex-col xl:flex-row items-center gap-3 justify-start  ">
           <div className="  text-secondary   font-semibold">
-            {user.work ? (
+            {user?.work?.[0] && (
               <div className="flex justify-start lg:justify-end w-full items-center gap-1 ">
                 <MdWork className="text-lg shrink-0" />
                 <span className=" block overflow-hidden whitespace-nowrap text-ellipsis truncate text-sm">
                   {user.work[0]}
                 </span>
               </div>
-            ) : (
-              <div></div>
             )}
           </div>
-          <div className="  text-secondary flex font-semibold text-sm gap-1 items-center justify-end">
-            <MdLocationPin className="text-lg" />
-            <span className=" block overflow-hidden whitespace-nowrap text-ellipsis truncate text-sm">
-              {user?.location || "Unknown"}
-            </span>
-          </div>
+
+          {user?.location && (
+            <div className="  text-secondary flex font-semibold text-sm gap-1 items-center justify-end">
+              <MdLocationPin className="text-lg" />
+              <span className=" block overflow-hidden whitespace-nowrap text-ellipsis truncate text-sm">
+                {user?.location}
+              </span>
+            </div>
+          )}
         </div>
       </div>
       <div className="profilebio mt-2 px-6 lg:px-12 ">
-        <h3 className=" text-base font-bold mt-6 text-loose ">
-          {user?.bio || "Blazora User"}
-        </h3>
-        <p className=" text-sm text-secondary mt-2">{user?.aboutText || ""}</p>
+        {user?.bio && (
+          <h3 className=" text-base font-bold mt-6 text-loose ">{user?.bio}</h3>
+        )}
+        {user?.aboutText && (
+          <p className=" text-sm text-secondary mt-2">
+            {user?.aboutText || " "}
+          </p>
+        )}
       </div>
     </div>
   );

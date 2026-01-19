@@ -68,7 +68,13 @@ const Postbox: React.FC<PostboxProps> = ({ post }) => {
             <img
               loading="lazy"
               className=" block w-full  h-full object-cover   "
-              src={post.userid?.profileImage} // Placeholder profile image
+              src={
+                post.userid?.profileImage
+                  ? post.userid?.profileImage
+                  : post.userid?.gender === "female"
+                    ? "/images/femaleprofile.jpg"
+                    : "/images/profile.jpg" // male or default
+              } // Placeholder profile image
               alt=""
             />
           </Link>

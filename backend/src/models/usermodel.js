@@ -13,7 +13,7 @@ const LoginHistorySchema = new Schema(
     location: String,
     loginAt: Date,
   },
-  { _id: false }
+  { _id: false },
 );
 
 // Notifications & Privacy inside settings
@@ -39,7 +39,7 @@ const SettingsSchema = new Schema(
       },
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 // Security schema
@@ -49,7 +49,7 @@ const SecuritySchema = new Schema(
     lastPasswordChange: { type: Date },
     loginHistory: [LoginHistorySchema],
   },
-  { _id: false }
+  { _id: false },
 );
 
 // =============================
@@ -64,26 +64,28 @@ const UserSchema = new Schema(
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true, select: false },
 
-    profileImage: { type: String, default: "/images/profile.jpg" },
-    coverImage: { type: String, default: "/images/cover.jpg" },
+    profileImage: { type: String },
+    coverImage: { type: String },
     bio: {
       type: String,
       trim: true,
-      maxlength: 300,
-      default: "Capturing moments, coding ideas",
+      maxlength: [300, "Bio সর্বোচ্চ 300 অক্ষরের হতে পারবে"],
     },
-    work: { type: [String], default: "Social Media user" },
-    educations: { type: [String], trim: true, default: "educatin" },
+    work: { type: [String], trim: true },
+    educations: { type: [String], trim: true },
     aboutText: {
       type: String,
       trim: true,
       maxlength: 500,
       default:
-        " Just a simple human navigating life, learning new things, and sharing moments along the way. Love connecting with people, exploring ideas, and finding joy in everyday experiences.Always open to growth, positivity, and new adventures.",
+        "An ordinary person with a desire to learn, striving to improve myself and view life positively.",
     },
     gender: {
       type: String,
-      enum: ["male", "female", "other"],
+      enum: {
+        values: ["male", "female", "other"],
+        message: "Gender must be male, female, or other",
+      },
       default: "male",
     },
     dateOfBirth: { type: Date },
@@ -133,7 +135,7 @@ const UserSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Indexes

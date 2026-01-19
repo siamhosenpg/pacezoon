@@ -28,7 +28,7 @@ const CreateSharePost = ({ postId, onClose }: Props) => {
 
   const [caption, setCaption] = useState("");
   const [privacy, setPrivacy] = useState<"public" | "friends" | "private">(
-    "public"
+    "public",
   );
 
   const handleShare = () => {
@@ -43,7 +43,7 @@ const CreateSharePost = ({ postId, onClose }: Props) => {
           onClose();
           setCaption("");
         },
-      }
+      },
     );
   };
 
@@ -140,7 +140,13 @@ const CreateSharePost = ({ postId, onClose }: Props) => {
                   <div className=" w-11 sm:w-12 h-11 sm:h-12 rounded-full shrink-0 overflow-hidden ">
                     <img
                       className="w-full h-full object-cover bg-background-secondary "
-                      src={user.user.profileImage}
+                      src={
+                        user?.user.profileImage
+                          ? user.user.profileImage
+                          : user?.user.gender === "female"
+                            ? "/images/femaleprofile.jpg"
+                            : "/images/profile.jpg" // male or default
+                      }
                       alt=""
                     />
                   </div>
@@ -155,7 +161,7 @@ const CreateSharePost = ({ postId, onClose }: Props) => {
                       value={privacy}
                       onChange={(e) =>
                         setPrivacy(
-                          e.target.value as "public" | "private" | "friends"
+                          e.target.value as "public" | "private" | "friends",
                         )
                       }
                       className="w-fit rounded-lg border border-border  py-1 px-1.5 smalltext mt-1  cursor-pointer"
@@ -186,7 +192,13 @@ const CreateSharePost = ({ postId, onClose }: Props) => {
                     <div className="w-8 h-8 rounded-full overflow-hidden">
                       <img
                         className="w-full h-full object-cover "
-                        src={post.userid.profileImage}
+                        src={
+                          post.userid.profileImage
+                            ? post.userid.profileImage
+                            : post.userid.gender === "female"
+                              ? "/images/femaleprofile.jpg"
+                              : "/images/profile.jpg" // male or default
+                        }
                         alt=""
                       />
                     </div>

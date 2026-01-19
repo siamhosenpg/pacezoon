@@ -32,11 +32,10 @@ const Profile = async ({ params }: PageProps) => {
             {/* LEFT SIDE */}
             <div className="w-full lg:w-7/12 static lg:sticky space-y-4">
               <ProfileTopimage user={user} />
-              <ProfileSectionlist />
+
               <ProfileAbout user={user} />
               <ProfileFollower userId={user._id} />
-              <ProfilePhotoslist />
-              <ProfileVideos />
+              <ProfilePhotoslist userId={user._id} />
             </div>
 
             {/* RIGHT SIDE */}

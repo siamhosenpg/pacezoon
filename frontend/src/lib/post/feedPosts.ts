@@ -13,6 +13,11 @@ export interface ProfilePostsResponse {
   nextCursor: string | null;
 }
 
+export interface PostCountResponse {
+  userid: string;
+  count: number;
+}
+
 // 🔵 Global Reusable API Error Handler
 const handleApiError = (error: any): never => {
   if (error.response) {
@@ -26,7 +31,7 @@ const handleApiError = (error: any): never => {
 
 export const getFeedPosts = async (
   cursor: string | null = null,
-  limit: number = 10
+  limit: number = 10,
 ): Promise<FetchPostsResponse> => {
   try {
     const params: any = { limit };
@@ -57,7 +62,7 @@ export const getSinglePost = async (id: string): Promise<PostTypes> => {
 export const getPostsByUserId = async (
   userid: string,
   cursor?: string | null,
-  limit: number = 10
+  limit: number = 10,
 ): Promise<ProfilePostsResponse> => {
   try {
     const response = await axiosInstance.get<ProfilePostsResponse>(
@@ -67,7 +72,7 @@ export const getPostsByUserId = async (
           limit,
           cursor,
         },
-      }
+      },
     );
 
     return response.data;
@@ -86,7 +91,7 @@ export const createPost = async (formData: FormData): Promise<PostTypes> => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
     );
 
     return response.data;
@@ -99,12 +104,12 @@ export const createPost = async (formData: FormData): Promise<PostTypes> => {
 // 🟢 Update post
 export const updatePost = async (
   postId: string,
-  updatedData: Partial<PostTypes>
+  updatedData: Partial<PostTypes>,
 ): Promise<PostTypes> => {
   try {
     const response = await axiosInstance.put<PostTypes>(
       `/posts/${postId}`,
-      updatedData
+      updatedData,
     );
     return response.data;
   } catch (error: any) {
@@ -138,4 +143,16 @@ export const sharePost = async (data: {
     handleApiError(error);
     throw error;
   }
+};
+// 🔹 Get post count by user
+export const getPostCountByUser = async (
+  userid: string,
+): Promise<PostCountResponse> => {
+  if (!userid) throw new Error("UserId is required");
+
+  const { data } = await axiosInstance.get<PostCountResponse>(
+    `/posts/user/${userid}/count`,
+  );
+
+  return data;
 };

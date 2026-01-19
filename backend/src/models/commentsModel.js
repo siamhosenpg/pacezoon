@@ -16,6 +16,8 @@ const commentSchema = new mongoose.Schema(
       index: true, // 🔥 Filter by user → faster user profile load
     },
 
+    parentCommentId: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
+
     text: {
       type: String,
       trim: true,
@@ -45,7 +47,7 @@ const commentSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // 🔥 Compound Index (Most Important)

@@ -19,7 +19,14 @@ const reactionSchema = new mongoose.Schema(
       enum: ["like", "love", "haha", "wow", "sad", "angry", "care"],
       required: true,
     },
+    // 🔥 Link to Activity
+    activityId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Activity",
+      required: true,
+    },
   },
+
   {
     timestamps: true,
     versionKey: false,

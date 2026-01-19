@@ -24,7 +24,7 @@ const Leftnavigationlist = [
 
   {
     name: "Setting & Privicy",
-    links: "/setting",
+    links: "/profile/edit",
     image: "/images/icon/setting.png",
   },
   {

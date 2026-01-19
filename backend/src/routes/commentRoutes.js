@@ -5,6 +5,7 @@ import {
   getCommentsByPost,
   updateComment,
   deleteComment,
+  getRepliesByComment,
 } from "../controllers/commentController.js";
 
 import { protect } from "../middleware/auth.js";
@@ -25,5 +26,7 @@ router.put("/:commentId", protect, updateComment);
 
 // Delete comment
 router.delete("/:commentId", protect, deleteComment);
+// Get replies of a specific comment
+router.get("/replies/:commentId", getRepliesByComment);
 
 export default router;

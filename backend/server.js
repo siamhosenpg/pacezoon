@@ -30,6 +30,7 @@ import discoverRoutes from "./src/routes/post/discoverRoute.js";
 import peopleRoutes from "./src/routes/user/peopleRoutes.js";
 import messageRoutes from "./src/routes/message/messageRoutes.js";
 import conversationRoutes from "./src/routes/message/conversationRoutes.js";
+import activityRoutes from "./src/routes/acativity/acativityRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -78,6 +79,7 @@ app.use("/peoples", peopleRoutes);
 
 app.use("/messages", messageRoutes);
 app.use("/conversations", conversationRoutes);
+app.use("/activities", activityRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

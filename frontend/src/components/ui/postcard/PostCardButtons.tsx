@@ -51,22 +51,6 @@ const PostCardButtons: React.FC<Props> = ({
     }
   };
 
-  if (authLoading) {
-    return (
-      <div className="px-4 sm:px-6 py-2">
-        <p className="text-sm text-gray-500">Loading...</p>
-      </div>
-    );
-  }
-
-  if (!user?.user?._id) {
-    return (
-      <div className="px-4 sm:px-6 py-2">
-        <p className="text-sm text-gray-500">Login to react</p>
-      </div>
-    );
-  }
-
   const handleToggleLike = () => {
     setError(null);
     const ReactionsTypes = [
@@ -193,6 +177,22 @@ const PostCardButtons: React.FC<Props> = ({
     wow: "text-orange-400",
     sad: "text-orange-400",
   };
+
+  if (authLoading) {
+    return (
+      <div className="px-4 sm:px-6 py-2">
+        <p className="text-sm text-gray-500">Loading...</p>
+      </div>
+    );
+  }
+
+  if (!user?.user?._id) {
+    return (
+      <div className="px-4 sm:px-6 py-2">
+        <p className="text-sm text-gray-500">Login to react</p>
+      </div>
+    );
+  }
 
   return (
     <div className={` flex flex-col gap-1 ${com ? "px-0" : "px-4 sm:px-6"} `}>

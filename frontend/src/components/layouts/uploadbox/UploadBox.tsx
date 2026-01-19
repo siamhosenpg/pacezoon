@@ -29,7 +29,13 @@ const UploadBox = ({}) => {
         >
           <img
             loading="lazy"
-            src={user?.user?.profileImage}
+            src={
+              user?.user?.profileImage
+                ? user.user.profileImage
+                : user?.user?.gender === "female"
+                  ? "/images/femaleprofile.jpg"
+                  : "/images/profile.jpg" // male or default
+            }
             className="w-full h-full object-cover"
             alt=""
           />

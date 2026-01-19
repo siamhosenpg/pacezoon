@@ -40,7 +40,7 @@ export const getMediaPostsByUser = async (req, res) => {
     const posts = await Post.find({
       userid,
       privacy: "public",
-      "media.type": { $in: ["image", "video"] },
+      "content.type": { $in: ["image", "video"] },
     })
       .populate("userid", "name userid profileImage")
       .sort({ createdAt: -1 })

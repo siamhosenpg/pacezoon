@@ -12,14 +12,14 @@ export const getPosts = async (req, res) => {
 
     const posts = await Post.find(query)
       // 🔵 Post owner
-      .populate("userid", "name username badges profileImage")
+      .populate("userid", "name username badges profileImage gender")
 
       // 🔥 Shared post → parent post populate
       .populate({
         path: "content.parentPost",
         populate: {
           path: "userid",
-          select: "name username badges profileImage",
+          select: "name username badges profileImage gender",
         },
       })
 
@@ -44,7 +44,7 @@ export const getPosts = async (req, res) => {
 export const getPostById = async (req, res) => {
   try {
     const post = await Post.findOne({ postid: req.params.postid })
-      .populate("userid", "name  username badges bio profileImage")
+      .populate("userid", "name  username badges bio profileImage gender")
       .exec();
 
     if (!post) return res.status(404).json({ message: "Post not found" });
@@ -69,7 +69,7 @@ export const getPostsByUserId = async (req, res) => {
     }
 
     const posts = await Post.find(query)
-      .populate("userid", "name username bio badges profileImage")
+      .populate("userid", "name username bio badges profileImage gender")
       .sort({ createdAt: -1 }) // 🔥 latest first
       .limit(limit + 1) // 🔥 extra 1 for hasMore
       .exec();
@@ -235,7 +235,7 @@ export const getPostByMongoId = async (req, res) => {
     }
 
     const post = await Post.findById(id)
-      .populate("userid", "name username badges bio profileImage")
+      .populate("userid", "name username badges bio profileImage gender")
       .exec();
 
     if (!post) {
@@ -312,5 +312,26 @@ export const createSharePost = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+// 🟢 Get total post count by specific userid
+export const getPostCountByUserId = async (req, res) => {
+  try {
+    const userId = req.params.userid;
+
+    if (!userId) {
+      return res.status(400).json({ message: "UserId is required" });
+    }
+
+    const count = await Post.countDocuments({ userid: userId });
+
+    return res.status(200).json({
+      userid: userId,
+      count,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
   }
 };

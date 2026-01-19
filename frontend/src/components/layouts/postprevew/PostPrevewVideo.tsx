@@ -100,7 +100,7 @@ const PrevewVideoSection: React.FC<ImageSectionProps> = ({ media }) => {
           max={duration}
           value={progress}
           onChange={handleSeek}
-          className="w-full h-1 accent-white cursor-pointer"
+          className="video-range w-full"
         />
 
         <div className="flex items-center justify-between mt-3 text-white">

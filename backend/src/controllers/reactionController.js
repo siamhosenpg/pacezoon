@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 import Reaction from "../models/reactionModel.js";
 import Post from "../models/postmodel.js";
 import { createNotification } from "./notification/notificationcontroller.js";
+import {
+  createActivity,
+  deleteActivity,
+} from "./activities/activitesController.js";
+
 // 🟢 Create Reaction
 export const createReaction = async (req, res) => {
   try {
@@ -22,19 +27,40 @@ export const createReaction = async (req, res) => {
       });
     }
 
-    const newReaction = await Reaction.create({
-      userId,
-      postId,
-      reaction,
-    });
-
     // 🔹 Get post owner
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
+
     // 🔔 follower user info (actor)
     const actorId = req.user.id;
+
+    // 1️⃣ Create Activity first
+    let activity;
+    try {
+      activity = await createActivity({
+        userId: actorId,
+        type: "react",
+        target: { postId },
+      });
+    } catch (err) {
+      console.error("Activity creation error:", err);
+      return res.status(500).json({
+        message: "Error creating activity",
+        error: err.message,
+      });
+    }
+
+    // 2️⃣ Create Reaction with activityId
+    const newReaction = await Reaction.create({
+      userId,
+      postId,
+      reaction,
+      activityId: activity._id, // ✅ Now correct
+    });
+
+    // 3️⃣ Send Notification
     try {
       await createNotification({
         userId: post.userid,
@@ -99,7 +125,7 @@ export const updateReaction = async (req, res) => {
 // 🔴 Delete Reaction
 export const deleteReaction = async (req, res) => {
   try {
-    const userId = req.user.id; // 🔥 Always logged in user
+    const userId = req.user.id;
     const { postId } = req.params;
 
     if (!postId) {
@@ -112,6 +138,13 @@ export const deleteReaction = async (req, res) => {
       return res
         .status(404)
         .json({ message: "No reaction found for this post" });
+    }
+
+    try {
+      await deleteActivity({ activityId: deleted.activityId, userId });
+    } catch (err) {
+      console.error("Activity deletion error:", err);
+      // ignore, don't block reaction deletion
     }
 
     return res.status(200).json({
@@ -160,7 +193,6 @@ export const getReactionCount = async (req, res) => {
       return res.status(400).json({ message: "postId is required" });
     }
 
-    // শুধু count দরকার → fastest & lightweight
     const count = await Reaction.countDocuments({ postId });
 
     return res.status(200).json({
@@ -185,34 +217,14 @@ export const getTopReactionsByPost = async (req, res) => {
       return res.status(400).json({ message: "postId is required" });
     }
 
-    // ✅ Convert string → ObjectId
     const postObjectId = new mongoose.Types.ObjectId(postId);
 
     const topReactions = await Reaction.aggregate([
-      {
-        $match: {
-          postId: postObjectId,
-        },
-      },
-      {
-        $group: {
-          _id: "$reaction", // like, love, care etc
-          count: { $sum: 1 },
-        },
-      },
-      {
-        $sort: { count: -1 }, // highest first
-      },
-      {
-        $limit: 3, // top 3 reactions
-      },
-      {
-        $project: {
-          _id: 0,
-          type: "$_id",
-          count: 1,
-        },
-      },
+      { $match: { postId: postObjectId } },
+      { $group: { _id: "$reaction", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 3 },
+      { $project: { _id: 0, type: "$_id", count: 1 } },
     ]);
 
     return res.status(200).json({

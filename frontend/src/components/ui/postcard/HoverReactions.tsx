@@ -2,23 +2,23 @@ import React from "react";
 import { useReactions } from "@/hook/useReactions";
 import { ReactionItem } from "@/types/reactionTypes";
 const reactions = [
-  { type: "like", icon: "images/icon/reaction/like.png" },
-  { type: "love", icon: "images/icon/reaction/love.png" },
+  { type: "like", icon: "/images/icon/reaction/like.png" },
+  { type: "love", icon: "/images/icon/reaction/love.png" },
   {
     type: "angry",
-    icon: "images/icon/reaction/angry.png",
+    icon: "/images/icon/reaction/angry.png",
   },
   {
     type: "care",
-    icon: "images/icon/reaction/emoji.png",
+    icon: "/images/icon/reaction/emoji.png",
   },
   {
     type: "wow",
-    icon: "images/icon/reaction/wow.png",
+    icon: "/images/icon/reaction/wow.png",
   },
   {
     type: "sad",
-    icon: "images/icon/reaction/sad.png",
+    icon: "/images/icon/reaction/sad.png",
   },
 ];
 

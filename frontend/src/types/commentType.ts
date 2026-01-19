@@ -10,14 +10,15 @@ export interface CommentUser {
   userid: number;
   avatar?: string;
   profileImage: string;
+  gender: "male" | "female" | "other";
 }
 
 export interface CommentType {
   _id: string;
 
   postId: string; // populated হলে Object আসবে
-  commentUserId: CommentUser | string; // populated / non-populated দুটোই handle করবে
-
+  commentUserId: CommentUser; // populated / non-populated দুটোই handle করবে
+  parentCommentId?: CommentType;
   text: string;
 
   media: CommentMedia;

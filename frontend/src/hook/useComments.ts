@@ -1,4 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getRepliesByComment } from "@/lib/post/comments";
+import { GetRepliesResponse } from "@/lib/post/comments";
 
 import axiosInstance from "@/lib/axios";
 
@@ -28,14 +30,28 @@ export const useCreateComment = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { postId: string; text: string }) => {
+    mutationFn: async (data: {
+      postId: string;
+      text: string;
+      parentCommentId?: string;
+    }) => {
       const res = await axiosInstance.post("/comments", data);
       return res.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["comments", variables.postId],
-      });
+      const { postId, parentCommentId } = variables;
+
+      if (parentCommentId) {
+        // It's a reply → invalidate replies query
+        queryClient.invalidateQueries({
+          queryKey: ["replies", parentCommentId],
+        });
+      } else {
+        // Main comment → invalidate comments query
+        queryClient.invalidateQueries({
+          queryKey: ["comments", postId],
+        });
+      }
     },
   });
 };
@@ -71,5 +87,24 @@ export const useDeleteComment = () => {
         queryKey: ["comments"],
       });
     },
+  });
+};
+
+interface UseRepliesParams {
+  commentId: string;
+  page?: number;
+  limit?: number;
+}
+
+export const useCommentsReplies = ({
+  commentId,
+  page = 1,
+  limit = 20,
+}: UseRepliesParams) => {
+  return useQuery<GetRepliesResponse, Error>({
+    queryKey: ["replies", commentId, page, limit],
+    queryFn: () => getRepliesByComment({ commentId, page, limit }),
+    staleTime: 1000 * 60, // 1 minute
+    enabled: Boolean(commentId),
   });
 };

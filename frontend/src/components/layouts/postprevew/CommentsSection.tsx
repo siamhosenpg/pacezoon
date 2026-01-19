@@ -9,9 +9,13 @@ import { useGetComments } from "@/hook/useComments";
 // Correct Props Type
 interface CommentsSectionProps {
   postId: string;
+  setparentComment: React.Dispatch<React.SetStateAction<CommentType | null>>;
 }
 
-const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
+const CommentsSection: React.FC<CommentsSectionProps> = ({
+  postId,
+  setparentComment,
+}) => {
   const { data: comments = [], isLoading } = useGetComments(postId);
 
   if (isLoading)
@@ -30,7 +34,11 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
       )}
 
       {comments.map((comment: CommentType) => (
-        <CommentsCard key={comment._id} comment={comment} />
+        <CommentsCard
+          key={comment._id}
+          comment={comment}
+          setparentComment={setparentComment}
+        />
       ))}
     </div>
   );

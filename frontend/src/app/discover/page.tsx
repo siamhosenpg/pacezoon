@@ -1,15 +1,19 @@
 "use client";
 import React from "react";
 import { useDiscoversPosts } from "@/hook/post/useDiscoversPosts";
-import { on } from "events";
 import Link from "next/link";
 import { GoDotFill } from "react-icons/go";
 import DiscoverSkeleton from "@/components/layouts/discover/DiscoverSkeleton";
 import { ProtectedRoute } from "@/components/Protected/ProtectedRoute";
+import Masonry from "react-masonry-css";
 
 const Discover = () => {
   const { data, isLoading, isError } = useDiscoversPosts();
-
+  const breakpointColumnsObj = {
+    default: 4, // desktop
+    1024: 3, // tablet
+    640: 2, // mobile
+  };
   if (isError) return <p>Error loading posts</p>;
 
   return (
@@ -17,12 +21,16 @@ const Discover = () => {
       <div className="Pagearea pt-2 lg:pt-4 pb-18">
         {isLoading && <DiscoverSkeleton />}
 
-        <div className=" px-2 lg:px-0 columns-2 md:columns-3 xl:columns-4 2xl:columns-4 gap-2 lg:gap-4">
+        <Masonry
+          breakpointCols={breakpointColumnsObj}
+          columnClassName="flex flex-col gap-4"
+          className="flex  gap-4"
+        >
           {data?.posts?.map((post) => {
             return (
               <div
                 key={post._id}
-                className=" break-inside-avoid mb-2 lg:mb-4 rounded-lg overflow-hidden border border-border"
+                className="   rounded-lg overflow-hidden border border-border"
               >
                 {post.content.type === "image" && (
                   <Link
@@ -51,7 +59,7 @@ const Discover = () => {
               </div>
             );
           })}
-        </div>
+        </Masonry>
       </div>
     </ProtectedRoute>
   );

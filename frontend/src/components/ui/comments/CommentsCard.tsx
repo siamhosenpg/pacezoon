@@ -9,12 +9,17 @@ import { CommentType } from "@/types/commentType";
 import { useDeleteComment } from "@/hook/useComments";
 import { useAuth } from "@/hook/useAuth";
 import Link from "next/link";
+import CommentsReply from "./CommentsReply";
 
 interface CommentsCardProps {
   comment: CommentType;
+  setparentComment: React.Dispatch<React.SetStateAction<CommentType | null>>;
 }
 
-const CommentsCard: React.FC<CommentsCardProps> = ({ comment }) => {
+const CommentsCard: React.FC<CommentsCardProps> = ({
+  comment,
+  setparentComment,
+}) => {
   const { user, isLoading } = useAuth();
   // ❌ ভুল → useGetComments(comment._id)
   // ✔️ সঠিক
@@ -25,78 +30,89 @@ const CommentsCard: React.FC<CommentsCardProps> = ({ comment }) => {
   };
 
   return (
-    <div className="commentsitems flex items-start gap-2 mt-3 overflow-auto pr-2">
-      {/* Profile Image */}
-      <Link
-        href={`/profile/${
-          comment.commentUserId && typeof comment.commentUserId !== "string"
-            ? comment.commentUserId.userid
-            : ""
-        }`}
-        className="image w-10 h-10 rounded-full shrink-0 bg-background-secondary"
-      >
-        <img
-          loading="lazy"
-          src={
+    <div>
+      <div className="commentsitems flex items-start gap-2 mt-3 overflow-auto pr-2">
+        {/* Profile Image */}
+        <Link
+          href={`/profile/${
             comment.commentUserId && typeof comment.commentUserId !== "string"
-              ? comment.commentUserId.avatar ||
-                comment.commentUserId.profileImage ||
-                "/images/profile.jpg"
-              : "/images/profile.jpg"
-          }
-          className="w-full h-full object-cover rounded-full"
-          alt="profile"
-        />
-      </Link>
+              ? comment.commentUserId.userid
+              : ""
+          }`}
+          className="image w-10 h-10 rounded-full shrink-0 bg-background-secondary"
+        >
+          <img
+            loading="lazy"
+            src={
+              comment.commentUserId?.profileImage
+                ? comment.commentUserId.profileImage
+                : comment.commentUserId?.gender === "female"
+                  ? "/images/femaleprofile.jpg"
+                  : "/images/profile.jpg" // male or default
+            }
+            className="w-full h-full object-cover rounded-full"
+            alt="profile"
+          />
+        </Link>
 
-      {/* Comment Body */}
-      <div className="texts max-w-[370px] bg-background-secondary px-2 py-2 rounded-xl rounded-tl-none">
-        <div className="font-semibold text-sm flex items-center gap-2 justify-between">
-          <h4 className="pl-2">
-            {typeof comment.commentUserId !== "string"
-              ? comment.commentUserId.name
-              : "Unknown User"}
-          </h4>
+        {/* Comment Body */}
+        <div className="texts max-w-92.5 bg-background-secondary px-2 py-2 rounded-xl rounded-tl-none">
+          <div className="font-semibold text-sm flex items-center gap-2 justify-between">
+            <h4 className="pl-2">
+              {typeof comment.commentUserId !== "string"
+                ? comment.commentUserId.name
+                : "Unknown User"}
+            </h4>
+          </div>
+
+          {/* Comment Text */}
+          <p className="block text-secondary rounded-xl text-sm mt-1 px-2">
+            {comment.text}
+          </p>
+
+          {/* Media */}
+          {comment.media?.url?.length > 0 && (
+            <div className="mt-2">
+              {comment.media.type === "image" &&
+                comment.media.url.map((img, index) => (
+                  <img
+                    key={index}
+                    src={img}
+                    className="rounded-lg max-h-60 object-cover max-w-37.5"
+                    alt="comment media"
+                  />
+                ))}
+            </div>
+          )}
         </div>
 
-        {/* Comment Text */}
-        <p className="block text-secondary rounded-xl text-sm mt-1 px-2">
-          {comment.text}
-        </p>
-
-        {/* Media */}
-        {comment.media?.url?.length > 0 && (
-          <div className="mt-2">
-            {comment.media.type === "image" &&
-              comment.media.url.map((img, index) => (
-                <img
-                  key={index}
-                  src={img}
-                  className="rounded-lg max-h-60 object-cover max-w-[150px]"
-                  alt="comment media"
-                />
-              ))}
-          </div>
-        )}
+        {/* Delete + Reply */}
+        <div className="flex items-center  gap-2">
+          <button
+            className="smalltext w-fit cursor-pointer"
+            onClick={() => setparentComment(comment)}
+          >
+            Reply
+          </button>
+          {/* Show delete button only if the comment belongs to the logged-in user */}
+          {!isLoading &&
+            user &&
+            typeof comment.commentUserId !== "string" &&
+            user.user._id === comment.commentUserId._id && (
+              <button
+                onClick={() => handleDelete(comment._id)}
+                className="flex items-center hover:bg-background-secondary p-2 rounded-full cursor-pointer"
+              >
+                <MdDeleteOutline className="text-secondary text-lg " />
+              </button>
+            )}
+          <button className="flex items-center hover:bg-background-secondary p-2 rounded-full cursor-pointer">
+            <HiDotsHorizontal className="text-secondary text-lg " />
+          </button>
+        </div>
       </div>
-
-      {/* Delete + Reply */}
-      <div className="flex items-center mt-2 gap-2">
-        {/* Show delete button only if the comment belongs to the logged-in user */}
-        {!isLoading &&
-          user &&
-          typeof comment.commentUserId !== "string" &&
-          user.user._id === comment.commentUserId._id && (
-            <button
-              onClick={() => handleDelete(comment._id)}
-              className="flex items-center hover:bg-background-secondary p-2 rounded-full cursor-pointer"
-            >
-              <MdDeleteOutline className="text-secondary text-lg " />
-            </button>
-          )}
-        <button className="flex items-center hover:bg-background-secondary p-2 rounded-full cursor-pointer">
-          <HiDotsHorizontal className="text-secondary text-lg " />
-        </button>
+      <div className="w-full pl-12 mt-1 pr-6">
+        <CommentsReply commentId={comment._id} />
       </div>
     </div>
   );

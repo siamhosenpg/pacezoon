@@ -37,7 +37,7 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
   const [location, setLocation] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [privacy, setPrivacy] = useState<"public" | "private" | "friends">(
-    "public"
+    "public",
   );
 
   // ----------------------------
@@ -169,7 +169,13 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
                   <div className=" w-11 sm:w-12 h-11 sm:h-12 rounded-full shrink-0 overflow-hidden ">
                     <img
                       className="w-full h-full object-cover bg-background-secondary "
-                      src={user.user.profileImage}
+                      src={
+                        user?.user.profileImage
+                          ? user.user.profileImage
+                          : user?.user.gender === "female"
+                            ? "/images/femaleprofile.jpg"
+                            : "/images/profile.jpg" // male or default
+                      }
                       alt=""
                     />
                   </div>
@@ -194,7 +200,7 @@ const CreatePostCard = ({ onClose }: CreatePostCardProps) => {
                       value={privacy}
                       onChange={(e) =>
                         setPrivacy(
-                          e.target.value as "public" | "private" | "friends"
+                          e.target.value as "public" | "private" | "friends",
                         )
                       }
                       className="w-fit rounded-lg border border-border  py-1 px-1.5 smalltext mt-1  cursor-pointer"

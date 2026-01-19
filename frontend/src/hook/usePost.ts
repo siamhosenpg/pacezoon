@@ -14,6 +14,8 @@ import {
   getPostsByUserId,
   getFeedPosts,
   sharePost,
+  getPostCountByUser,
+  PostCountResponse,
 } from "@/lib/post/feedPosts";
 import { useAuth } from "@/hook/useAuth";
 import { PostTypes } from "@/types/postType";
@@ -84,7 +86,7 @@ export const usePost = () => {
           const updatedPages = [...old.pages];
           updatedPages[0] = [newPost, ...updatedPages[0]];
           return { ...old, pages: updatedPages };
-        }
+        },
       );
     },
   });
@@ -120,7 +122,7 @@ export const usePost = () => {
           pages: old.pages.map((page: any) => ({
             ...page,
             posts: page.posts.filter(
-              (post: PostTypes) => post._id !== variables.postId
+              (post: PostTypes) => post._id !== variables.postId,
             ),
           })),
         };
@@ -137,11 +139,11 @@ export const usePost = () => {
             pages: old.pages.map((page: any) => ({
               ...page,
               posts: page.posts.filter(
-                (post: PostTypes) => post._id !== variables.postId
+                (post: PostTypes) => post._id !== variables.postId,
               ),
             })),
           };
-        }
+        },
       );
     },
   });
@@ -179,13 +181,17 @@ export const usePost = () => {
     });
 
   // ----------------------------
+  // Post Count Query
+  // ----------------------------
+
+  // ----------------------------
   // Exposed API
   // ----------------------------
   return {
     // Create
     createPost: (
       data: FormData,
-      options?: { onSuccess?: () => void; onError?: (err: any) => void }
+      options?: { onSuccess?: () => void; onError?: (err: any) => void },
     ) => createPostMutation.mutate({ data }, options),
 
     createPostLoading: createPostMutation.isPending,
@@ -193,7 +199,7 @@ export const usePost = () => {
     // Share
     sharePost: (
       data: SharePostData,
-      options?: { onSuccess?: () => void; onError?: (err: any) => void }
+      options?: { onSuccess?: () => void; onError?: (err: any) => void },
     ) => sharePostMutation.mutate(data, options),
 
     sharePostLoading: sharePostMutation.isPending,
@@ -212,3 +218,14 @@ export const usePost = () => {
     feedPost, // Infinite Scroll ready
   };
 };
+
+export const useUserPostCount = (userid?: string) =>
+  useQuery<PostCountResponse, Error>({
+    queryKey: ["post-count", userid],
+    queryFn: () => {
+      if (!userid) throw new Error("UserId is required");
+      return getPostCountByUser(userid);
+    },
+    enabled: !!userid,
+    staleTime: 1000 * 60, // 1 min cache
+  });

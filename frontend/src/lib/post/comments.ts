@@ -8,12 +8,14 @@ import { CommentType } from "@/types/commentType";
 // ---------------------------
 export async function createComment(
   postId: string,
-  text: string
+  text: string,
+  parentCommentId: string,
 ): Promise<CommentType> {
   try {
     const res = await axiosInstance.post("/comments", {
       postId,
       text,
+      parentCommentId: parentCommentId || null,
     });
 
     // API returns → { success, message, data: comment }
@@ -44,7 +46,7 @@ export async function getComments(postId: string): Promise<CommentType[]> {
 // ---------------------------
 export async function updateComment(
   commentId: string,
-  text: string
+  text: string,
 ): Promise<CommentType> {
   try {
     const res = await axiosInstance.patch(`/comments/${commentId}`, {
@@ -63,7 +65,7 @@ export async function updateComment(
 // DELETE COMMENT
 // ---------------------------
 export async function deleteComment(
-  commentId: string
+  commentId: string,
 ): Promise<{ message: string }> {
   try {
     const res = await axiosInstance.delete(`/comments/${commentId}`);
@@ -75,3 +77,32 @@ export async function deleteComment(
     throw new Error(err.response?.data?.message || "Failed to delete comment");
   }
 }
+
+// ===============================
+// GET REPLIES FOR A COMMENT
+// ===============================
+interface GetRepliesParams {
+  commentId: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface GetRepliesResponse {
+  success: boolean;
+  page: number;
+  count: number;
+  totalReplies: number;
+  data: CommentType[];
+}
+
+export const getRepliesByComment = async ({
+  commentId,
+  page = 1,
+  limit = 20,
+}: GetRepliesParams): Promise<GetRepliesResponse> => {
+  const response = await axiosInstance.get<GetRepliesResponse>(
+    `/comments/replies/${commentId}?page=${page}&limit=${limit}`,
+  );
+
+  return response.data;
+};

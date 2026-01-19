@@ -38,7 +38,13 @@ const StoryAdd = () => {
             <img
               loading="lazy"
               className=" aspect-square w-full h-full block rounded-full bg-background-secondary  object-cover"
-              src={user?.user?.profileImage}
+              src={
+                user?.user?.profileImage
+                  ? user?.user?.profileImage
+                  : user?.user?.gender === "female"
+                    ? "/images/femaleprofile.jpg"
+                    : "/images/profile.jpg" // male or default
+              }
               alt=""
             />
             <div className=" absolute flex items-center justify-center z-30 w-[88%] aspect-square  bg-accent-transprant text-white rounded-full">
