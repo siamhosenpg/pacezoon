@@ -1,15 +1,6 @@
-import React from "react";
 import ImageSection from "@/components/layouts/postprevew/ImageSection";
-import CommentsInput from "@/components/ui/comments/CommentsInput";
 import { getSinglePost } from "@/lib/post/feedPosts";
-import Link from "next/link";
-import CommentsSection from "@/components/layouts/postprevew/CommentsSection";
-import PostCardStatus from "@/components/ui/postcard/PostCardstatus";
-import PostCardButtons from "@/components/ui/postcard/PostCardButtons";
-import DateTime from "@/components/ui/datetime/DateTime";
-import ThreeDotIconButton from "@/components/ui/buttons/ThreeDotIconbutton";
 import PrevewVideoSection from "@/components/layouts/postprevew/PostPrevewVideo";
-import UserBadge from "@/components/ui/text/UserBadge";
 import PostPrevewRight from "@/components/layouts/postprevew/PostPrevewRight";
 interface PageProps {
   params: Promise<{ postId: string }>; // Promise না দেওয়া

@@ -14,7 +14,8 @@ import { UserType } from "@/types/userType";
 interface UseAuthOptions {
   fetchUser?: boolean;
 }
-interface user {
+
+interface AuthResponse {
   user: UserType;
   token: string;
 }
@@ -22,12 +23,14 @@ interface user {
 export const useAuth = (options?: UseAuthOptions) => {
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  // default true (protected pages), login/register page-এ false দিবি
   const fetchUser = options?.fetchUser ?? true;
 
   const [error, setError] = useState<string | null>(null);
 
   // ===================== Current User =====================
-  const { data: user, isLoading } = useQuery<user | null>({
+  const { data: user, isLoading } = useQuery<AuthResponse | null>({
     queryKey: ["currentUser"],
     enabled: fetchUser,
     retry: false,
@@ -35,12 +38,12 @@ export const useAuth = (options?: UseAuthOptions) => {
       try {
         return await getCurrentUser();
       } catch (err: any) {
-        // 401 হলে currentUser null করে দাও
+        // 401 হলে silently null return (NO throw → NO loop)
         if (err.response?.status === 401) {
-          queryClient.setQueryData(["currentUser"], null);
+          return null;
         }
 
-        // error propagate করো যাতে React Query জানতে পারে
+        // অন্য unexpected error হলে throw
         throw err;
       }
     },
@@ -50,6 +53,7 @@ export const useAuth = (options?: UseAuthOptions) => {
   const login = useMutation({
     mutationFn: loginUser,
     onSuccess: () => {
+      // login সফল হলে currentUser refetch
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       router.push("/");
     },
@@ -76,8 +80,8 @@ export const useAuth = (options?: UseAuthOptions) => {
   const logout = useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
+      // শুধু auth query clear, পুরো cache না
       queryClient.setQueryData(["currentUser"], null);
-      queryClient.clear();
       router.push("/login");
     },
     onError: (err: any) => {
@@ -85,5 +89,13 @@ export const useAuth = (options?: UseAuthOptions) => {
     },
   });
 
-  return { user, isLoading, login, register, logout, error, setError };
+  return {
+    user,
+    isLoading,
+    login,
+    register,
+    logout,
+    error,
+    setError,
+  };
 };
