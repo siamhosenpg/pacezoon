@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { FaBackspace } from "react-icons/fa";
 import { VscScreenFull } from "react-icons/vsc";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import Image from "next/image";
 
 interface ImageSectionProps {
   media: string[];
@@ -20,14 +21,14 @@ const ImageSection: React.FC<ImageSectionProps> = ({ media, index }) => {
 
   const FullScreenImage = (): void => {
     const imgElement = document.querySelector(
-      ".leftArea img"
+      ".leftArea img",
     ) as HTMLElement | null;
 
     if (imgElement) {
       if (!document.fullscreenElement) {
         imgElement.requestFullscreen?.().catch((err: any) => {
           console.error(
-            `Error enabling full-screen: ${err.message} (${err.name})`
+            `Error enabling full-screen: ${err.message} (${err.name})`,
           );
         });
       } else {
@@ -90,7 +91,9 @@ const ImageSection: React.FC<ImageSectionProps> = ({ media, index }) => {
       )}
 
       {/* Main Image */}
-      <img
+      <Image
+        width={1000}
+        height={1000}
         className="max-w-full max-h-full relative z-20 object-contain"
         src={media[current]}
         alt=""
@@ -98,8 +101,10 @@ const ImageSection: React.FC<ImageSectionProps> = ({ media, index }) => {
       />
 
       {/* Blurred Background Image */}
-      <img
-        className="absolute z[-10] max-w-full max-h-full object-contain blur-xl scale-200"
+      <Image
+        width={800}
+        height={700}
+        className="absolute z-10 max-w-full max-h-full object-contain blur-xl scale-200"
         src={media[current]}
         alt=""
         loading="lazy"

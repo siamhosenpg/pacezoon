@@ -5,7 +5,6 @@ import Submeunssection from "@/components/layouts/navigation/leftnavigation/Subm
 import NewsShortBox from "@/components/layouts/navigation/rightnavigation/NewsShortBox";
 import SuggestAccounts from "@/components/layouts/navigation/rightnavigation/SuggestAccounts";
 import Storys from "@/components/layouts/storyitems/Storys";
-import EditProfileImages from "@/components/layouts/updateprofile/EditProfileImages";
 import UploadBox from "@/components/layouts/uploadbox/UploadBox";
 import { ProtectedRoute } from "@/components/Protected/ProtectedRoute";
 

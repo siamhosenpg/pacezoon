@@ -3,6 +3,7 @@
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import Image from "next/image";
 
 type ImageType = string;
 
@@ -46,7 +47,7 @@ const PostcardimageMlt: React.FC<Props> = ({ imagedata, postid }) => {
   }, [emblaApi]);
 
   const handleImageClick = (
-    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>,
   ) => {
     if (isDragging) {
       e.preventDefault();
@@ -71,9 +72,11 @@ const PostcardimageMlt: React.FC<Props> = ({ imagedata, postid }) => {
             <Link
               href={`/post/${postid}?index=${i}`}
               key={i}
-              className="w-3/6 border border-border aspect-12/18 bg-background-secondary rounded-lg overflow-hidden flex items-center justify-center"
+              className="w-3/6 border border-border aspect-12/18 bg-background-secondary rounded-lg overflow-hidden flex items-center justify-center active:scale-95 transition-transform"
             >
-              <img
+              <Image
+                width={600} // ratio only
+                height={1000} // ratio only
                 loading="lazy"
                 className="object-cover w-full h-full"
                 src={image}
@@ -98,7 +101,9 @@ const PostcardimageMlt: React.FC<Props> = ({ imagedata, postid }) => {
                   className="border border-border w-full h-full rounded-lg overflow-hidden"
                   onClick={handleImageClick}
                 >
-                  <img
+                  <Image
+                    width={600} // ratio only
+                    height={1000} // ratio only
                     loading="lazy"
                     src={image}
                     alt="Post Image"
