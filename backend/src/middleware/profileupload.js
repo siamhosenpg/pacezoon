@@ -7,7 +7,7 @@ const imageStorage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: "users", // profile/cover folder
-    allowed_formats: ["jpg", "png", "jpeg", "webp"],
+    allowed_formats: ["jpg", "png", "jpeg", "webp", "heic", "heif"],
     resource_type: "image",
   },
 });
@@ -16,7 +16,13 @@ const imageUpload = multer({
   storage: imageStorage,
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
   fileFilter: (req, file, cb) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/heic",
+      "image/heif",
+    ];
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {

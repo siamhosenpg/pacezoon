@@ -5,6 +5,7 @@ import {
   useNotifications,
   useMarkNotificationRead,
 } from "@/hook/notifications/useNotifications";
+import Image from "next/image";
 import Link from "next/link";
 
 type NotificationBoxProps = {
@@ -39,7 +40,10 @@ const NotificationBox = ({ onClose }: NotificationBoxProps) => {
               noti.read ? "bg-background" : "bg-accent/6"
             }`}
           >
-            <img
+            <Image
+              width={50}
+              height={50}
+              loading="lazy"
               src={
                 noti.actorId?.profileImage
                   ? noti.actorId.profileImage

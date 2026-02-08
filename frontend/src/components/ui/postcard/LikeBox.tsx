@@ -13,7 +13,7 @@ interface LikeIconProps {
 const reactionIcons: Record<ReactionType, string> = {
   like: "/images/icon/reaction/like.png",
   love: "/images/icon/reaction/love.png",
-  care: "/images/icon/reaction/emoji.png",
+  care: "/images/icon/reaction/care.png",
   angry: "/images/icon/reaction/angry.png",
   wow: "/images/icon/reaction/wow.png",
   sad: "/images/icon/reaction/sad.png",
