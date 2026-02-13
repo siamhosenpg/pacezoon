@@ -3,6 +3,7 @@
 
 import { GuestRoute } from "@/components/Protected/GuestRoute";
 import { useAuth } from "@/hook/useAuth";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -26,6 +27,18 @@ export default function LoginPage() {
         setError(message);
       },
     });
+  };
+
+  const ArafatLogin = () => {
+    login.mutate(
+      { email: "rupantor@gmail.com", password: "123456" },
+      {
+        onError: (err: any) => {
+          const message = err.response?.data?.message || "Login failed";
+          setError(message);
+        },
+      },
+    );
   };
 
   return (
@@ -76,6 +89,27 @@ export default function LoginPage() {
               }`}
           >
             {login.isPending ? "Logging in..." : "Login"}
+          </button>
+
+          <button
+            onClick={ArafatLogin}
+            className="px-6 py-3 bg-background flex items-center gap-3 cursor-pointer rounded-xl mt-5 w-full active:scale-[0.98] transition"
+          >
+            <div className="w-12 h-12 rounded-full border-border border">
+              <Image
+                width={80}
+                height={80}
+                className="w-full h-full  rounded-full"
+                src="/images/arafat.jpg"
+                alt=""
+              />
+            </div>
+            <div className="text-left">
+              <h2 className="font-semibold">Arafat Rupantor</h2>
+              <p className="text-sm text-secondary">
+                Continue as Arafat Rupantor
+              </p>
+            </div>
           </button>
 
           <div className="text-center  text-text-tertiary flex items-center justify-center gap-1 text-sm mt-6">
