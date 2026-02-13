@@ -84,7 +84,9 @@ const Postbox: React.FC<PostboxProps> = ({ post }) => {
           <div className="text">
             <div className="flex gap-2  items-center">
               <div className="font-semibold  text-primary whitespace-nowrap overflow-hidden text-ellipsis flex items-center gap-1">
-                <span className=" block">{post.userid?.name}</span>
+                <span className=" block">
+                  {post.userid?.name || "Prosongo User"}
+                </span>
 
                 <UserBadge badges={post.userid?.badges} />
               </div>{" "}

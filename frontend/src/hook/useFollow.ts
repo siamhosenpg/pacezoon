@@ -19,6 +19,7 @@ interface User {
   name: string;
   profileImage: string;
   bio: string;
+  gender: string;
 }
 
 export interface FollowData {
@@ -44,7 +45,7 @@ export const useFollowUser = (currentUserId: string) => {
   return useMutation<FollowResponse, Error, string, FollowMutationContext>({
     mutationFn: async (targetUserId: string) => {
       const res: AxiosResponse<FollowResponse> = await axiosInstance.post(
-        `/follows/follow/${targetUserId}`
+        `/follows/follow/${targetUserId}`,
       );
       return res.data;
     },
@@ -69,18 +70,18 @@ export const useFollowUser = (currentUserId: string) => {
             followerId: { _id: currentUserId } as User,
             followingId: { _id: targetUserId } as User,
           },
-        ]
+        ],
       );
 
       // Optimistic counts
       queryClient.setQueryData<number>(
         ["followingCount", currentUserId],
-        (old = 0) => old + 1
+        (old = 0) => old + 1,
       );
 
       queryClient.setQueryData<number>(
         ["followersCount", targetUserId],
-        (old = 0) => old + 1
+        (old = 0) => old + 1,
       );
 
       return { previousFollowing };
@@ -90,7 +91,7 @@ export const useFollowUser = (currentUserId: string) => {
       if (context?.previousFollowing) {
         queryClient.setQueryData(
           ["following", currentUserId],
-          context.previousFollowing
+          context.previousFollowing,
         );
       }
     },
@@ -120,7 +121,7 @@ export const useUnfollowUser = (currentUserId: string) => {
   return useMutation<FollowResponse, Error, string, UnfollowMutationContext>({
     mutationFn: async (targetUserId: string) => {
       const res: AxiosResponse<FollowResponse> = await axiosInstance.delete(
-        `/follows/unfollow/${targetUserId}`
+        `/follows/unfollow/${targetUserId}`,
       );
       return res.data;
     },
@@ -138,18 +139,18 @@ export const useUnfollowUser = (currentUserId: string) => {
       // Optimistic remove
       queryClient.setQueryData<FollowData[]>(
         ["following", currentUserId],
-        (old = []) => old.filter((f) => f.followingId?._id !== targetUserId)
+        (old = []) => old.filter((f) => f.followingId?._id !== targetUserId),
       );
 
       // Optimistic counts
       queryClient.setQueryData<number>(
         ["followingCount", currentUserId],
-        (old = 0) => Math.max(old - 1, 0)
+        (old = 0) => Math.max(old - 1, 0),
       );
 
       queryClient.setQueryData<number>(
         ["followersCount", targetUserId],
-        (old = 0) => Math.max(old - 1, 0)
+        (old = 0) => Math.max(old - 1, 0),
       );
 
       return { previousFollowing };
@@ -159,7 +160,7 @@ export const useUnfollowUser = (currentUserId: string) => {
       if (context?.previousFollowing) {
         queryClient.setQueryData(
           ["following", currentUserId],
-          context.previousFollowing
+          context.previousFollowing,
         );
       }
     },
@@ -189,7 +190,7 @@ export const useFollowers = (userId: string) => {
     enabled: !!userId,
     queryFn: async () => {
       const res: AxiosResponse<FollowData[]> = await axiosInstance.get(
-        `/follows/followers/${userId}`
+        `/follows/followers/${userId}`,
       );
       return res.data;
     },
@@ -204,7 +205,7 @@ export const useFollowing = (userId: string) => {
     enabled: !!userId,
     queryFn: async () => {
       const res = await axiosInstance.get<FollowingApiResponse>(
-        `/follows/following/${userId}`
+        `/follows/following/${userId}`,
       );
 
       if (Array.isArray(res.data)) return res.data;

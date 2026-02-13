@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -28,22 +27,14 @@ export default async function RootLayout({
       <body
         className={`  ${inter.className}  antialiased bg-background-secondary`}
       >
-        <Suspense
-          fallback={
-            <div className="w-full h-screen flex items-center justify-center">
-              <span className="font-bold text-5xl ">Prosongo</span>
-            </div>
-          }
-        >
-          <ReactQueryProvider>
-            <SocketProvider>
-              {/* Navigation এখন শর্ত অনুযায়ী show/hide হবে */}
-              <ShowNavigation />
+        <ReactQueryProvider>
+          <SocketProvider>
+            {/* Navigation এখন শর্ত অনুযায়ী show/hide হবে */}
+            <ShowNavigation />
 
-              {children}
-            </SocketProvider>
-          </ReactQueryProvider>
-        </Suspense>
+            {children}
+          </SocketProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

@@ -54,14 +54,20 @@ const ProfileFollower: React.FC<ProfileFollowerProps> = ({ userId }) => {
               <div className=" flex items-center gap-2.5">
                 <div className="w-12 h-12  rounded-full overflow-hidden border-border border ">
                   <img
-                    src={user.followingId?.profileImage}
+                    src={
+                      user.followingId?.profileImage
+                        ? user.followingId?.profileImage
+                        : user.followingId?.gender === "female"
+                          ? "/images/femaleprofile.jpg"
+                          : "/images/profile.jpg"
+                    }
                     alt=""
                     className="w-full object-cover h-full rounded-full "
                   />
                 </div>
                 <div className="">
                   <h4 className="  font-bold text-loose">
-                    {user.followingId?.name}
+                    {user.followingId?.name || "Prosongo User"}
                   </h4>
                   <span className="text-secondary smalltext font-semibold block mt-1">
                     {user.followingId?.bio}

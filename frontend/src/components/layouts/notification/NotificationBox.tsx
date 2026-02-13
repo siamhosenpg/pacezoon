@@ -26,47 +26,50 @@ const NotificationBox = ({ onClose }: NotificationBoxProps) => {
           <p className="text-center text-gray-500">No notifications yet</p>
         )}
 
-        {data?.map((noti) => (
-          <Link
-            href={`/profile/${noti.actorId?.username}`}
-            key={noti._id}
-            onClick={() => {
-              if (!noti.read) {
-                markAsRead(noti._id);
-              }
-              onClose(); // 🔥 close box immediately
-            }}
-            className={`flex items-center gap-3 p-3 rounded-lg ${
-              noti.read ? "bg-background" : "bg-accent/6"
-            }`}
-          >
-            <Image
-              width={50}
-              height={50}
-              loading="lazy"
-              src={
-                noti.actorId?.profileImage
-                  ? noti.actorId?.profileImage
-                  : noti.actorId?.gender === "female"
-                    ? "/images/femaleprofile.jpg"
-                    : "/images/profile.jpg"
-              }
-              alt={noti.actorId?.name + " profile image"}
-              className="rounded-full w-10 h-10 object-cover"
-            />
+        {data &&
+          data?.map((noti) => (
+            <Link
+              href={`/profile/${noti.actorId?.username}`}
+              key={noti._id}
+              onClick={() => {
+                if (!noti.read) {
+                  markAsRead(noti._id);
+                }
+                onClose(); // 🔥 close box immediately
+              }}
+              className={`flex items-center gap-3 p-3 rounded-lg ${
+                noti.read ? "bg-background" : "bg-accent/6"
+              }`}
+            >
+              <Image
+                width={50}
+                height={50}
+                loading="lazy"
+                src={
+                  noti.actorId?.profileImage
+                    ? noti.actorId?.profileImage
+                    : noti.actorId?.gender === "female"
+                      ? "/images/femaleprofile.jpg"
+                      : "/images/profile.jpg"
+                }
+                alt={noti.actorId?.name + " profile image"}
+                className="rounded-full w-10 h-10 object-cover"
+              />
 
-            <div className="flex-1 text-sm">
-              <p>
-                <span className="font-semibold">{noti.actorId?.name}</span>{" "}
-                {getNotificationText(noti?.type)}
-              </p>
+              <div className="flex-1 text-sm">
+                <p>
+                  <span className="font-semibold">
+                    {noti.actorId?.name || "Prosongo User"}{" "}
+                  </span>{" "}
+                  {getNotificationText(noti?.type)}
+                </p>
 
-              <p className="text-xs text-gray-500">
-                <DateTime date={noti?.createdAt} />
-              </p>
-            </div>
-          </Link>
-        ))}
+                <p className="text-xs text-gray-500">
+                  <DateTime date={noti?.createdAt} />
+                </p>
+              </div>
+            </Link>
+          ))}
       </div>
     </div>
   );

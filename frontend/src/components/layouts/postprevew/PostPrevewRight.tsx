@@ -19,6 +19,10 @@ interface PostPorps {
 
 const PostPrevewRight: React.FC<PostPorps> = ({ post }) => {
   const [parentComment, setparentComment] = useState<CommentType | null>(null);
+
+  if (!post.userid?.username) {
+    return <div className=""></div>;
+  }
   return (
     <div className="w-full md:w-4/12 hidden lg:block">
       <div className="p-4 h-[calc(100vh-110px)] bg-background rounded-lg flex flex-col justify-between">
@@ -27,14 +31,14 @@ const PostPrevewRight: React.FC<PostPorps> = ({ post }) => {
           <div className="Profile flex items-center justify-between bg-background-secondary gap-2 px-3 py-2 rounded-lg">
             <div className="flex items-center gap-2">
               <Link
-                href={`/profile/${post.userid.username}`}
+                href={`/profile/${post.userid?.username}`}
                 className="shrink-0 w-12 h-12 rounded-full border-border border flex items-center justify-center overflow-hidden"
               >
                 <img
                   src={
-                    post.userid.profileImage
-                      ? post.userid.profileImage
-                      : post.userid.gender === "female"
+                    post.userid?.profileImage
+                      ? post.userid?.profileImage
+                      : post.userid?.gender === "female"
                         ? "/images/femaleprofile.jpg"
                         : "/images/profile.jpg" // male or default
                   }
@@ -46,8 +50,8 @@ const PostPrevewRight: React.FC<PostPorps> = ({ post }) => {
 
               <div>
                 <div className="font-semibold text-primary flex items-center gap-1">
-                  {post.userid.name}
-                  <UserBadge badges={post.userid.badges} />
+                  {post.userid?.name || "Prosongo User"}
+                  <UserBadge badges={post.userid?.badges} />
                 </div>
                 <div className="smalltext text-secondary line-clamp-1 flex items-center gap-2 w-full">
                   <span className="block capitalize">{post.privacy}</span>

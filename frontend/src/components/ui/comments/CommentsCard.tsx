@@ -36,7 +36,7 @@ const CommentsCard: React.FC<CommentsCardProps> = ({
         <Link
           href={`/profile/${
             comment.commentUserId && typeof comment.commentUserId !== "string"
-              ? comment.commentUserId.username
+              ? comment?.commentUserId?.username
               : ""
           }`}
           className="image w-10 h-10 rounded-full shrink-0 bg-background-secondary"
@@ -59,8 +59,8 @@ const CommentsCard: React.FC<CommentsCardProps> = ({
         <div className="texts max-w-92.5 bg-background-secondary px-2 py-2 rounded-xl rounded-tl-none">
           <div className="font-semibold text-sm flex items-center gap-2 justify-between">
             <h4 className="pl-2">
-              {typeof comment.commentUserId !== "string"
-                ? comment.commentUserId.name
+              {typeof comment?.commentUserId !== "string"
+                ? comment?.commentUserId?.name || "Prosongo User"
                 : "Unknown User"}
             </h4>
           </div>
@@ -98,9 +98,9 @@ const CommentsCard: React.FC<CommentsCardProps> = ({
           {!isLoading &&
             user &&
             typeof comment.commentUserId !== "string" &&
-            user.user._id === comment.commentUserId._id && (
+            user.user._id === comment.commentUserId?._id && (
               <button
-                onClick={() => handleDelete(comment._id)}
+                onClick={() => handleDelete(comment?._id)}
                 className="flex items-center hover:bg-background-secondary p-2 rounded-full cursor-pointer"
               >
                 <MdDeleteOutline className="text-secondary text-lg " />
